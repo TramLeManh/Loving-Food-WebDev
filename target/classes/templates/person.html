@@ -1,0 +1,26 @@
+<!-- user.html -->
+<!DOCTYPE html >
+<html>
+<head>
+    <title>User Info</title>
+    <style>
+        body {
+            font-family: Arial;
+        }
+
+        .user-details {
+            margin: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+<div class="user-details">
+    <h2>User Information</h2>
+    <p>ID: <span th:text="${user.id}"></span></p>
+    <p>Name: <span th:text="${user.username}"></span></p>
+    <p>Email: <span th:text="${user.email}"></span></p>
+</div>
+</body>
+</html>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JpaBuddyIdeaProjectConfig" ddlActionDbType="mysql" migrateIndexesAndConstraints="true" reUseTableSchema="true">
+    <option name="defaultUnitInitialized" value="true" />
+    <option name="migrateIndexesAndConstraints" value="true" />
+    <option name="reLastEntityCreationPackage" value="src/main/java/session/sessionacoount" />
+    <option name="renamerInitialized" value="true" />
+    <option name="reverseEngineeringLastDbConnectionId" value="6c8d4fbf-a1ca-4ad7-8f58-59c680ff8fe0__sessionaccount" />
+  </component>
+</project>
