@@ -8,7 +8,7 @@ import session.utils.DAO;
 import java.util.List;
 import java.util.Optional;
 @Component
-public class OtpDAO implements DAO<OTP, Integer> {
+public class OtpDAO implements DAO<OTP, String> {
     private final JdbcTemplate jdbcTemplate;
 
     public OtpDAO(JdbcTemplate jdbcTemplate) {
@@ -18,12 +18,14 @@ public class OtpDAO implements DAO<OTP, Integer> {
     /**
      * Kiểm tra OTP có trong bảng
      */
+    //Check query for OTP
     @Override
-    public Optional<OTP> findById(Integer id) {
+    public Optional<OTP> findById(String id) {
         try {
-            String query = "select * FROM OTP WHERE user_id = ?";
+            String query = "select * FROM otp WHERE uuid = ?";
             return Optional.ofNullable(jdbcTemplate.queryForObject(query, new OTP(), id));
         }catch(Exception e){
+            System.out.printf("Error: %s", e);
             return Optional.empty();
         }
     }
@@ -31,14 +33,15 @@ public class OtpDAO implements DAO<OTP, Integer> {
      * Check wheither OTP is exist
      *  OTP tồn tại 10 minues. After 10 minutes, OTP delete
      */
-    public Optional<OTP> isOTPValid(int user_id) {
+    public Optional<OTP> isOTPValid(String uuid) {
         try {
-            String query = "SELECT * FROM otp\n" + "WHERE created_at >= (NOW() - INTERVAL 10 MINUTE) AND user_id = ?;";
-            return Optional.ofNullable(jdbcTemplate.queryForObject(query, new OTP(), user_id));
+            String query = "SELECT * FROM otp\n" + "WHERE created_at >= (NOW() - INTERVAL 10 MINUTE) AND uuid = ?;";
+            return Optional.ofNullable(jdbcTemplate.queryForObject(query, new OTP(), uuid));
         } catch (Exception e) {
             return Optional.empty();
         }
     }
+
 
     @Override
     public Optional<List<OTP>> findAll() {
@@ -49,9 +52,9 @@ public class OtpDAO implements DAO<OTP, Integer> {
      *  Delete OTP after verify success
      */
     @Override
-    public void delete(Integer entity) {
-        String query = "DELETE FROM OTP WHERE user_id = ?";
-        jdbcTemplate.update(query, entity);
+    public void delete(String uuid) {
+        String query = "DELETE FROM OTP WHERE uuid = ?";
+        jdbcTemplate.update(query, uuid);
     }
     /**
      *
@@ -61,10 +64,8 @@ public class OtpDAO implements DAO<OTP, Integer> {
 
     @Override
     public void update(OTP entity) {
-        String query = "UPDATE OTP SET otp = ? WHERE user_id = ?";
-        jdbcTemplate.update(query,entity.getOtp(), entity.getUser_id());
-
-
+        String query = "UPDATE OTP SET otp = ? WHERE uuid = ?";
+        jdbcTemplate.update(query,entity.getOtp(), entity.getUuid());
     }
 
     /**
@@ -73,12 +74,9 @@ public class OtpDAO implements DAO<OTP, Integer> {
      */
     @Override
     public void save(OTP entity) {
-        String query = "INSERT INTO OTP (user_id, otp) VALUES (?, ?)";
-        jdbcTemplate.update(query,entity.getUser_id(),entity.getOtp());
+        String query = "INSERT INTO OTP (uuid,user_id, otp) VALUES (?,?, ?)";
+        jdbcTemplate.update(query,entity.getUuid(),entity.getUser_id(),entity.getOtp());
     }
-
-
-
 
 
 }

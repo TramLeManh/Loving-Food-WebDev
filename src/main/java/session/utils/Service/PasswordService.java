@@ -1,20 +1,20 @@
 package session.utils.Service;
 
 import org.springframework.stereotype.Component;
-import session.Dao.AccountDAO;
+import session.Dao.UserDAO;
 import session.utils.PasswordEncryptor;
 import session.utils.Service.EmailService.EmailService;
 import session.utils.Status;
 
 @Component
 public class PasswordService {
-    private final AccountDAO u;
+    private final UserDAO u;
 
-    public PasswordService(AccountDAO u, EmailService emailService) {
+    public PasswordService(UserDAO u, EmailService emailService) {
         this.u = u;
     }
 
-    //Account must be validate before update password
+    //User must be validate before update password
     public Status updatePassword(int user_id, String input) {
         return u.findById(user_id).map(account -> {
             String encrypt = null;

@@ -1,12 +1,13 @@
 package session.controllers;
 
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import session.model.District;
 import session.service.AccountService;
-import session.DTO.AccountDto;
+import session.DTO.UserDto;
 import session.DTO.createAccountDTO;
 import session.service.RestaurantService;
 import session.responseHandler.Exception.ServerException;
@@ -26,8 +27,8 @@ public class HomeController {
     @RequestMapping("/get/{id}")
     public String home(@PathVariable int id, Model model) {
         try {
-            //View All account base on AccountDto format
-            AccountDto res = service.findUser(id);
+            //View All account base on UserDto format
+            UserDto res = service.findUser(id);
             System.out.println("id is" + res.id());
             model.addAttribute("user", res);
             return "person";  // user.html will be returned
@@ -50,7 +51,7 @@ public class HomeController {
     public String processForm(@ModelAttribute("formData") createAccountDTO formData, Model model) throws Exception {
         // Process formData (which contains username, email, password)
        try{
-              State<AccountDto> res = service.createAccount(formData);
+              State<UserDto> res = service.createAccount(formData);
                 switch (res.getStatus()) {
                     case SUCCESS:
                         model.addAttribute("message", "User created successfully");
@@ -68,13 +69,14 @@ public class HomeController {
        } catch (Exception e) {
               throw new ServerException(e.getMessage());
        }
+
     }
 
     @RequestMapping(value = "/forgotpass/send", method = RequestMethod.POST)
     public String passRecovery(@ModelAttribute("formData") createAccountDTO formData, Model model) throws Exception {
         // Process formData (which contains username, email, password)
         try {
-            State<AccountDto> res = service.createAccount(formData);
+            State<UserDto> res = service.createAccount(formData);
             switch (res.getStatus()) {
                 case SUCCESS:
                     model.addAttribute("message", "User created successfully");
@@ -102,9 +104,16 @@ public class HomeController {
     }
 
     @RequestMapping("/index")
-    public  String index(Model model){
+    public  String index(HttpSession session, Model model){
         List<District> list_category = restaurantService.getDistrict();;
         model.addAttribute("list_district" , list_category );
+        try {
+            int id = (int) session.getAttribute("user");
+            UserDto res = service.findUser(id);
+            model.addAttribute("user_email", res.email());
+        } catch (Exception e) {
+            model.addAttribute("user", null);
+        }
         return "index";
     }
     @RequestMapping("/contact")

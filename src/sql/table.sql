@@ -74,7 +74,7 @@ create table customerBook (
                               user_id int not null ,
                               book_id int not null primary key,
                               created_at DATE DEFAULT (CURRENT_DATE) NULL,
-                              constraint customerBook_ibfk_1 foreign key (user_id) references account (user_id),
+                              constraint customerBook_ibfk_1 foreign key (user_id) references user (user_id),
                               constraint customerBook_ibfk_2 foreign key (book_id) references bookTable (book_id));
 
 --
@@ -110,4 +110,3 @@ create table spring_session_attributes
             on delete cascade
 )
     row_format = DYNAMIC;
-

@@ -12,6 +12,7 @@ import java.sql.SQLException;
 
 
 public class OTP implements RowMapper<OTP> {
+    private String uuid;
     private  int user_id;
     private  int otp;
     public OTP(int user_id, int otp) {
@@ -26,6 +27,7 @@ public class OTP implements RowMapper<OTP> {
     public OTP mapRow(ResultSet rs, int rowNum) throws SQLException {
         OTP otp = new OTP();
         otp.setUser_id(rs.getInt("user_id"));
+        otp.setUuid(rs.getString("uuid"));
         otp.setOtp(rs.getInt("otp"));
         return otp;
     }

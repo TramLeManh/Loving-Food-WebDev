@@ -1,85 +1,66 @@
 package session.service;
 
 import org.springframework.stereotype.Component;
-import session.DTO.AccountDto;
-import session.Dao.AccountDAO;
+import session.DTO.UserDto;
+import session.Dao.UserDAO;
 import session.Dao.OtpDAO;
-import session.model.Account;
+import session.Dao.createOTP;
+import session.model.User;
 import session.model.OTP;
 import session.utils.Service.EmailService.EmailService;
 import session.utils.State;
 import session.utils.Status;
-
-import java.util.Optional;
 
 //This service class is used to interact with the DAO class
 @Component
 public class OtpService {
     private final OtpDAO db;
     private final EmailService emailService;
-    private final AccountDAO u;
-    public OtpService(OtpDAO dao, EmailService emailService, AccountDAO u) {
+    private final UserDAO u;
+    public OtpService(OtpDAO dao, EmailService emailService, UserDAO u) {
         this.db = dao;
         this.emailService = emailService;
         this.u = u;
     }
     //Return wheither OTP exist or not
-    public Optional<OTP> getOTP(int user_id) {
-        return db.findById(user_id);
+    public OTP getOTP(String uuid) {
+        return db.findById(uuid).orElse(null);
     }
-    public void createOTPDatabase(OTP o) {
-        this.getOTP(o.getUser_id()).ifPresentOrElse((otp) -> db.update(o), () -> db.save(o));
+    private void createOTPDatabase(OTP o) {
+        db.findById(o.getUuid()).ifPresentOrElse(
+                (otp) -> db.update(o),
+                () -> db.save(o)
+        );
     }
-
     /**
      * Client request sendOTP
      * Send OTP and add in table for verifying later
      */
-    public Status sendOTP(int user_id) {
-        Account account = u.findById(user_id).orElse(null);
-        if (db.findById(user_id).isPresent()) return Status.ERROR;
-        int code = (int) (Math.random() * 9000) + 1000;
-        OTP otp = new OTP(user_id, code);
-        emailService.sendOTP(account.getUsername(), account.getEmail(), code);
-        createOTPDatabase(otp);
+    public Status sendOTP(String uuid, int userId) {
+        createOTP otp = new createOTP(uuid, userId);
+        User user = u.findById(otp.getUser_id()).orElse(null);
+        if (db.findById(otp.getUuid()).isPresent()) return Status.ERROR;
+        OTP o = createOTP.toEnity(otp.getUuid(), otp.getUser_id());
+        emailService.sendOTP(user.getUsername(), user.getEmail(), o.getOtp());
+        createOTPDatabase(o);
         return Status.SUCCESS;
     }
-
-    /**
-     * Client request resendOTP
-     * Case 1: if OTP not found, server resend the OTP
-     * Case 2: if OTP found in table and still valid <10 minutes, cleint recheck their email again
-     * Case 3:
-     */
-    public Status resendOTP(int user_id) {
-        if (u.findById(user_id).isEmpty()) {
-            sendOTP(user_id);
-            return Status.NOT_FOUND;
-        }
-        ;
-        if (db.isOTPValid(user_id).isPresent()) return Status.ERROR;// If otp <10 minutes, return error
-        sendOTP(user_id);
-        return Status.SUCCESS;
-    }
-
     /**
      * Client request email for send otp to recovery
      * Case 1: if email not found, server send invalid email
      * Case 2: if email exist , go to input OTP code page return accountDto store in session
      */
-    public State<AccountDto> sendOTPRecovery(String email) {
-        State<AccountDto> state = new State<>();
-        Account account = u.getByEmail(email).orElse(null);
-        if (account == null) {
+    public State<UserDto> sendOTPRecovery(String uuid, String email) {
+        State<UserDto> state = new State<>();
+        User user = u.getByEmail(email).orElse(null);
+        if (user == null) {
             state.setStatus(Status.NOT_FOUND);
             return state;
         }
-        int code = (int) (Math.random() * 9000) + 1000;
-        OTP otp = new OTP(account.getUser_id(), code);
-        createOTPDatabase(otp);
-        emailService.sendOTP(account.getUsername(), email, code);
+        createOTP createOTP = new createOTP(uuid, user.getUser_id());
+        sendOTP(createOTP.getUuid(), createOTP.getUser_id());
         state.setStatus(Status.SUCCESS);
-        state.setData(AccountDto.fromEntity(account));
+        state.setData(UserDto.fromEntity(user));
         return state;
     }
 
@@ -88,13 +69,27 @@ public class OtpService {
      *Case 1: Check OTP code outdate, tell user outdate OTP and reuqire client to send OTP again
      * Case 2: if email exist , go to input OTP code page return accountDto store in session
      */
-    public Status verifyOTP(int user_id, int input) {
-        OTP o = db.findById(user_id).orElse(null);
-        if (o == null) return Status.NOT_FOUND;
-        if (db.isOTPValid(user_id).isEmpty()) return Status.OUT_DATE;
-        if (o.getOtp() != input) return Status.ERROR;
-        return Status.SUCCESS;
+    public State<Integer> verifyOTP(String uuid, int input) {
+        State<Integer> state = new State<>();
+        OTP o = db.findById(uuid).orElse(null);
+        // Check if OTP record is found
+        // Check if OTP is valid (not expired or out of date)
+        if (db.isOTPValid(uuid).isEmpty()) {
+            state.setStatus(Status.OUT_DATE);
+            sendOTP(uuid, o.getUser_id());
+            return state;
+        }
+        // Check if OTP matches the input
+        if (o.getOtp() != input) {
+            state.setStatus(Status.ERROR);
+            return state;
+        }
+        state.setData(o.getUser_id());
+        db.delete(uuid);
+        state.setStatus(Status.SUCCESS);
+        return state;
     }
+
 }
 
 //Verify OTP code from the user input and check with the database

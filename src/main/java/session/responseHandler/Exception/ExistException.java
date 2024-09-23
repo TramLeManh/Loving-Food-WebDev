@@ -8,7 +8,7 @@ import org.springframework.web.server.ResponseStatusException;
 @Getter
 public class ExistException extends ResponseStatusException {
     private final HttpHeaders headers;
-    private final String messageR = "Account Exist";
+    private final String messageR = "User Exist";
 
     public ExistException(String messageR, HttpHeaders headers) {
         super(HttpStatus.NOT_FOUND, messageR);

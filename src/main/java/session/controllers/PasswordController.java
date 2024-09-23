@@ -27,22 +27,7 @@ public class PasswordController {
         }
     }
 
-    @PutMapping("/{id}")
-    public String update(HttpSession session, @RequestBody String input) {
-        try {
-            int user = (int) session.getAttribute("user");
-            Status s = service.updatePassword(user, input);
-            switch (s) {
-                case SUCCESS:
-                    return "Password updated successfully";
-                case ACCOUNT_NOT_FOUND:
-                    return "Account not found";
-            }
-        } catch (Exception e) {
-            throw new ServerException(e.getMessage());
-        }
-        return "Error";
-    }
+
 
 
 }

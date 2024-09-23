@@ -1,18 +1,18 @@
 package session.utils;
 
 import session.DTO.createAccountDTO;
-import session.model.Account;
+import session.model.User;
 
 public class AccountConvert {
-    public static Account toEntity(createAccountDTO model) throws Exception {
-        Account account = new Account();
+    public static User toEntity(createAccountDTO model) throws Exception {
+        User user = new User();
         int code = (int) (Math.random() * 9000) + 1000;
-        account.setUser_id(code);
-        account.setUsername(model.getUsername());
-        account.setPassword(PasswordEncryptor.encryptPassword(model.getPassword()));
-        account.setEmail(model.getEmail());
-        account.setRole(role(model.getRole()));
-        return account;
+        user.setUser_id(code);
+        user.setUsername(model.getUsername());
+        user.setPassword(PasswordEncryptor.encryptPassword(model.getPassword()));
+        user.setEmail(model.getEmail());
+        user.setRole(role(model.getRole()));
+        return user;
     }
 
     public static String role(int role_id) {

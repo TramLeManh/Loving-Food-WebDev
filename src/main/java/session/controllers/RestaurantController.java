@@ -1,12 +1,10 @@
 package session.controllers;
 
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import session.DTO.RestaurantResponseDto;
 import session.model.District;
 import session.model.Restaurant;
+import session.model.category;
 import session.service.RestaurantService;
 
 import java.util.Collections;
@@ -15,6 +13,7 @@ import java.util.List;
 @RequestMapping("/restaurant")
 public class RestaurantController {
     private final RestaurantService restaurantService;
+
     public RestaurantController(RestaurantService restaurantService) {
         this.restaurantService = restaurantService;
     }
@@ -34,5 +33,9 @@ public class RestaurantController {
     public List<District> getD() {
         List<District> data = restaurantService.getDistrict();
         return data;
+    }
+    @RequestMapping(value = "/category", method = RequestMethod.GET)
+    public List<category> getCategory() {
+        return restaurantService.getAllCategory();
     }
 }
