@@ -7,17 +7,17 @@ import session.model.OTP;
 @Setter
 public class createOTP {
     private final String uuid;
-    private final int user_id;
+    private final String email;
 
-    public createOTP(String uuid, int userId) {
+    public createOTP(String uuid, String email) {
         this.uuid = uuid;
-        user_id = userId;
+        this.email = email;
     }
 
-    public static OTP toEnity(String uuid, int user_id){
+    public static OTP toEnity(String uuid, String email){
         OTP otp = new OTP();
         otp.setUuid(uuid);
-        otp.setUser_id(user_id);
+        otp.setEmail(email);
         otp.setOtp((int) (Math.random() * 9000) + 1000);
         return otp;
     }

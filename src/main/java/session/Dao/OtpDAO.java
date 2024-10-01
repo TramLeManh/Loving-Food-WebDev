@@ -14,7 +14,6 @@ public class OtpDAO implements DAO<OTP, String> {
     public OtpDAO(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
-
     /**
      * Kiểm tra OTP có trong bảng
      */
@@ -29,10 +28,7 @@ public class OtpDAO implements DAO<OTP, String> {
             return Optional.empty();
         }
     }
-    /**
-     * Check wheither OTP is exist
-     *  OTP tồn tại 10 minues. After 10 minutes, OTP delete
-     */
+   
     public Optional<OTP> isOTPValid(String uuid) {
         try {
             String query = "SELECT * FROM otp\n" + "WHERE created_at >= (NOW() - INTERVAL 10 MINUTE) AND uuid = ?;";
@@ -41,8 +37,6 @@ public class OtpDAO implements DAO<OTP, String> {
             return Optional.empty();
         }
     }
-
-
     @Override
     public Optional<List<OTP>> findAll() {
         return Optional.empty();
@@ -74,8 +68,8 @@ public class OtpDAO implements DAO<OTP, String> {
      */
     @Override
     public void save(OTP entity) {
-        String query = "INSERT INTO OTP (uuid,user_id, otp) VALUES (?,?, ?)";
-        jdbcTemplate.update(query,entity.getUuid(),entity.getUser_id(),entity.getOtp());
+        String query = "INSERT INTO OTP (uuid,email, otp) VALUES (?,?, ?)";
+        jdbcTemplate.update(query,entity.getUuid(),entity.getEmail(),entity.getOtp());
     }
 
 

@@ -9,14 +9,12 @@ import java.sql.SQLException;
 
 @Getter
 @Setter
-
-
 public class OTP implements RowMapper<OTP> {
     private String uuid;
-    private  int user_id;
+    private  String email;
     private  int otp;
-    public OTP(int user_id, int otp) {
-        this.user_id = user_id;
+    public OTP(String email, int otp) {
+        this.email = email;
         this.otp = otp;
     }
     public OTP() {
@@ -26,7 +24,7 @@ public class OTP implements RowMapper<OTP> {
     @Override
     public OTP mapRow(ResultSet rs, int rowNum) throws SQLException {
         OTP otp = new OTP();
-        otp.setUser_id(rs.getInt("user_id"));
+        otp.setEmail(rs.getString("email"));
         otp.setUuid(rs.getString("uuid"));
         otp.setOtp(rs.getInt("otp"));
         return otp;

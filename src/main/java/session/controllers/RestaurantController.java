@@ -1,6 +1,7 @@
 package session.controllers;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 import session.DTO.RestaurantResponseDto;
 import session.model.District;
 import session.model.Restaurant;

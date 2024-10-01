@@ -15,8 +15,8 @@ public class PasswordService {
     }
 
     //User must be validate before update password
-    public Status updatePassword(int user_id, String input) {
-        return u.findById(user_id).map(account -> {
+    public Status updatePassword(String user_name, String input) {
+        return u.getByUsername(user_name).map(account -> {
             String encrypt = null;
             try {
                 encrypt = PasswordEncryptor.encryptPassword(input);

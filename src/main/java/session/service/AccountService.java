@@ -69,4 +69,7 @@ public class AccountService {
     public void update(userInfomationDTO user) {
         acc.updateInformation(userInfomationDTO.toEntity(user));
     }
+    public boolean isEmailExist(String email) {
+        return acc.getByEmail(email).isPresent();
+    }
 }

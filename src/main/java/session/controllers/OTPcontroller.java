@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 import session.DTO.UserDto;
 import session.DTO.createAccountDTO;
 import session.responseHandler.BodyResponseWithTime;
@@ -38,6 +39,7 @@ public class OTPcontroller {
             }
             //set token for that session
             session.setAttribute("sessionToken",token);//set token for verify
+            session.setAttribute("user_name",res.getData().username());
             session.setMaxInactiveInterval(1800);//Set session time out  minutes
             return new ResponseEntity<>(new BodyResponseWithTime<>("SEND SUCCESS.Move to verify page", HttpStatus.CREATED.value()), HttpStatus.CREATED);
         } catch (Exception e) {
@@ -48,12 +50,10 @@ public class OTPcontroller {
     public ResponseEntity<Object> verifyOTP(HttpSession session, @RequestHeader int code,@RequestParam String sessionToken) {
         try {
             String token = (String) session.getAttribute("sessionToken");
-            System.out.println(sessionToken);
-
             if(!sessionToken.equals(token)){
                 return new ResponseEntity<>(new BodyResponseWithTime<>("Bad request", HttpStatus.BAD_REQUEST.value()), HttpStatus.BAD_REQUEST);
             }
-            State<Integer> s = otpService.verifyOTP(sessionToken, code);
+            State<String> s = otpService.verifyOTP(sessionToken, code);
             switch (s.getStatus()) {
                 case ERROR -> {
                     return new ResponseEntity<>(new BodyResponseWithTime<>("Invalid OTP", HttpStatus.BAD_REQUEST.value()), HttpStatus.BAD_REQUEST);
@@ -78,7 +78,7 @@ public class OTPcontroller {
     @PutMapping("/changePassword")
     public String update(HttpSession session,@RequestHeader String input) {
         try {
-            int user = (int) session.getAttribute("user_id");
+            String user = (String) session.getAttribute("user_name");
             Status s = service.updatePassword(user, input);
             switch (s) {
                 case SUCCESS:
@@ -94,7 +94,7 @@ public class OTPcontroller {
     @PutMapping("/resetPassword")
     public String reset(HttpSession session, @RequestHeader String input,@RequestParam String sessionToken) {
         try {
-            int user = (int)session.getAttribute("user_id");
+            String user = (String)session.getAttribute("user_id");
             Status s = service.updatePassword(user, input);
             switch (s) {
                 case SUCCESS:
