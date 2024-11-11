@@ -2,7 +2,6 @@ package session.Dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-import session.model.category;
 import session.responseHandler.Exception.ServerException;
 
 import java.util.List;
@@ -25,13 +24,5 @@ public class categoryDAO {
         }
     }
 
-    public Optional<List<category>> getAllCategory() {
-        try {
-            String query = "SELECT * FROM category";
-            return Optional.ofNullable(jdbcTemplate.query(query, new category()));
 
-        } catch (Exception e) {
-            throw new ServerException(e.getMessage());
-        }
-    }
 }

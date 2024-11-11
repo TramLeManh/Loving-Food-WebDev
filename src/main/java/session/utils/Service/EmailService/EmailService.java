@@ -1,25 +1,17 @@
 package session.utils.Service.EmailService;
-
-
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
-
-
 @Component
 public class EmailService {
     //if email error return false
-
-
     private final JavaMailSender mailSender;
-
     public EmailService(JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
     //Implement Mail
-
     public boolean sendOTP(String username, String email, int otp) {
         try {
             MimeMessage message = mailSender.createMimeMessage();

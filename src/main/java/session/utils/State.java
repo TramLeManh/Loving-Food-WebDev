@@ -2,6 +2,7 @@ package session.utils;
 
 import lombok.Getter;
 import lombok.Setter;
+import session.utils.Enum.Status;
 
 @Getter
 @Setter

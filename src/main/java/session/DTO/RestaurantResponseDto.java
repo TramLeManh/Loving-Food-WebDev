@@ -2,7 +2,7 @@ package session.DTO;
 
 import lombok.Getter;
 import lombok.Setter;
-import session.model.Restaurant;
+import session.Restaurant.Restaurant;
 
 import java.util.List;
 

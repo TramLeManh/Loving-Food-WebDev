@@ -127,18 +127,13 @@
     const errorState = document.body.getAttribute('data-error-state');
 
     function handleErrorState(state) {  //Hàm này input vào state view cho từng trạng thái lỗi từ server
-        const name = [[${username}]];
         const errorBox = document.querySelector('.error-box');
 
-        if (state === 'NOT_FOUND') {
+        if (state === 'ERROR') {
             //Thêm class css,data,....
-            errorMessage.textContent = name + ' not found';
+            errorMessage.textContent = "Wrong username or password";
             document.querySelector('input[name="username"]').classList.add('input-error');
-            errorBox.classList.remove('hidden');
-        } else if (state === 'UNAUTHORIZED') {
-            //Thêm class css,data,....
             document.querySelector('input[name="password"]').classList.add('input-error');
-            errorMessage.textContent = 'Wrong password';
             errorBox.classList.remove('hidden');
         }
         document.addEventListener("DOMContentLoaded", function () {
@@ -186,8 +181,9 @@
     function closeErrorBox() {
         const username = document.getElementById('username');
         const password = document.getElementById('password');
+        username.classList.remove('input-error');
+        password.classList.remove('input-error');
         document.getElementById("errorBox").style.display = "none";
-
     }
 </script>
 </body>

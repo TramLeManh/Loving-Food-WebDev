@@ -18,7 +18,7 @@ CREATE TABLE bookings (
                           CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES user(user_id),
                           CONSTRAINT fk_res_id FOREIGN KEY (restaurant_id) REFERENCES restaurant(restaurant_id)
 );
-# When user insert the booking will create a decision
+# When user insert the booking will create a decision for admin to view, edit
 CREATE TRIGGER insert_booking_decision
     AFTER INSERT ON bookings
     FOR EACH ROW
@@ -73,11 +73,3 @@ CREATE TRIGGER delete_booking
 
 # Insert restaurant and the owener of the restaurant
 -- Trigger to update booking status based on decision
-
-
-
-
-
-
-
-

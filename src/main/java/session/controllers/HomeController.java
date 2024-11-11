@@ -1,30 +1,25 @@
 package session.controllers;
 
 
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import session.DTO.UserDto;
-import session.DTO.createAccountDTO;
+import session.User.DTO.UserDTO;
 import session.model.District;
 import session.responseHandler.Exception.ServerException;
-import session.service.AccountService;
-import session.service.RestaurantService;
-import session.utils.State;
-import session.utils.Status;
+import session.User.UserService;
+import session.Restaurant.RestaurantService;
 
 import java.util.List;
 
 
 @Controller
-public class HomeController {
-    private final AccountService service;
+public class    HomeController {
+    private final UserService service;
     private final RestaurantService restaurantService;
 
-    public HomeController(AccountService service, RestaurantService restaurantService) {
+    public HomeController(UserService service, RestaurantService restaurantService) {
         this.service = service;
         this.restaurantService = restaurantService;
     }
@@ -32,8 +27,8 @@ public class HomeController {
     @RequestMapping("/get/{id}")
     public String home(@PathVariable int id, Model model) {
         try {
-            //View All account base on UserDto format
-            UserDto res = service.findUser(id);
+            //View All account base on UserDTO format
+            UserDTO res = service.findUser(id);
             System.out.println("id is" + res.id());
             model.addAttribute("user", res);
             return "person";  // user.html will be returned
@@ -42,16 +37,7 @@ public class HomeController {
         }
     }
 
-    //Load
-    @RequestMapping("/register")
-    public String showForm(Model model) {
-        try {
-            model.addAttribute("formData", new createAccountDTO());
-            return "register"; // refers to src/main/resources/templates/form.html
-        } catch (Exception e) {
-            throw new ServerException(e.getMessage());
-        }
-    }
+
 
 
 
@@ -63,7 +49,7 @@ public class HomeController {
 //    public String passRecovery(@ModelAttribute("formData") createAccountDTO formData, Model model) throws Exception {
 //        // Process formData (which contains username, email, password)
 //        try {
-//            State<UserDto> res = service.createAccount(formData);
+//            State<UserDTO> res = service.createAccount(formData);
 //            switch (res.getStatus()) {
 //                case SUCCESS:
 //                    model.addAttribute("message", "User created successfully");
@@ -93,10 +79,12 @@ public class HomeController {
     @RequestMapping("/index")
     public String index(HttpSession session, Model model) {
         List<District> list_category = restaurantService.getDistrict();//server
+
+
         model.addAttribute("list_district", list_category);
         try {
             int id = (int) session.getAttribute("user");
-            UserDto res = service.findUser(id);
+            UserDTO res = service.findUser(id);
             model.addAttribute("user_email", res.email());
         } catch (Exception e) {
             model.addAttribute("user", null);
