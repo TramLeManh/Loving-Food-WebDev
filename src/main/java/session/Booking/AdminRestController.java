@@ -14,24 +14,41 @@ import session.utils.Enum.BookingStatus;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 
 @RestController
 public class AdminRestController {
-
     private final BookingService bookingService;
 
     public AdminRestController(BookingService bookingService) {
         this.bookingService = bookingService;
     }
+
     @GetMapping("/viewAllDecision")
     public List<BookingDecisionResponseDTO> getAdminDecision(@RequestParam int owner_id, @RequestParam(required = false) int type) {
         BookingStatus[] status = BookingStatus.values();
         return bookingService.getAdminDecision(owner_id, status[type]);
     }
-    @GetMapping("/getAllBookingOrder")
-    public List<bookTableDTO> getIncomeBooking(@RequestParam int owner_id) {
-        return bookingService.getIncomeBooking(owner_id);
+
+    @GetMapping("/viewAdminBookingOrder")
+    public ResponseEntity<Object> getAdminBooking(@RequestParam int user_id, @RequestParam(required = false) Integer status, @RequestParam(required = false) Integer booking_id) {
+        Map<String, Object> response = new LinkedHashMap<>();
+        BookingStatus bookingStatus=null;
+        if (status != null) {
+            try {
+                bookingStatus = BookingStatus.values()[status];
+            } catch (ArrayIndexOutOfBoundsException e) {
+                response.put("message", "Invalid BookingStatus value provided.");
+                return ResponseEntity.badRequest().body(response);
+            }
+        }
+        //Due to native query, we need to pass the status as a string
+        response.put("message", "Retrieved bookings for user with status: " + bookingStatus);
+        List<bookTableDTO> bookings = bookingService.getOwnerBooking(user_id, bookingStatus.toString());
+        response.put("data", bookings);
+        bookings.stream().filter(booking -> Objects.equals(booking.getBookingId(), booking_id)).toList();
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/decision")
@@ -40,7 +57,7 @@ public class AdminRestController {
 
         try {
             if (action.equalsIgnoreCase("view")) {
-                BookingDecision decision = bookingService.getOwnerDetailDecision(decision_id);
+                BookingDecision decision = bookingService.getDetailDecision(decision_id);
                 return ResponseEntity.ok(decision);
             }
             response.put("message", "Invalid action provided. Use 'view', 'create', or 'update'.");

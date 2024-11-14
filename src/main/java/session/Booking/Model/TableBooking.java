@@ -47,6 +47,8 @@ public class TableBooking {
     private String UpdatedAt;
     @Transient // This field is not persisted in the database
     private String BookingAt;
+    @Transient // This field is not persisted in the database
+    private String user_id;
     @PostLoad
     private void formatUpdatedAt() {
         if (update != null||BookingAt!=null) {

@@ -13,7 +13,7 @@ public interface  BookingRepo extends JpaRepository<TableBooking, Integer> {
     @Modifying
     @Transactional
     @Query(value = "call create_booking_table(:bid,:user,:restaurant,:customer,:phone,:time,:guests,:note)", nativeQuery = true)
-    void createUserBooking(int bid, int user, int restaurant, String customer, String phone, String time, int guests, String note);
+    void createUserBooking(int bid, String user, int restaurant, String customer, String phone, String time, int guests, String note);
 
     @Query(value = "select  * from table_booking where booking_id in (select booking_id from book where user_id = :id)" +
             "ORDER BY booking_status, updated_at ASC ;", nativeQuery = true)

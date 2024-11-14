@@ -14,7 +14,7 @@ public class BookingDecisionResponseDTO {
     private BookingStatus status;
     private String adminNote;
     private String decisionDate;
-    private bookTableDTO bookingInformation;
+
     public static BookingDecisionResponseDTO fromEntity(BookingDecision booking){
         BookingDecisionResponseDTO responseDTO = new BookingDecisionResponseDTO();
         responseDTO.decision_id = booking.getDecision_id();
@@ -22,7 +22,7 @@ public class BookingDecisionResponseDTO {
         responseDTO.status = booking.getStatus();
         responseDTO.adminNote = booking.getAdminNote();
         responseDTO.decisionDate = timeFormat.format(booking.getDate());
-        responseDTO.setBookingInformation(bookTableDTO.fromEntity(booking.getBookingInformation())) ;
+
         return responseDTO;
     }
 }
