@@ -19,4 +19,4 @@ insert into booking_decisions (booking_id, admin_user_id, admin_status, admin_no
 values (1412, 6441, 'ACCEPTED', 'At room 4', CURRENT_TIMESTAMP);
 select * from booking_decisions
 where admin_user_id = 6441;
-# create trigger after insert into booking_decisions change status in user booking_table
+# create trigger after insert into booking_decisions change status in account booking_table

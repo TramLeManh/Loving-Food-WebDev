@@ -1,5 +1,5 @@
 create table
-    user (
+    account (
         user_id int not null primary key,
         username varchar(50) not null,
         user_password varchar(50) not null,
@@ -36,7 +36,7 @@ create table
         user_id int not null primary key,
         otp varchar(50) not null,
         created_at timestamp default CURRENT_TIMESTAMP null,
-        constraint otp_ibfk_1 foreign key (user_id) references user (user_id)
+        constraint otp_ibfk_1 foreign key (user_id) references account (user_id)
     );
 
 create table

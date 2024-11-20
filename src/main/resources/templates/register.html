@@ -143,13 +143,13 @@
             if (state === 'SUCCESS') {
                 alert("Create success"); // Show the success alert
                 // After the alert, redirect to the index page
-                window.location.href = "../../java/session/User/login";
+                window.location.href = "../../java/session/Account/login";
             }
         });
     }
     // Call the function with the current state
     handleErrorState(errorState);
-    //-----------------------------Validate user input, check trống------------------//
+    //-----------------------------Validate account input, check trống------------------//
     document.getElementById('form').addEventListener('submit', function (e) {
         e.preventDefault();
         // Get form inputs

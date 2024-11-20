@@ -51,7 +51,7 @@
         class="form-container"
 >
     <p>Please enter new password</p>
-    <p>For <span th:text="${user}"></span></p>
+    <p>For <span th:text="${account}"></span></p>
     <div id="password-container"  >
         <label for="password"></label><input
             type="text"
@@ -74,7 +74,7 @@
             errorText.textContent = "";
         }
     }
-    //-----------------------------Validate user input, check trống------------------//
+    //-----------------------------Validate account input, check trống------------------//
     const errorMessage = document.getElementById('message_error');
     document.getElementById("form").addEventListener("submit", function (e) {
         e.preventDefault();
@@ -90,7 +90,7 @@
         if (isValid) {
             alert("update success. Please login to continue"); // Show the success alert
             // After the alert, redirect to the index page
-            window.location.href = "../../java/session/User/login";
+            window.location.href = "../../java/session/Account/login";
             this.submit();
         }
     });

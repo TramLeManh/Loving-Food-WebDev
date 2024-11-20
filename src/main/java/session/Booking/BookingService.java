@@ -36,7 +36,9 @@ public class BookingService {
         }
         return bookingDecisions.stream().map(BookingDecisionResponseDTO::fromEntity).collect(Collectors.toList());
     }
-
+    /**
+     * Found owner booking base on owner_id, bookingStatus
+     */
     public List<bookTableDTO> getOwnerBooking(int owner_id, String bookingStatus) {
         List<TableBooking> bookings = bookingRepo.getOwnerBooking(owner_id);
         List<BookingDecision> decisions = bookingDecisionRepo.getAllBookingDecision(owner_id);
@@ -48,20 +50,18 @@ public class BookingService {
         }
         return data;
     }
-
-    public List<bookTableDTO> getUserBooking(int user_id, BookingStatus bookingStatus) {
+    public List<bookTableDTO> getUserBooking(int user_id, Integer bookingStatus) {
+       BookingStatus status = BookingStatus.values()[bookingStatus];
         List<TableBooking> bookings = bookingRepo.getUserBooking(user_id);
         List<BookingDecision> decisions = bookingDecisionRepo.getUserBookingDecision(user_id);
         data = bookTableDTO.fromEntity(bookings, decisions);
         if (bookingStatus == null) {
-            return data;
+            return bookTableDTO.fromEntity(bookings, decisions);
         } else {
-            data = data.stream().filter(booking -> Objects.equals(booking.getStatus(), bookingStatus)).collect(Collectors.toList());
+            data = data.stream().filter(booking -> Objects.equals(booking.getStatus(), status)).collect(Collectors.toList());
         }
         return data;
     }
-
-
 
     public BookingDecision getDetailDecision(int decision_id) {
         if(bookingDecisionRepo.isDecisionPending(decision_id)){
@@ -69,7 +69,6 @@ public class BookingService {
         }
         return bookingDecisionRepo.getBookingDecisionDetailByDecisionId(decision_id);
     }
-
     /**
      * Admin duyet thong tin
      */
@@ -125,11 +124,24 @@ public class BookingService {
     }
 
     /**
-     * User Generate Booking
+     * Account Generate Booking
      */
     public void createUserBooking(TableBooking booking) {
         bookingRepo.createUserBooking(booking.getBookingId(), booking.getUser_id(), booking.getRestaurantId(), booking.getName(), booking.getPhoneNumber(), booking.getBookingAt(), booking.getNumOfGuests(), booking.getNotes());
     }
-
+    /**
+     * Lay thong tin booking cua user
+     */
+    public List<bookTableDTO> getUserBooking(int user_id, BookingStatus bookingStatus) {
+        List<TableBooking> bookings = bookingRepo.getUserBooking(user_id);
+        List<BookingDecision> decisions = bookingDecisionRepo.getUserBookingDecision(user_id);
+        data = bookTableDTO.fromEntity(bookings, decisions);
+        if (bookingStatus == null) {
+            return data;
+        } else {
+            data = data.stream().filter(booking -> Objects.equals(booking.getStatus(), bookingStatus)).collect(Collectors.toList());
+        }
+        return data;
+    }
 
 }

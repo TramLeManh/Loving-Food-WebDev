@@ -1,5 +1,5 @@
 
-CREATE TABLE user (
+CREATE TABLE account (
                       user_id INT NOT NULL PRIMARY KEY,
                       username VARCHAR(20) NOT NULL,
                       user_password VARCHAR(50) NOT NULL,
@@ -13,7 +13,7 @@ create table otp (
                      user_id int not null primary key,
                      otp varchar(10) not null,
                      created_at timestamp default CURRENT_TIMESTAMP null,
-                     constraint otp_ibfk_1 foreign key (user_id) references user (user_id)
+                     constraint otp_ibfk_1 foreign key (user_id) references account (user_id)
 );
 create table article (
                          article_id int not null primary key,
@@ -74,7 +74,7 @@ create table customerBook (
                               user_id int not null ,
                               book_id int not null primary key,
                               created_at DATE DEFAULT (CURRENT_DATE) NULL,
-                              constraint customerBook_ibfk_1 foreign key (user_id) references user (user_id),
+                              constraint customerBook_ibfk_1 foreign key (user_id) references account (user_id),
                               constraint customerBook_ibfk_2 foreign key (book_id) references bookTable (book_id));
 
 --

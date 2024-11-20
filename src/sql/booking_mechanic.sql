@@ -1,5 +1,5 @@
-# Handle booking from user
-# user add booking
+# Handle booking from account
+# account add booking
 #Owner insert booking_decissions
 # 1. Add owner of restaurant
 # 2. User make a booking
@@ -15,10 +15,10 @@ CREATE TABLE bookings (
                           status ENUM('PENDING', 'ACCEPTED', 'DENIED', 'POSTPONED') DEFAULT 'PENDING',
                           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                          CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES user(user_id),
+                          CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES account(user_id),
                           CONSTRAINT fk_res_id FOREIGN KEY (restaurant_id) REFERENCES restaurant(restaurant_id)
 );
-# When user insert the booking will create a decision for admin to view, edit
+# When account insert the booking will create a decision for admin to view, edit
 CREATE TRIGGER insert_booking_decision
     AFTER INSERT ON bookings
     FOR EACH ROW
@@ -30,7 +30,7 @@ BEGIN
     WHERE o.restaurant_id = NEW.restaurant_id;
 END;
 
-# Handle booking_decisions where user will make a decession add reply response base booking_id from bookings
+# Handle booking_decisions where account will make a decession add reply response base booking_id from bookings
 CREATE TABLE booking_decisions (
                                    decision_id SERIAL PRIMARY KEY,
                                    booking_id INT NOT NULL,
@@ -45,12 +45,12 @@ CREATE TABLE booking_decisions (
 create table ownRestaurant(
                               user_id INT NOT NULL ,
                               restaurant_id INT NOT NULL,
-                              CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES user(user_id),
+                              CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES account(user_id),
                               CONSTRAINT fk_res FOREIGN KEY (restaurant_id) REFERENCES restaurant(restaurant_id),
                               created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP  -- Timestamp of when the booking was made
 );
 
--- Create view for bookings where the user is also the owner of the restaurant
+-- Create view for bookings where the account is also the owner of the restaurant
 CREATE VIEW owner_bookings AS
 SELECT b.booking_id, b.user_id, b.restaurant_id, b.booking_date, b.num_of_guests, b.status, b.created_at, b.updated_at
 FROM bookings b JOIN ownRestaurant s

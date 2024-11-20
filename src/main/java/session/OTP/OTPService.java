@@ -1,9 +1,9 @@
 package session.OTP;
 
 import org.springframework.stereotype.Component;
-import session.User.DTO.UserDTO;
-import session.User.User;
-import session.User.UserDAO;
+import session.Account.AccountDAO;
+import session.Account.DTO.UserDTO;
+import session.Account.Account;
 import session.OTP.DAO.createOTP;
 import session.utils.Service.EmailService.EmailService;
 import session.utils.State;
@@ -14,8 +14,8 @@ import session.utils.Enum.Status;
 public class OTPService {
     private final OTPDAO db;
     private final EmailService emailService;
-    private final UserDAO u;
-    public OTPService(OTPDAO dao, EmailService emailService, UserDAO u) {
+    private final AccountDAO u;
+    public OTPService(OTPDAO dao, EmailService emailService, AccountDAO u) {
         this.db = dao;
         this.emailService = emailService;
         this.u = u;
@@ -35,10 +35,10 @@ public class OTPService {
      * Send OTP and add in table for verifying later
      */
     public Status sendOTPRecover(String sessionID, int userId) {
-        User user = u.findById(userId).orElse(null);
-        createOTP otp = new createOTP(sessionID, user.getEmail());
+        Account account = u.findById(userId).orElse(null);
+        createOTP otp = new createOTP(sessionID, account.getEmail());
         if (db.findById(otp.getSessionID()).isPresent()) return Status.ERROR;
-        sendOTPVerify(otp.getSessionID(), user.getEmail());
+        sendOTPVerify(otp.getSessionID(), account.getEmail());
         return Status.SUCCESS;
     }
     public void sendOTPVerify(String sessionID, String email) {
@@ -55,16 +55,16 @@ public class OTPService {
     public State<UserDTO> sendOTPRecovery(String sessionID, String email) {
         State<UserDTO> state = new State<>();
         //Nên verify email trước khi gửi OTP
-        User user = u.getByEmail(email).orElse(null);
-        if (user == null) {
+        Account account = u.getByEmail(email).orElse(null);
+        if (account == null) {
             state.setStatus(Status.NOT_FOUND);
             return state;
         }
-        OTP o = createOTP.toEnity(sessionID, user.getEmail());
+        OTP o = createOTP.toEnity(sessionID, account.getEmail());
         createOTPDatabase(o);
-        emailService.sendOTP(user.getUsername(), email, o.getOtp());
+        emailService.sendOTP(account.getUsername(), email, o.getOtp());
         state.setStatus(Status.SUCCESS);
-        state.setData(UserDTO.fromEntity(user));
+        state.setData(UserDTO.fromEntity(account));
         return state;
     }
 

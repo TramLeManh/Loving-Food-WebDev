@@ -4,7 +4,8 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.data.repository.Repository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import session.DTO.RestaurantResponseDto;
+
+import session.Restaurant.DTO.RestaurantResponseDto;
 import session.Restaurant.DTO.addCategoryDTO;
 import session.Restaurant.DTO.createRestaurantDTO;
 import session.model.District;

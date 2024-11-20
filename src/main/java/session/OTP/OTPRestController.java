@@ -4,8 +4,8 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import session.User.DTO.UserDTO;
-import session.User.DTO.createUserDTO;
+import session.Account.DTO.UserDTO;
+import session.Account.DTO.createUserDTO;
 import session.responseHandler.BodyResponseWithTime;
 import session.responseHandler.Exception.ServerException;
 import session.utils.Enum.Status;
@@ -28,7 +28,7 @@ public class OTPRestController {
             String token = generateSessionToken.get();
             State<UserDTO> res = otpService.sendOTPRecovery(token,accountDto.getEmail());
             if (Objects.requireNonNull(res.getStatus()) == Status.NOT_FOUND) {
-                return new ResponseEntity<>(new BodyResponseWithTime<>("User Not Found. Stay on page", HttpStatus.NOT_FOUND.value()), HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(new BodyResponseWithTime<>("Account Not Found. Stay on page", HttpStatus.NOT_FOUND.value()), HttpStatus.NOT_FOUND);
             }
             //set token for that session
             session.setAttribute("sessionToken",token);//set token for verify

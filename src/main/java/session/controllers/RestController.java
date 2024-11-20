@@ -8,13 +8,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import session.Booking.DAO.BookingRepo;
-import session.User.DTO.UserDTO;
-import session.User.DTO.createUserDTO;
+import session.Account.DTO.UserDTO;
+import session.Account.DTO.createUserDTO;
 
 import session.OTP.OTPService;
 import session.responseHandler.BodyResponseWithTime;
 import session.responseHandler.Exception.ServerException;
-import session.User.UserService;
+import session.Account.AccountService;
 import session.utils.State;
 
 /**
@@ -24,11 +24,11 @@ import session.utils.State;
 @org.springframework.web.bind.annotation.RestController
 
 public class RestController {
-    private final UserService service;
+    private final AccountService service;
     private final OTPService otpService;
 
 
-    public RestController(UserService service, OTPService otpService, BookingRepo bookingRepo) {
+    public RestController(AccountService service, OTPService otpService, BookingRepo bookingRepo) {
         this.service = service;
         this.otpService = otpService;
 
@@ -73,7 +73,7 @@ public class RestController {
             return new ResponseEntity<>(new BodyResponseWithTime<>("Please login to continue", HttpStatus.UNAUTHORIZED.value()), HttpStatus.UNAUTHORIZED);
         }
     }
-    //Create User
+    //Create Account
     @PostMapping("account/register")
     public ResponseEntity<Object> create(@RequestBody createUserDTO accountDto) {
         HttpHeaders headers = new HttpHeaders();

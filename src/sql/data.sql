@@ -61,7 +61,7 @@ VALUES (
            (SELECT restaurant_id FROM restaurant WHERE restaurant_name = 'Com Tam Cali'),
            'dinner' );
 -- Book Table--
-insert into user(user_id, username, user_password, user_email) values (1, 'admin', 'admin', 'lemanh14512@gmail.com');
+insert into account(user_id, username, user_password, user_email) values (1, 'admin', 'admin', 'lemanh14512@gmail.com');
 insert  into booktable(book_id, book_date, book_time, book_number, book_name, book_phone, book_email, book_message, restaurant_id)
 values (1, '2021-12-12', '12:00:00', 2, 'Nguyen Van A', '091616151'
        , 'abc@gmail.com','vegetarian', 1);

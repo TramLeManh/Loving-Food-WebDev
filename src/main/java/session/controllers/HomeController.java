@@ -5,10 +5,10 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import session.User.DTO.UserDTO;
+import session.Account.DTO.UserDTO;
 import session.model.District;
 import session.responseHandler.Exception.ServerException;
-import session.User.UserService;
+import session.Account.AccountService;
 import session.Restaurant.RestaurantService;
 
 import java.util.List;
@@ -16,10 +16,10 @@ import java.util.List;
 
 @Controller
 public class    HomeController {
-    private final UserService service;
+    private final AccountService service;
     private final RestaurantService restaurantService;
 
-    public HomeController(UserService service, RestaurantService restaurantService) {
+    public HomeController(AccountService service, RestaurantService restaurantService) {
         this.service = service;
         this.restaurantService = restaurantService;
     }
@@ -52,12 +52,12 @@ public class    HomeController {
 //            State<UserDTO> res = service.createAccount(formData);
 //            switch (res.getStatus()) {
 //                case SUCCESS:
-//                    model.addAttribute("message", "User created successfully");
+//                    model.addAttribute("message", "Account created successfully");
 //
 //                    //return new page
 //                    break;
 //                case EXIST_USERNAME:
-//                    model.addAttribute("message", "User already exists");
+//                    model.addAttribute("message", "Account already exists");
 //                    break;
 //                case EXIST_EMAIL:
 //                    model.addAttribute("message", "Email already exists");

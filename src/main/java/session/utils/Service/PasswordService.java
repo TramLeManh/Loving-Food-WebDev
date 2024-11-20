@@ -1,20 +1,19 @@
 package session.utils.Service;
 
 import org.springframework.stereotype.Component;
-import session.User.UserDAO;
+import session.Account.AccountDAO;
 import session.utils.PasswordEncryptor;
 import session.utils.Service.EmailService.EmailService;
-import session.utils.Enum.Status;
 
 @Component
 public class PasswordService {
-    private final UserDAO u;
+    private final AccountDAO u;
 
-    public PasswordService(UserDAO u, EmailService emailService) {
+    public PasswordService(AccountDAO u, EmailService emailService) {
         this.u = u;
     }
 
-    //User must be validate before update password
+    //Account must be validate before update password
 
 
     //Get password from database

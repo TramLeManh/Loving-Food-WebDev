@@ -1,18 +1,14 @@
 package session.OTP;
 
 import jakarta.servlet.http.HttpSession;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import session.User.DTO.UserDTO;
+import session.Account.DTO.UserDTO;
 
-import session.User.DTO.createUserDTO;
-import session.User.UserService;
-import session.responseHandler.BodyResponseWithTime;
+import session.Account.AccountService;
 import session.responseHandler.Exception.ServerException;
 import session.utils.State;
 import session.utils.Enum.Status;
@@ -23,18 +19,18 @@ import java.util.Objects;
 @Controller
 public class OTPAPI {
     private final OTPService otpService;
-    private final UserService userService;
+    private final AccountService accountService;
 
-    public OTPAPI(OTPService otpService, UserService userService) {
+    public OTPAPI(OTPService otpService, AccountService accountService) {
         this.otpService = otpService;
-        this.userService = userService;
+        this.accountService = accountService;
     }
 
 
     @PostMapping(value = "/verifyEmail")
     public String verifyEmail(HttpSession session, @RequestParam String email, RedirectAttributes redirectAttributes) {
         try {
-            if (userService.isEmailExist(email)) {
+            if (accountService.isEmailExist(email)) {
                 redirectAttributes.addFlashAttribute("state", "error");//Set state
                 return "redirect:/verifyEmail";
             }
@@ -115,7 +111,7 @@ public class OTPAPI {
             return "error";
         }
         String user = (String) session.getAttribute("user_name");
-        userService.updatePassword(user, password);
+        accountService.updatePassword(user, password);
         session.invalidate();
         return "redirect:/account/login";
     }

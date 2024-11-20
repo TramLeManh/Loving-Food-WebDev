@@ -1,4 +1,4 @@
-create table user
+create table account
 (
     user_id       int                      not null
         primary key,
@@ -45,7 +45,7 @@ create table otp
     otp        varchar(50)                         not null,
     created_at timestamp default CURRENT_TIMESTAMP null,
     constraint otp_ibfk_1
-        foreign key (user_id) references user (user_id)
+        foreign key (user_id) references account (user_id)
 );
 
 create table restaurant
@@ -75,12 +75,12 @@ create table restaurant_category
 );
 
 create definer = root@localhost view view_account as
-select `restaurant`.`user`.`user_id`                             AS `user_id`,
-       `restaurant`.`user`.`username`                            AS `username`,
-       `restaurant`.`user`.`user_password`                       AS `user_password`,
-       `restaurant`.`user`.`user_email`                          AS `user_email`,
-       date_format(`restaurant`.`user`.`created_at`, '%d-%m-%Y') AS `created_at`
-from `restaurant`.`user`;
+select `restaurant`.`account`.`user_id`                             AS `user_id`,
+       `restaurant`.`account`.`username`                            AS `username`,
+       `restaurant`.`account`.`user_password`                       AS `user_password`,
+       `restaurant`.`account`.`user_email`                          AS `user_email`,
+       date_format(`restaurant`.`account`.`created_at`, '%d-%m-%Y') AS `created_at`
+from `restaurant`.`account`;
 
 create definer = root@localhost view view_restaurant as
 select `restaurant`.`restaurant`.`restaurant_id`                    AS `restaurant_id`,

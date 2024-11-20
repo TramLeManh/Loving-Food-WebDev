@@ -1,4 +1,4 @@
-<!-- user.html -->
+<!-- account.html -->
 <!DOCTYPE html >
 <html>
 <head>
@@ -8,7 +8,7 @@
             font-family: Arial;
         }
 
-        .user-details {
+        .account-details {
             margin: 20px;
             padding: 10px;
             border: 1px solid #ddd;
@@ -16,11 +16,11 @@
     </style>
 </head>
 <body>
-<div class="user-details">
+<div class="account-details">
     <h2>User Information</h2>
-    <p>ID: <span th:text="${user.id}"></span></p>
-    <p>Name: <span th:text="${user.username}"></span></p>
-    <p>Email: <span th:text="${user.email}"></span></p>
+    <p>ID: <span th:text="${account.id}"></span></p>
+    <p>Name: <span th:text="${account.username}"></span></p>
+    <p>Email: <span th:text="${account.email}"></span></p>
 </div>
 </body>
 </html>
