@@ -62,7 +62,7 @@ public class BookingService {
     }
 
 
-    //Booking Service
+
     public BookingDecision getDetailDecision(int decision_id) {
         if(bookingDecisionRepo.isDecisionPending(decision_id)){
             return null;

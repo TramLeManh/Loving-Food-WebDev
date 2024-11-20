@@ -30,7 +30,8 @@ public class AdminRestController {
         BookingStatus[] status = BookingStatus.values();
         return bookingService.getAdminDecision(owner_id, status[type]);
     }
-    @GetMapping("/viewOwnerBookingOrder")
+
+    @GetMapping("/viewAdminBookingOrder")
     public ResponseEntity<Object> getAdminBooking(@RequestParam int user_id, @RequestParam(required = false) Integer status, @RequestParam(required = false) Integer booking_id) {
         Map<String, Object> response = new LinkedHashMap<>();
         BookingStatus bookingStatus=null;
@@ -57,10 +58,6 @@ public class AdminRestController {
         try {
             if (action.equalsIgnoreCase("view")) {
                 BookingDecision decision = bookingService.getDetailDecision(decision_id);
-                if (decision == null) {
-                    response.put("message", "BookingDecision not been created yet.");
-                    return ResponseEntity.badRequest().body(response);
-                }
                 return ResponseEntity.ok(decision);
             }
             response.put("message", "Invalid action provided. Use 'view', 'create', or 'update'.");
