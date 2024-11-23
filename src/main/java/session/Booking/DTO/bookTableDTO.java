@@ -24,6 +24,7 @@ public class bookTableDTO {
     private String booking_date;
     private BookingDecisionResponseDTO adminDecision;
     private String updated_at;
+
     public static bookTableDTO fromEntity(TableBooking booking, BookingDecision decision) {
         bookTableDTO responseDTO = new bookTableDTO();
         responseDTO.setBookingId(booking.getBookingId());

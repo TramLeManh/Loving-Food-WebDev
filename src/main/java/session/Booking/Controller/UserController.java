@@ -1,7 +1,9 @@
 package session.Booking.Controller;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import session.Booking.BookingService;
 import session.Booking.DTO.BookingDecisionResponseDTO;
@@ -14,6 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RestController
 public class UserController {
@@ -43,17 +46,9 @@ public class UserController {
     @GetMapping("/getUserBooking")
     public ResponseEntity<Object> getUserBooking(@RequestParam int user_id, @RequestParam(required = false) Integer status, @RequestParam(required = false) Integer booking_id) {
         Map<String, Object> response = new LinkedHashMap<>();
-        BookingStatus bookingStatus = null;
-        if (status != null) {
-            try {
-                bookingStatus = BookingStatus.values()[status];
-            } catch (ArrayIndexOutOfBoundsException e) {
-                response.put("message", "Invalid BookingStatus value provided.");
-                return ResponseEntity.badRequest().body(response);
-            }
-        }
-        List<bookTableDTO> bookings = bookingService.getUserBooking(user_id, bookingStatus);
-        response.put("message", "Retrieved bookings for user with status: " + bookingStatus);
+
+
+        List<bookTableDTO> bookings = bookingService.getUserBooking(user_id, status);
         response.put("data", bookings);
         bookings.stream().filter(booking -> Objects.equals(booking.getBookingId(), booking_id));
         return ResponseEntity.ok(response);
@@ -82,6 +77,33 @@ public class UserController {
     public void deleteUserBooking(@RequestParam int booking_id) {
         bookingService.deleteUserBooking(booking_id);
     }
+
+
+
+
+//
+//    @GetMapping("/getUserBooking")
+//    public String getUserBookings(HttpSession session,
+//                                  @RequestParam(required = false) Integer status,
+//                                  @RequestParam(required = false) Integer booking_id,
+//                                  Model model) {
+//        Integer user_id = (Integer) session.getAttribute("user_id");
+//        if(user_id==null){
+//            return "redirect:/login";
+//        }
+//        List<bookTableDTO> bookings = bookingService.getUserBooking(user_id,status);
+//        if (booking_id != null) {
+//            bookings = bookings.stream()
+//                    .filter(booking -> Objects.equals(booking.getBookingId(), booking_id))
+//                    .collect(Collectors.toList());
+//        }
+//
+//        // Add the bookings to the model
+//        model.addAttribute("bookings", bookings);
+//        // Return the JSP view name
+//        return "userBookings";
+//    }
+
 
 
 
