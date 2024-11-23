@@ -3,7 +3,7 @@ package session.Booking;
 import org.springframework.stereotype.Service;
 import session.Booking.DAO.BookingDecisionRepo;
 import session.Booking.DAO.BookingRepo;
-import session.Booking.DTO.BookingDecisionResponseDTO;
+import session.Booking.DTO.BookingResponse;
 import session.Booking.DTO.bookTableDTO;
 import session.Booking.Model.BookingDecision;
 import session.Booking.Model.TableBooking;
@@ -27,14 +27,14 @@ public class BookingService {
     /**
      * Lay thong tin nhung adminDecision cua Admin da duyet
      */
-    public List<BookingDecisionResponseDTO> getAdminDecision(int owner_id, BookingStatus status) {
+    public List<BookingResponse> getAdminDecision(int owner_id, BookingStatus status) {
         List<BookingDecision> bookingDecisions = null;
         if (status == null) {
             bookingDecisions = bookingDecisionRepo.getAllBookingDecision(owner_id);
         } else {
             bookingDecisions = bookingDecisionRepo.getBookingOrder(owner_id, status);
         }
-        return bookingDecisions.stream().map(BookingDecisionResponseDTO::fromEntity).collect(Collectors.toList());
+        return bookingDecisions.stream().map(BookingResponse::fromEntity).collect(Collectors.toList());
     }
 
     /**
@@ -50,6 +50,14 @@ public class BookingService {
             data = data.stream().filter(booking -> Objects.equals(booking.getStatus(), bookingStatus)).collect(Collectors.toList());
         }
         return data;
+    }
+    public bookTableDTO getOwnerBookingDetail(int booking_id) {
+        TableBooking booking = bookingRepo.findById(booking_id).orElse(null);
+        if (booking == null) {
+            return null;
+        }
+        BookingDecision decisions = bookingDecisionRepo.getBookingDecisionDetailByBookingId(booking_id);
+        return bookTableDTO.fromEntity(booking, decisions);
     }
 
 
@@ -131,7 +139,7 @@ public class BookingService {
         } catch (ArrayIndexOutOfBoundsException e) {
             status = null;
         }
-        List<TableBooking> bookings = bookingRepo.getUserBooking(user_id);
+        List<TableBooking> bookings = bookingRepo.getListUserBooking(user_id);
         List<BookingDecision> decisions = bookingDecisionRepo.getUserBookingDecision(user_id);
         data = bookTableDTO.fromEntity(bookings, decisions);
         if (status == null) {

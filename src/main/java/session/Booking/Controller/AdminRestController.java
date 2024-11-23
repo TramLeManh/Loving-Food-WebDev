@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import session.Booking.BookingService;
-import session.Booking.DTO.BookingDecisionResponseDTO;
+import session.Booking.DTO.BookingResponse;
 import session.Booking.DTO.bookTableDTO;
 import session.Booking.DTO.createDecisionDTO;
 import session.Booking.DTO.updateResponseDTO;
@@ -27,7 +27,7 @@ public class AdminRestController {
     }
 
     @GetMapping("/viewAllDecision")
-    public List<BookingDecisionResponseDTO> getAdminDecision(@RequestParam int owner_id, @RequestParam(required = false) int type) {
+    public List<BookingResponse> getAdminDecision(@RequestParam int owner_id, @RequestParam(required = false) int type) {
         BookingStatus[] status = BookingStatus.values();
         return bookingService.getAdminDecision(owner_id, status[type]);
     }

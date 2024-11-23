@@ -19,10 +19,10 @@ public class bookTableDTO {
     private String name;
     private String phone;
     private int number_of_guests;
-    private BookingStatus status;
+    private String status;
     private String note;
     private String booking_date;
-    private BookingDecisionResponseDTO adminDecision;
+    private BookingResponse adminDecision;
     private String updated_at;
 
     public static bookTableDTO fromEntity(TableBooking booking, BookingDecision decision) {
@@ -32,10 +32,10 @@ public class bookTableDTO {
         responseDTO.setName(booking.getName());
         responseDTO.setPhone(booking.getPhoneNumber());
         responseDTO.setNumber_of_guests(booking.getNumOfGuests());
-        responseDTO.setStatus(booking.getStatus());
+        responseDTO.setStatus(booking.getStatus().toString());
         responseDTO.setNote(booking.getNotes());
         responseDTO.setBooking_date(timeFormat.format(booking.getBooking()));
-        responseDTO.setAdminDecision(decision == null ? null : BookingDecisionResponseDTO.fromEntity(decision));
+        responseDTO.setAdminDecision(decision == null ? null : BookingResponse.fromEntity(decision));
         responseDTO.setUpdated_at(timeFormat.format(booking.getUpdate()));
         return responseDTO;
     }

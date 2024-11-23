@@ -1,111 +1,72 @@
 package session.Booking.Controller;
 
 import jakarta.servlet.http.HttpSession;
-import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import session.Booking.BookingService;
-import session.Booking.DTO.BookingDecisionResponseDTO;
 import session.Booking.DTO.CreateBookTableDTO;
 import session.Booking.DTO.bookTableDTO;
-import session.Booking.Model.BookingDecision;
-import session.utils.Enum.BookingStatus;
 
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping("/user")
 public class UserController {
-
-
     private final BookingService bookingService;
-
     public UserController(BookingService bookingService) {
         this.bookingService = bookingService;
     }
 
-    @GetMapping("/getBookingResponseDetail")
-    public ResponseEntity<Map<String, Object>> getUserOrderResponse(@RequestParam int decision_id) {
-        Map<String, Object> response = new LinkedHashMap<>();
-        BookingDecision res = bookingService.getDetailDecision(decision_id);
-        if(res == null){
-            response.put("message", "BookingDecision not been response yet.");
-            return ResponseEntity.badRequest().body(response);
-        }
-        BookingDecisionResponseDTO bookingDecision = BookingDecisionResponseDTO.fromEntity(res);
-        response.put("message", "Retrieved booking adminDecision for decision_id: " + decision_id);
-        response.put("data", bookingDecision);
-        return ResponseEntity.ok(response);
+    @GetMapping("/getDetailBooking/{booking_id}")
+    public String getUserOrderResponse(HttpSession session, Model model, @PathVariable Integer booking_id, @RequestParam String action) {
+        Integer user_id = (Integer) session.getAttribute("user_id");
 
+        bookTableDTO book = bookingService.getOwnerBookingDetail(booking_id);
+        if(book==null||user_id == null){
+            return "error";
+        }
+        if(Objects.equals(action, "edit")&& Objects.equals(book.getStatus(), "PENDING")){
+            model.addAttribute("bookingDecision", book);
+            return "bookDetailUpdate";//Page này cho phép update
+        }
+        else if(Objects.equals(action, "view")){
+            model.addAttribute("bookingDecision", book);
+            return "bookDetail";//Page này view kèm response if cos
+
+        }
+        return "error";
     }
 
     @GetMapping("/getUserBooking")
-    public ResponseEntity<Object> getUserBooking(@RequestParam int user_id, @RequestParam(required = false) Integer status, @RequestParam(required = false) Integer booking_id) {
-        Map<String, Object> response = new LinkedHashMap<>();
-
-
+    public String getUserBooking(HttpSession session, @RequestParam(required = false) Integer status, Model model) {
+        Integer user_id = (Integer) session.getAttribute("user_id");
+        if (user_id == null) {
+            return "error";
+        }
         List<bookTableDTO> bookings = bookingService.getUserBooking(user_id, status);
-        response.put("data", bookings);
-        bookings.stream().filter(booking -> Objects.equals(booking.getBookingId(), booking_id));
-        return ResponseEntity.ok(response);
+        model.addAttribute("bookingTable", bookings);
+        return "userBooking";
+    }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    @PostMapping("/deleteBooking/{booking_id}")
+    public void deleteUserBooking(@PathVariable Integer booking_id) {
+        bookingService.deleteUserBooking(booking_id);
     }
 
     @Transactional
-    @PostMapping("/updateBooking")
-    public ResponseEntity<Map<String, Object>> updateBooking(@RequestBody CreateBookTableDTO book) {
-        Map<String, Object> response = new LinkedHashMap<>();
-        try {
-            bookingService.updateUserBooking(book.getBookingId(), book.getName(), book.getPhone(), book.getTime(), book.getNumber_of_guests(), book.getNote());
-            response.put("message", "Booking updated successfully.");
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            response.put("message", e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-        }
+    @PostMapping("/updateBooking/{booking_id}")
+    public String updateBooking(@RequestBody CreateBookTableDTO book, @PathVariable Integer booking_id) {
+        bookingService.updateUserBooking(booking_id, book.getName(), book.getPhone(), book.getTime(), book.getNumber_of_guests(), book.getNote());
+        return "/getDetailBooking/{booking_id}";//refresh lại trang
     }
+
     @PostMapping("/createBookingOrder")
     public CreateBookTableDTO createUserBookingOrder(@RequestBody CreateBookTableDTO book) {
         bookingService.createUserBooking(CreateBookTableDTO.toEntity(book));
         return book;
     }
-
-    @PostMapping("/deleteBooking")
-    public void deleteUserBooking(@RequestParam int booking_id) {
-        bookingService.deleteUserBooking(booking_id);
-    }
-
-
-
-
-//
-//    @GetMapping("/getUserBooking")
-//    public String getUserBookings(HttpSession session,
-//                                  @RequestParam(required = false) Integer status,
-//                                  @RequestParam(required = false) Integer booking_id,
-//                                  Model model) {
-//        Integer user_id = (Integer) session.getAttribute("user_id");
-//        if(user_id==null){
-//            return "redirect:/login";
-//        }
-//        List<bookTableDTO> bookings = bookingService.getUserBooking(user_id,status);
-//        if (booking_id != null) {
-//            bookings = bookings.stream()
-//                    .filter(booking -> Objects.equals(booking.getBookingId(), booking_id))
-//                    .collect(Collectors.toList());
-//        }
-//
-//        // Add the bookings to the model
-//        model.addAttribute("bookings", bookings);
-//        // Return the JSP view name
-//        return "userBookings";
-//    }
-
-
-
 
 
 }

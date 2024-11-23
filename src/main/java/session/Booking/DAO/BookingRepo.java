@@ -4,7 +4,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import session.Booking.Model.BookingDecision;
 import session.Booking.Model.TableBooking;
 
 import java.util.List;
@@ -17,7 +16,7 @@ public interface  BookingRepo extends JpaRepository<TableBooking, Integer> {
 
     @Query(value = "select  * from table_booking where booking_id in (select booking_id from book where user_id = :id)" +
             "ORDER BY booking_status, updated_at ASC ;", nativeQuery = true)
-    List<TableBooking> getUserBooking(int id);
+    List<TableBooking> getListUserBooking(int id);
 
     @Query(value = "select * from table_booking where booking_id in (select booking_id from book where user_id = :userId )and booking_status = :status", nativeQuery = true)
     List<TableBooking> getUserBookingByStatus(int userId, String status);

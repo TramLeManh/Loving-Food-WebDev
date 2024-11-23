@@ -8,16 +8,17 @@ import session.utils.timeFormat;
 
 @Getter
 @Setter
-public class BookingDecisionResponseDTO {
-    private long decision_id;
+public class BookingResponse {
+    private long decisionId;
     private int bookingId;
     private BookingStatus status;
     private String adminNote;
     private String decisionDate;
 
-    public static BookingDecisionResponseDTO fromEntity(BookingDecision booking){
-        BookingDecisionResponseDTO responseDTO = new BookingDecisionResponseDTO();
-        responseDTO.decision_id = booking.getDecision_id();
+
+    public static BookingResponse fromEntity(BookingDecision booking){
+        BookingResponse responseDTO = new BookingResponse();
+        responseDTO.decisionId = booking.getDecision_id();
         responseDTO.bookingId = booking.getBookingInformation().getBookingId();
         responseDTO.status = booking.getStatus();
         responseDTO.adminNote = booking.getAdminNote();
