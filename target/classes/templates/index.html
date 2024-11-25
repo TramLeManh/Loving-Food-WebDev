@@ -112,21 +112,22 @@
                         <div class="container">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <h1 class="banner_taital">Find The Best Restaurants Cafes And Bars in </h1>
+                                    <h1 class="banner_taital">Find The Best Restaurants Cafes And Bars in 1</h1>
                                     <h1 class="banner_text">SAI GON</h1>
                                     <div class="banner_main">
                                         <div class="dropdown">
                                             <button aria-expanded="false" aria-haspopup="true"
                                                     class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
-                                                    id="dropdownMenuButtonCategory" type="button">Districts
+                                                    id="dropdownMenuButtonCategory1" type="button">Districts
                                             </button>
                                             <div aria-labelledby="dropdownMenuButton" class="dropdown-menu">
-                                                <a class="dropdown-item"
-                                                   th:each="district : ${list_district}"
-
-                                                   th:text="${district}">
-                                                    <!-- You can set href dynamically if needed -->
-                                                </a>
+                                                <li th:each="district : ${list_district}">
+                                                    <a class="dropdown-item"
+                                                       th:href="@{'/restaurant/get?district=' + ${district.id}}"
+                                                       th:text="${district.name}">
+                                                        <!-- Dropdown link text will be district name -->
+                                                    </a>
+                                                </li>
                                             </div>
                                         </div>
                                         <div class="main">
@@ -151,20 +152,22 @@
                         <div class="container">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <h1 class="banner_taital">Find The Best Restaurants Cafes And Bars in </h1>
+                                    <h1 class="banner_taital">Find The Best Restaurants Cafes And Bars in 2</h1>
                                     <h1 class="banner_text">SAI GON</h1>
                                     <div class="banner_main">
                                         <div class="dropdown">
                                             <button aria-expanded="false" aria-haspopup="true"
                                                     class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
-                                                    id="dropdownMenuButtonCategory1" type="button">Districts
+                                                    id="dropdownMenuButtonCategory2" type="button">Districts
                                             </button>
                                             <div aria-labelledby="dropdownMenuButton" class="dropdown-menu">
-                                                <a class="dropdown-item"
-                                                   th:each="district : ${list_district}"
-                                                   th:text="${district}">
-                                                    <!-- You can set href dynamically if needed -->
-                                                </a>
+                                                <li th:each="district : ${list_district}">
+                                                    <a class="dropdown-item"
+                                                       th:href="@{'/restaurant/get?district=' + ${district.id}}"
+                                                       th:text="${district.name}">
+                                                        <!-- Dropdown link text will be district name -->
+                                                    </a>
+                                                </li>
                                             </div>
                                         </div>
                                         <div class="main">
@@ -189,29 +192,22 @@
                         <div class="container">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <h1 class="banner_taital">Find The Best Restaurants Cafes And Bars in </h1>
+                                    <h1 class="banner_taital">Find The Best Restaurants Cafes And Bars in 3</h1>
                                     <h1 class="banner_text">SAI GON</h1>
                                     <div class="banner_main">
                                         <div class="dropdown">
                                             <button aria-expanded="false" aria-haspopup="true"
                                                     class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
-                                                    id="dropdownMenuButtonCategory2" type="button">Districts
+                                                    id="dropdownMenuButtonCategory3" type="button">Districts
                                             </button>
-                                            <div class="dropdown">
-                                                <button aria-expanded="false" class="btn btn-secondary dropdown-toggle"
-                                                        data-bs-toggle="dropdown" id="dropdownMenuButton"
-                                                        type="button">
-                                                    Select District
-                                                </button>
-                                                <ul aria-labelledby="dropdownMenuButton" class="dropdown-menu">
-                                                    <li th:each="district : ${list_district}">
-                                                        <a class="dropdown-item"
-                                                           th:href="@{'/restaurant/get?district=' + ${district.id}}"
-                                                           th:text="${district.name}">
-                                                            <!-- Dropdown link text will be district name -->
-                                                        </a>
-                                                    </li>
-                                                </ul>
+                                            <div aria-labelledby="dropdownMenuButton" class="dropdown-menu">
+                                                <li th:each="district : ${list_district}">
+                                                    <a class="dropdown-item"
+                                                       th:href="@{'/restaurant/get?district=' + ${district.id}}"
+                                                       th:text="${district.name}">
+                                                        <!-- Dropdown link text will be district name -->
+                                                    </a>
+                                                </li>
                                             </div>
                                         </div>
                                         <div class="main">
