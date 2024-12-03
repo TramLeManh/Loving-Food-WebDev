@@ -49,11 +49,11 @@ public class UserRestController {
     }
 
     @Transactional
-    @PostMapping("/updateBooking")
-    public ResponseEntity<Map<String, Object>> updateBooking(@RequestBody CreateBookTableDTO book) {
+    @PostMapping("/updateBooking/{booking_id}")
+    public ResponseEntity<Map<String, Object>> updateBooking(@RequestBody CreateBookTableDTO book, @PathVariable int booking_id) {
         Map<String, Object> response = new LinkedHashMap<>();
         try {
-            bookingService.updateUserBooking(book.getBookingId(), book.getName(), book.getPhone(), book.getTime(), book.getNumber_of_guests(), book.getNote());
+            bookingService.updateUserBooking(booking_id, book.getName(), book.getPhone(), book.getTime(), book.getNumber_of_guests(), book.getNote());
             response.put("message", "Booking updated successfully.");
             return ResponseEntity.ok(response);
         } catch (Exception e) {
@@ -61,9 +61,9 @@ public class UserRestController {
             return ResponseEntity.badRequest().body(response);
         }
     }
-    @PostMapping("/createBookingOrder")
-    public CreateBookTableDTO createUserBookingOrder(@RequestBody CreateBookTableDTO book) {
-        bookingService.createUserBooking(CreateBookTableDTO.toEntity(book));
+    @PostMapping("/createBookingOrder/{user_id}/{restaurant_id}")
+    public CreateBookTableDTO createUserBookingOrder(@RequestBody CreateBookTableDTO book, @PathVariable int restaurant_id, @PathVariable String user_id) {
+        bookingService.createUserBooking(CreateBookTableDTO.toEntity(book,user_id,restaurant_id));
         return book;
     }
 

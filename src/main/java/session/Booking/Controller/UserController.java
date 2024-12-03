@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import session.Booking.BookingService;
 import session.Booking.DTO.CreateBookTableDTO;
 import session.Booking.DTO.bookTableDTO;
+import session.Restaurant.RestaurantService;
 
 import java.util.List;
 import java.util.Objects;
@@ -15,14 +16,15 @@ import java.util.Objects;
 @RequestMapping("/user")
 public class UserController {
     private final BookingService bookingService;
-    public UserController(BookingService bookingService) {
+    private final RestaurantService restaurantService;
+    public UserController(BookingService bookingService, RestaurantService restaurantService) {
         this.bookingService = bookingService;
+        this.restaurantService = restaurantService;
     }
 
     @GetMapping("/getDetailBooking/{booking_id}")
     public String getUserOrderResponse(HttpSession session, Model model, @PathVariable Integer booking_id, @RequestParam String action) {
         Integer user_id = (Integer) session.getAttribute("user_id");
-
         bookTableDTO book = bookingService.getOwnerBookingDetail(booking_id);
         if(book==null||user_id == null){
             return "error";
@@ -34,7 +36,6 @@ public class UserController {
         else if(Objects.equals(action, "view")){
             model.addAttribute("bookingDecision", book);
             return "bookDetail";//Page này view kèm response if cos
-
         }
         return "error";
     }
@@ -49,6 +50,13 @@ public class UserController {
         model.addAttribute("bookingTable", bookings);
         return "userBooking";
     }
+
+    @GetMapping("/createOrder/{restaurant_id}")
+    public String homePage(@PathVariable String restaurant_id, int booking_id, Model model) {
+        model.addAttribute("restaurant_id", restaurant_id);//De ẩn thông tin restaurant_id
+        return "form"; // Renders home.html or home.jsp from templates folder
+    }
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     @PostMapping("/deleteBooking/{booking_id}")
     public void deleteUserBooking(@PathVariable Integer booking_id) {
@@ -62,11 +70,11 @@ public class UserController {
         return "/getDetailBooking/{booking_id}";//refresh lại trang
     }
 
-    @PostMapping("/createBookingOrder")
-    public CreateBookTableDTO createUserBookingOrder(@RequestBody CreateBookTableDTO book) {
-        bookingService.createUserBooking(CreateBookTableDTO.toEntity(book));
-        return book;
+    @PostMapping("/createOrder/{restaurant_id}")
+    public String createUserBookingOrder(HttpSession session, @RequestBody CreateBookTableDTO book, @PathVariable int restaurant_id) {
+        String user_id = (String) session.getAttribute("user_id");
+        bookingService.createUserBooking(CreateBookTableDTO.toEntity(book,user_id,restaurant_id));
+        return "index";//go to index
     }
-
 
 }
