@@ -16,10 +16,9 @@ import java.util.Objects;
 @RequestMapping("/user")
 public class UserController {
     private final BookingService bookingService;
-    private final RestaurantService restaurantService;
     public UserController(BookingService bookingService, RestaurantService restaurantService) {
         this.bookingService = bookingService;
-        this.restaurantService = restaurantService;
+
     }
 
     @GetMapping("/getDetailBooking/{booking_id}")

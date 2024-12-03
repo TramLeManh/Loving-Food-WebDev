@@ -7,9 +7,6 @@ import session.Booking.Model.TableBooking;
 @Getter
 @Setter
 public class CreateBookTableDTO {
-////    private int BookingId;
-//    private String user_id;
-//    private int restaurant_id;
     private String name;
     private String phone;
     private String time;
