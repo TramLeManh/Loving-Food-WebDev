@@ -7,19 +7,19 @@ import session.Booking.Model.TableBooking;
 @Getter
 @Setter
 public class CreateBookTableDTO {
-    private int BookingId;
-    private String user_id;
-    private int restaurant_id;
+////    private int BookingId;
+//    private String user_id;
+//    private int restaurant_id;
     private String name;
     private String phone;
     private String time;
     private int number_of_guests;
     private String note;
-    public static TableBooking toEntity(CreateBookTableDTO createBookTableDTO) {
+    public static TableBooking toEntity(CreateBookTableDTO createBookTableDTO, String user_id, int restaurant_id) {
         TableBooking tableBooking = new TableBooking();
         tableBooking.setBookingId((int) (Math.random() * 9000) + 1000);
-        tableBooking.setUser_id(createBookTableDTO.getUser_id());
-        tableBooking.setRestaurantId(createBookTableDTO.getRestaurant_id());
+        tableBooking.setUser_id(user_id);
+        tableBooking.setRestaurantId(restaurant_id);
         tableBooking.setName(createBookTableDTO.getName());
         tableBooking.setPhoneNumber(createBookTableDTO.getPhone());
         tableBooking.setBookingAt(createBookTableDTO.getTime());
@@ -27,4 +27,6 @@ public class CreateBookTableDTO {
         tableBooking.setNotes(createBookTableDTO.getNote());
         return tableBooking;
     }
+
+
 }
