@@ -30,7 +30,7 @@ public class RestaurantController {
     }
 
     //Tìm Nhà hàng query theo Category và district
-    @GetMapping("/get")
+    @PostMapping("/get")
     public List<RestaurantResponseDto> findRestaurant(@RequestParam(value = "district", required = false) String district, @RequestParam(value = "category", required = false) String category) {
         List<Restaurant> data = restaurantService.getRestaurant(district, category);
         return Collections.singletonList(new RestaurantResponseDto(data));

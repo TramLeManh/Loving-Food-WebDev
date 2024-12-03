@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import session.Account.DTO.UserDTO;
+import session.Restaurant.Restaurant;
 import session.model.District;
 import session.responseHandler.Exception.ServerException;
 import session.Account.AccountService;
@@ -80,7 +81,6 @@ public class    HomeController {
     public String index(HttpSession session, Model model) {
         List<District> list_category = restaurantService.getDistrict();//server
 
-
         model.addAttribute("list_district", list_category);
         try {
             int id = (int) session.getAttribute("user");
@@ -92,6 +92,13 @@ public class    HomeController {
         return "index";
     }
 
+    @RequestMapping("/restaurant/get")
+    public String restaurant(HttpSession session, Model model, @RequestParam("category") String category) {
+        List<Restaurant> list_restaurant = restaurantService.getRestaurant(null,category);
+        model.addAttribute("list_restaurant",list_restaurant);
+        model.addAttribute("category", category);
+        return "category_restaurants";
+    }
     @RequestMapping("/contact")
     public String contact() {
         return "contact";
