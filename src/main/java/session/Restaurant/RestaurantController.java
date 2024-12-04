@@ -29,6 +29,7 @@ public class RestaurantController {
     @GetMapping("/getUserBooking")
     public String getUserBooking(HttpSession session, @RequestParam(required = false) Integer status, Model model) {
         Integer user_id = (Integer) session.getAttribute("user");
+
         if (user_id == null) {
             return "error";
         }

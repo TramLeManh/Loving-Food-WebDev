@@ -7,6 +7,7 @@ import session.Booking.Model.TableBooking;
 @Getter
 @Setter
 public class CreateBookTableDTO {
+    private int booking_id;
     private String name;
     private String phone;
     private String time;
@@ -17,7 +18,7 @@ public class CreateBookTableDTO {
         tableBooking.setBookingId((int) (Math.random() * 9000) + 1000);
         tableBooking.setUser_id(user_id);
         tableBooking.setRestaurantId(restaurant_id);
-        tableBooking.setName(createBookTableDTO.getName());
+        tableBooking.setCustomer_name(createBookTableDTO.getName());
         tableBooking.setPhoneNumber(createBookTableDTO.getPhone());
         tableBooking.setBookingAt(createBookTableDTO.getTime());
         tableBooking.setNumOfGuests(createBookTableDTO.getNumber_of_guests());

@@ -23,10 +23,10 @@ public class TableBooking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "booking_id")
     private Integer bookingId;
-    @Column(name = "restaurant_id", nullable = false)
+    @Column(name = "restaurant_id", nullable = false,insertable=false, updatable=false)
     private Integer restaurantId;
     @Column(name = "name", length = 50, nullable = false)
-    private String name;
+    private String customer_name;
     @Column(name = "phone_number", length = 15, nullable = false)
     private String phoneNumber;
     @Column(name = "booking_date", nullable = false)
@@ -49,6 +49,12 @@ public class TableBooking {
     private String BookingAt;
     @Transient // This field is not persisted in the database
     private String user_id;
+    @NotNull
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "restaurant_id", nullable = false)
+    private Restaurant restaurant;
     @PostLoad
     private void formatUpdatedAt() {
         if (update != null||BookingAt!=null) {

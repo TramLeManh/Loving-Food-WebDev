@@ -1,6 +1,9 @@
 package session.Booking.Controller;
 
 import jakarta.servlet.http.HttpSession;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -9,7 +12,12 @@ import session.Booking.DTO.CreateBookTableDTO;
 import session.Booking.DTO.bookTableDTO;
 import session.Restaurant.RestaurantService;
 
+import java.security.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @RestController
@@ -36,23 +44,23 @@ public class UserController {
 //
 //    }
 
-    @GetMapping("/getDetailBooking/{booking_id}")
-    public String getUserOrderResponse(HttpSession session, Model model, @PathVariable Integer booking_id, @RequestParam String action) {
-        Integer user_id = (Integer) session.getAttribute("user_id");
-        bookTableDTO book = bookingService.getOwnerBookingDetail(booking_id);
-        if(book==null||user_id == null){
-            return "error";
-        }
-        if(Objects.equals(action, "edit")&& Objects.equals(book.getStatus(), "PENDING")){
-            model.addAttribute("bookingDecision", book);
-            return "bookDetailUpdate";//Page này cho phép update
-        }
-        else if(Objects.equals(action, "view")){
-            model.addAttribute("bookingDecision", book);
-            return "bookDetail";//Page này view kèm response if cos
-        }
-        return "error";
-    }
+//    @GetMapping("/getDetailBooking/{booking_id}")
+//    public String getUserOrderResponse(HttpSession session, Model model, @PathVariable Integer booking_id, @RequestParam String action) {
+//        Integer user_id = (Integer) session.getAttribute("user_id");
+//        bookTableDTO book = bookingService.getOwnerBookingDetail(booking_id);
+//        if(book==null||user_id == null){
+//            return "error";
+//        }
+//        if(Objects.equals(action, "edit")&& Objects.equals(book.getStatus(), "PENDING")){
+//            model.addAttribute("bookingDecision", book);
+//            return "bookDetailUpdate";//Page này cho phép update
+//        }
+//        else if(Objects.equals(action, "view")){
+//            model.addAttribute("bookingDecision", book);
+//            return "bookDetail";//Page này view kèm response if cos
+//        }
+//        return "error";
+//    }
 
 
 
@@ -67,10 +75,16 @@ public class UserController {
 
 
     @Transactional
-    @PostMapping("/updateBooking/{booking_id}")
-    public String updateBooking(@RequestBody CreateBookTableDTO book, @PathVariable Integer booking_id) {
-        bookingService.updateUserBooking(booking_id, book.getName(), book.getPhone(), book.getTime(), book.getNumber_of_guests(), book.getNote());
-        return "/getDetailBooking/{booking_id}";//refresh lại trang
+    @PostMapping(value = "/updateBooking", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ResponseEntity<Object> updateBooking(@ModelAttribute CreateBookTableDTO book) {
+        System.out.println();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+        LocalDateTime dateTime = LocalDateTime.parse(book.getTime(), formatter);
+
+        bookingService.updateUserBooking(book.getBooking_id(), book.getName(), book.getPhone(), dateTime.toString(), book.getNumber_of_guests(), book.getNote()
+                );
+
+        return ResponseEntity.ok("Success") ;
     }
 
     @PostMapping("/createOrder/{restaurant_id}")
@@ -79,5 +93,6 @@ public class UserController {
         bookingService.createUserBooking(CreateBookTableDTO.toEntity(book,user_id,restaurant_id));
         return "index";//go to index
     }
+
 
 }
