@@ -1,0 +1,34 @@
+<script>
+    function deleteBooking(bookingId) {
+        fetch(`/restaurant/deleteBooking/${bookingId}`, { method: 'POST' })
+            .then(response => {
+                if (response.ok) {
+                    window.location.href = '/restaurant/getUserBooking';
+                } else {
+                    alert("Failed to delete booking.");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("An error occurred while deleting booking.");
+            });
+    }
+</script>
+<table>
+    <thead>
+    <tr>
+        <th>Booking ID</th>
+        <th>Details</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="booking : ${bookingTable}">
+        <td th:text="${booking.bookingId}"></td>
+        <td th:text="${booking.name}"></td>
+        <td>
+            <button th:attr="onclick='deleteBooking(' + ${booking.bookingId} + ')'">Delete</button>
+        </td>
+    </tr>
+    </tbody>
+</table>

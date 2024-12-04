@@ -20,6 +20,21 @@ public class UserController {
         this.bookingService = bookingService;
 
     }
+//    @GetMapping("/getUserBooking")
+//    public String getUserBooking(HttpSession session, @RequestParam(required = false) Integer status, Model model) {
+//        Integer user_id = (Integer) session.getAttribute("user_id");
+//        if (user_id == null) {
+//            return "error";
+//        }
+//        List<bookTableDTO> bookings = bookingService.getUserBooking(user_id, status);
+//        model.addAttribute("bookingTable", bookings);
+//        return "userBooking";
+//    }
+//    @PostMapping("/deleteBooking/{booking_id}")
+//    public void deleteUserBooking(@PathVariable Integer booking_id) {
+//        bookingService.deleteUserBooking(booking_id);
+//
+//    }
 
     @GetMapping("/getDetailBooking/{booking_id}")
     public String getUserOrderResponse(HttpSession session, Model model, @PathVariable Integer booking_id, @RequestParam String action) {
@@ -39,16 +54,7 @@ public class UserController {
         return "error";
     }
 
-    @GetMapping("/getUserBooking")
-    public String getUserBooking(HttpSession session, @RequestParam(required = false) Integer status, Model model) {
-        Integer user_id = (Integer) session.getAttribute("user_id");
-        if (user_id == null) {
-            return "error";
-        }
-        List<bookTableDTO> bookings = bookingService.getUserBooking(user_id, status);
-        model.addAttribute("bookingTable", bookings);
-        return "userBooking";
-    }
+
 
     @GetMapping("/createOrder/{restaurant_id}")
     public String homePage(@PathVariable String restaurant_id, int booking_id, Model model) {
@@ -57,10 +63,8 @@ public class UserController {
     }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    @PostMapping("/deleteBooking/{booking_id}")
-    public void deleteUserBooking(@PathVariable Integer booking_id) {
-        bookingService.deleteUserBooking(booking_id);
-    }
+
+
 
     @Transactional
     @PostMapping("/updateBooking/{booking_id}")

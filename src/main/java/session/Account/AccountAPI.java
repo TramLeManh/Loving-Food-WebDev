@@ -64,7 +64,7 @@ public class AccountAPI {
         } catch (Exception e) {
             throw new ServerException(e.getMessage());
         }
-        return "Error";
+        return "error";
     }
 
 }
