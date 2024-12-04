@@ -6,7 +6,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import session.Account.DTO.UserDTO;
-import session.Restaurant.Restaurant;
 import session.model.District;
 import session.responseHandler.Exception.ServerException;
 import session.Account.AccountService;
