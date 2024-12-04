@@ -6,7 +6,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import session.Account.DTO.UserDTO;
-import session.Restaurant.Restaurant;
 import session.model.District;
 import session.responseHandler.Exception.ServerException;
 import session.Account.AccountService;
@@ -30,6 +29,7 @@ public class    HomeController {
         try {
             //View All account base on UserDTO format
             UserDTO res = service.findUser(id);
+            System.out.println("id is" + res.id());
             model.addAttribute("user", res);
             return "person";  // user.html will be returned
         } catch (Exception e) {
@@ -90,22 +90,29 @@ public class    HomeController {
         }
         return "index";
     }
-
-
-    @RequestMapping("/contact")
-    public String contact() {
-        return "contact";
-    }
-
-    @RequestMapping("/service")
-    public String service() {
-        return "service";
-    }
-
-    @RequestMapping("/shop")
-    public String shop() {
-        return "shop";
-    }
+//
+//    @RequestMapping("/restaurant/get")
+//    public String restaurant(HttpSession session, Model model, @RequestParam("category") String category) {
+//        List<Restaurant> list_restaurant = restaurantService.getRestaurant(null,category);
+//        model.addAttribute("list_restaurant",list_restaurant);
+//        model.addAttribute("category", category);
+//        return "category_restaurants";
+//    }
+//
+//    @RequestMapping("/contact")
+//    public String contact() {
+//        return "contact";
+//    }
+//
+//    @RequestMapping("/service")
+//    public String service() {
+//        return "service";
+//    }
+//
+//    @RequestMapping("/shop")
+//    public String shop() {
+//        return "shop";
+//    }
 
 
 }
