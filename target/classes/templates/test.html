@@ -1,6 +1,6 @@
 <script>
     function deleteBooking(bookingId) {
-        fetch(`/restaurant/deleteBooking/${bookingId}`, { method: 'POST' })
+        fetch(`/restaurant/deleteBooking/${bookingId}`, { method: 'DELETE' })
             .then(response => {
                 if (response.ok) {
                     window.location.href = '/restaurant/getUserBooking';

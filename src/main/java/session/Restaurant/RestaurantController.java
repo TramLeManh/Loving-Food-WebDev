@@ -25,6 +25,7 @@ public class RestaurantController {
         model.addAttribute("category", category);
         return "category_restaurants";
     }
+
     @GetMapping("/getUserBooking")
     public String getUserBooking(HttpSession session, @RequestParam(required = false) Integer status, Model model) {
         Integer user_id = (Integer) session.getAttribute("user");
@@ -35,10 +36,9 @@ public class RestaurantController {
         model.addAttribute("bookingTable", bookings);
         return "test";
     }
-    @PostMapping("/deleteBooking/{booking_id}")
+    @DeleteMapping("/deleteBooking/{booking_id}")
     public ResponseEntity<Object> deleteUserBooking(@PathVariable Integer booking_id) {
-        bookingService.deleteUserBooking(booking_id);
-        System.out.println(booking_id);
+        bookingService.deleteUserBooking(booking_id);;
         return ResponseEntity.ok("Booking deleted successfully");
     }
 }
