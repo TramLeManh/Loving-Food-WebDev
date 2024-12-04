@@ -91,28 +91,29 @@ public class    HomeController {
         }
         return "index";
     }
-
-    @RequestMapping("/restaurant/get")
-    public String restaurant(HttpSession session, Model model, @RequestParam("category") String category) {
-        List<Restaurant> list_restaurant = restaurantService.getRestaurant(null,category);
-        model.addAttribute("list_restaurant",list_restaurant);
-        model.addAttribute("category", category);
-        return "category_restaurants";
-    }
-    @RequestMapping("/contact")
-    public String contact() {
-        return "contact";
-    }
-
-    @RequestMapping("/service")
-    public String service() {
-        return "service";
-    }
-
-    @RequestMapping("/shop")
-    public String shop() {
-        return "shop";
-    }
+//
+//    @RequestMapping("/restaurant/get")
+//    public String restaurant(HttpSession session, Model model, @RequestParam("category") String category) {
+//        List<Restaurant> list_restaurant = restaurantService.getRestaurant(null,category);
+//        model.addAttribute("list_restaurant",list_restaurant);
+//        model.addAttribute("category", category);
+//        return "category_restaurants";
+//    }
+//
+//    @RequestMapping("/contact")
+//    public String contact() {
+//        return "contact";
+//    }
+//
+//    @RequestMapping("/service")
+//    public String service() {
+//        return "service";
+//    }
+//
+//    @RequestMapping("/shop")
+//    public String shop() {
+//        return "shop";
+//    }
 
 
 }
