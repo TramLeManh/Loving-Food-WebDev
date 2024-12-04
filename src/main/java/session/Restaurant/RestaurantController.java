@@ -1,79 +1,44 @@
 package session.Restaurant;
 
 import jakarta.servlet.http.HttpSession;
-import org.springframework.data.repository.Repository;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import session.Booking.BookingService;
+import session.Booking.DTO.bookTableDTO;
 
-import session.Restaurant.DTO.RestaurantResponseDto;
-import session.Restaurant.DTO.addCategoryDTO;
-import session.Restaurant.DTO.createRestaurantDTO;
-import session.model.District;
-
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-
-@RestController
 @RequestMapping("/restaurant")
+@Controller
 public class RestaurantController {
     private final RestaurantService restaurantService;
-
-    public RestaurantController(RestaurantService restaurantService) {
+    private final BookingService bookingService;
+    public RestaurantController(RestaurantService restaurantService, BookingService bookingService) {
         this.restaurantService = restaurantService;
+        this.bookingService = bookingService;
+    }
+    @RequestMapping("/get")
+    public String restaurant(HttpSession session, Model model, @RequestParam("category") String category) {
+        List<Restaurant> list_restaurant = restaurantService.getRestaurant(null,category);
+        model.addAttribute("list_restaurant",list_restaurant);
+        model.addAttribute("category", category);
+        return "category_restaurants";
     }
 
-    @GetMapping("/{id}")
-    public Restaurant getRestaurant(@PathVariable int id) {
-        return restaurantService.getById(id);
-    }
-
-    //Tìm Nhà hàng query theo Category và district
-    @PostMapping("/get")
-    public List<RestaurantResponseDto> findRestaurant(@RequestParam(value = "district", required = false) String district, @RequestParam(value = "category", required = false) String category) {
-        List<Restaurant> data = restaurantService.getRestaurant(district, category);
-        return Collections.singletonList(new RestaurantResponseDto(data));
-    }
-
-    @GetMapping("/getDistrict")
-    public List<District> getD() {
-        return restaurantService.getDistrict();
-    }
-    @GetMapping("/getOwnerRestaurant")
-    public List<Restaurant> getOwnerRestaurant(HttpSession session, @RequestParam(value = "owner_id", required = false) String owner_id) {
-        String user_id = (String) session.getAttribute("user_id");
-        if(user_id == null) {
-            return restaurantService.getOwnerRestaurant(Integer.parseInt(owner_id));
+    @GetMapping("/getUserBooking")
+    public String getUserBooking(HttpSession session, @RequestParam(required = false) Integer status, Model model) {
+        Integer user_id = (Integer) session.getAttribute("user");
+        if (user_id == null) {
+            return "error";
         }
-        return restaurantService.getOwnerRestaurant(Integer.parseInt(user_id));
+        List<bookTableDTO> bookings = bookingService.getUserBooking(user_id, status);
+        model.addAttribute("bookingTable", bookings);
+        return "test";
     }
-
-    @PostMapping("/insertCategory")
-    public ResponseEntity<Map<String, Object>> insertCategory(@RequestBody addCategoryDTO addCategoryDTO) {
-        Map<String, Object> response = new LinkedHashMap<>();
-        try {
-            response.put("message", "Insert category successfully");
-            restaurantService.insertRestaurantCategories(addCategoryDTO.getRestaurant_id(), addCategoryDTO.getCategory_id());
-            return ResponseEntity.ok().body(response);
-        }catch (Exception e) {
-            response.put("message", e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-        }
-
-    }
-    @PostMapping("/insertRestaurant")
-    public ResponseEntity<Map<String, Object>> insertRestaurant(HttpSession session, @RequestBody createRestaurantDTO createRestaurantDTO) {
-        String user_id = (String) session.getAttribute("user_id");
-        Map<String, Object> response = new LinkedHashMap<>();
-        try {
-            response.put("message", "Insert restaurant successfully");
-            restaurantService.createRestaurant(createRestaurantDTO);
-            return ResponseEntity.ok().body(response);
-        }catch (Exception e) {
-            response.put("message", e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-        }
-
+    @DeleteMapping("/deleteBooking/{booking_id}")
+    public ResponseEntity<Object> deleteUserBooking(@PathVariable Integer booking_id) {
+        bookingService.deleteUserBooking(booking_id);;
+        return ResponseEntity.ok("Booking deleted successfully");
     }
 }

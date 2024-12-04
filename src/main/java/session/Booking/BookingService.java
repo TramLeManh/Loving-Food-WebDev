@@ -133,11 +133,9 @@ public class BookingService {
      * Lay thong tin booking cua user
      */
     public List<bookTableDTO> getUserBooking(int user_id, Integer bookingStatus) {
-        BookingStatus status;
-        try {
+        BookingStatus  status = null;
+        if(bookingStatus != null){
             status = BookingStatus.values()[bookingStatus];
-        } catch (ArrayIndexOutOfBoundsException e) {
-            status = null;
         }
         List<TableBooking> bookings = bookingRepo.getListUserBooking(user_id);
         List<BookingDecision> decisions = bookingDecisionRepo.getUserBookingDecision(user_id);
