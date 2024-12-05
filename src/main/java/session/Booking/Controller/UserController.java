@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-@RestController
+@Controller
 @RequestMapping("/user")
 public class UserController {
     private final BookingService bookingService;
@@ -70,9 +70,18 @@ public class UserController {
         return "form"; // Renders home.html or home.jsp from templates folder
     }
 
+    @GetMapping("/getUserBooking")
+    public String getUserBooking(HttpSession session, @RequestParam(required = false) Integer status, Model model) {
+        Integer user_id = (Integer) session.getAttribute("user");
+
+        if (user_id == null) {
+            return "error";
+        }
+        List<bookTableDTO> bookings = bookingService.getUserBooking(user_id, status);
+        model.addAttribute("bookingTable", bookings);
+        return "test";
+    }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 
     @Transactional
     @PostMapping(value = "/updateBooking", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
@@ -93,6 +102,12 @@ public class UserController {
         bookingService.createUserBooking(CreateBookTableDTO.toEntity(book,user_id,restaurant_id));
         return "index";//go to index
     }
+    @DeleteMapping("/deleteBooking/{booking_id}")
+    public ResponseEntity<Object> deleteUserBooking(@PathVariable Integer booking_id) {
+        bookingService.deleteUserBooking(booking_id);;
+        return ResponseEntity.ok("Booking deleted successfully");
+    }
+
 
 
 }

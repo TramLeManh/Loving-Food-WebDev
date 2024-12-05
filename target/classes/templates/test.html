@@ -160,7 +160,13 @@
                     document.getElementById('edit-phone').value = this.getAttribute('data-phone');
                     document.getElementById('edit-note').value = this.getAttribute('data-note');
                     document.getElementById('edit-guest').value = this.getAttribute('data-guest');
-                    document.getElementById('edit-time').value = this.getAttribute('data-time').replace(" ", "T").slice(0, 16);
+                    const dataTime = this.getAttribute('data-time'); // "04-12-2024 18:00:00"
+                    const parts = dataTime.split(" "); // Split into ["04-12-2024", "18:00:00"]
+                    const dateParts = parts[0].split("-"); // Split date into ["04", "12", "2024"]
+                    const formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+                    const formattedTime = parts[1].slice(0, 5); // Get "18:00"
+                    document.getElementById('edit-time').value = `${formattedDate}T${formattedTime}`;
+
                 });
             });
         });
@@ -185,11 +191,11 @@
         function deleteBooking(bookingId) {
             console.log("Attempting to delete booking ID:", bookingId); // Debugging line
 
-            fetch(`/restaurant/deleteBooking/${bookingId}`, { method: 'DELETE' })
+            fetch(`/user/deleteBooking/${bookingId}`, { method: 'DELETE' })
                 .then(response => {
                     if (response.ok) {
                         console.log("Delete successful."); // Debugging line
-                        window.location.href = '/restaurant/getUserBooking';
+                        window.location.href = '/user/getUserBooking';
                     } else {
                         alert("Failed to delete booking.");
                     }
@@ -286,7 +292,9 @@
                     <th>Email</th>
                     <th>Note </th>
                     <th>Guests </th>
+                    <th>Time</th>
                     <th>status</th>
+                    <th>Update at</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -301,7 +309,9 @@
                     <td>email</td>
                     <td th:text="${booking.note}"></td>
                     <td th:text="${booking.getNumber_of_guests}"></td>
-                    <td th:text="${booking.status}">status</td>
+                    <td th:text="${booking.getBooking_date}"></td>
+                    <td th:text="${booking.status}"></td>
+                    <td th:text="${booking.getUpdated_at}"></td>
 
                     <td>
                         <!-- if reposons !null -->
