@@ -1,16 +1,23 @@
 package session.Booking.Controller;
 
 import jakarta.servlet.http.HttpSession;
+import org.apache.catalina.User;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import session.Account.Account;
+import session.Account.AccountService;
+import session.Account.DTO.UserDTO;
 import session.Booking.BookingService;
 import session.Booking.DTO.CreateBookTableDTO;
 import session.Booking.DTO.bookTableDTO;
+import session.Restaurant.Restaurant;
 import session.Restaurant.RestaurantService;
+import session.userInformation.UserInformation;
+import session.userInformation.UserInformationRepo;
 
 import java.security.Timestamp;
 import java.time.LocalDateTime;
@@ -24,9 +31,15 @@ import java.util.Objects;
 @RequestMapping("/user")
 public class UserController {
     private final BookingService bookingService;
-    public UserController(BookingService bookingService, RestaurantService restaurantService) {
+    private final RestaurantService restaurantService;
+    private final UserInformationRepo userInformationRepo;
+
+    public UserController(BookingService bookingService, RestaurantService restaurantService, RestaurantService restaurantService1, UserInformationRepo userInformationRepo) {
         this.bookingService = bookingService;
 
+        this.restaurantService = restaurantService1;
+
+        this.userInformationRepo = userInformationRepo;
     }
 //    @GetMapping("/getUserBooking")
 //    public String getUserBooking(HttpSession session, @RequestParam(required = false) Integer status, Model model) {
@@ -63,11 +76,41 @@ public class UserController {
 //    }
 
 
+    @PostMapping("/booking/{restaurant_id}")
+    public ResponseEntity<Object> checkBeforeOrder(HttpSession session,@PathVariable String restaurant_id, Model model) {
+        Integer user_id = (Integer) session.getAttribute("user");
+        if (user_id == null) {
+            return ResponseEntity.badRequest().body("User not found");
+        }
+        Integer booking_id = (int) (Math.random() * 9000) + 1000;
+        session.setAttribute("booking_id", booking_id);
+        Map<String, Object> response = new LinkedHashMap<>();
 
-    @GetMapping("/createOrder/{restaurant_id}")
-    public String homePage(@PathVariable String restaurant_id, int booking_id, Model model) {
-        model.addAttribute("restaurant_id", restaurant_id);//De ẩn thông tin restaurant_id
-        return "form"; // Renders home.html or home.jsp from templates folder
+        response.put("booking_id", booking_id);
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("/test")
+    public String test(){
+        return "bookingButton";
+    }
+
+    @GetMapping("/booking/{restaurant_id}")
+    public String createOrder(HttpSession session,@PathVariable String restaurant_id, Model model, @RequestParam(required = true) Integer booking_id) {
+        try {
+            Integer user_id = (Integer) session.getAttribute("user");
+            Integer bid = (Integer) session.getAttribute("booking_id");
+            if(user_id == null || bid == null || !bid.equals(booking_id)){
+                return "error";
+            }
+            Restaurant restaurant = restaurantService.getById(Integer.parseInt(restaurant_id));
+            UserInformation user = userInformationRepo.getUserInformation(user_id);
+            model.addAttribute("booking_id", booking_id);//param hide
+            model.addAttribute("user", user);
+            model.addAttribute("restaurant", restaurant);
+            return "booking";
+        } catch (Exception e) {
+            return "error";
+        }
     }
 
     @GetMapping("/getUserBooking")
@@ -96,11 +139,11 @@ public class UserController {
         return ResponseEntity.ok("Success") ;
     }
 
-    @PostMapping("/createOrder/{restaurant_id}")
-    public String createUserBookingOrder(HttpSession session, @RequestBody CreateBookTableDTO book, @PathVariable int restaurant_id) {
+    @PostMapping("/createOrder")
+    public ResponseEntity<Object> createUserBookingOrder(HttpSession session, @RequestBody CreateBookTableDTO book) {
         String user_id = (String) session.getAttribute("user_id");
-        bookingService.createUserBooking(CreateBookTableDTO.toEntity(book,user_id,restaurant_id));
-        return "index";//go to index
+        bookingService.createUserBooking(CreateBookTableDTO.toEntity(book,user_id));
+        return ResponseEntity.ok("Booking deleted successfully");
     }
     @DeleteMapping("/deleteBooking/{booking_id}")
     public ResponseEntity<Object> deleteUserBooking(@PathVariable Integer booking_id) {

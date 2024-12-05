@@ -48,9 +48,9 @@ public class UserRestController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/createBookingOrder/{user_id}/{restaurant_id}")
-    public CreateBookTableDTO createUserBookingOrder(@RequestBody CreateBookTableDTO book, @PathVariable int restaurant_id, @PathVariable String user_id) {
-        bookingService.createUserBooking(CreateBookTableDTO.toEntity(book,user_id,restaurant_id));
+    @PostMapping("/createBookingOrder/{user_id}")
+    public CreateBookTableDTO createUserBookingOrder(@RequestBody CreateBookTableDTO book, @PathVariable String user_id) {
+        bookingService.createUserBooking(CreateBookTableDTO.toEntity(book,user_id));
         return book;
     }
 
