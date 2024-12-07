@@ -137,8 +137,10 @@ public class BookingService {
         if(bookingStatus != null){
             status = BookingStatus.values()[bookingStatus];
         }
+
         List<TableBooking> bookings = bookingRepo.getListUserBooking(user_id);
         List<BookingDecision> decisions = bookingDecisionRepo.getUserBookingDecision(user_id);
+
         data = bookTableDTO.fromEntity(bookings, decisions);
         if (status == null) {
             return data;
