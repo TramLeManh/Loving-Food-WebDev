@@ -109,6 +109,8 @@ public class UserController {
             model.addAttribute("booking_id", booking_id);//param hide
             model.addAttribute("user", user);
             model.addAttribute("restaurant", restaurant);
+
+
             return "booking";
         } catch (Exception e) {
             return "error";
@@ -131,7 +133,7 @@ public class UserController {
     @Transactional
     @PostMapping(value = "/updateBooking", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ResponseEntity<Object> updateBooking(@ModelAttribute CreateBookTableDTO book) {
-        System.out.println();
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
         LocalDateTime dateTime = LocalDateTime.parse(book.getTime(), formatter);
 
@@ -141,17 +143,18 @@ public class UserController {
         return ResponseEntity.ok("Success") ;
     }
     @Transactional
-    @PostMapping(value ="/createOrder", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PostMapping(value = "/createOrder", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> createUserBookingOrder(HttpSession session, @RequestBody CreateBookTableDTO book) {
-        String user_id = (String) session.getAttribute("user_id");
-        System.out.println(book.getName());
-        bookingService.createUserBooking(CreateBookTableDTO.toEntity(book,user_id));
-<<<<<<< HEAD
-        return ResponseEntity.ok("Booking created successfully");
-=======
-        return ResponseEntity.ok("Booking create successfully");
->>>>>>> 2210a3ac1bb81db31d357bb9424c75b859a429db
+        try {
+            Integer user_id = (Integer) session.getAttribute("user");
+            bookingService.createUserBooking(CreateBookTableDTO.toEntity(book, user_id));
+            return ResponseEntity.ok("Booking created successfully");
+
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body("Booking creation failed");
+        }
     }
+
     @DeleteMapping("/deleteBooking/{booking_id}")
     public ResponseEntity<Object> deleteUserBooking(@PathVariable Integer booking_id) {
         try{
@@ -162,6 +165,3 @@ public class UserController {
             return ResponseEntity.badRequest().body("Booking deletion failed");
         }
     }}
-
-
-

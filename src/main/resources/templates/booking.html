@@ -153,13 +153,14 @@
 </div>
 
 <br/>
-<form   class="booking-form">
+<form   id="myForm">
     <!-- Name -->
     <div class="form-group mb-3">
         <label for="name">Name</label>
-        <input type="text" id="name" name="name" class="form-control" placeholder="Your Name" required>
+        <input type="text" id="name" name="name" class="form-control" placeholder="Your Name" required th:value="${user.fullName}">
     </div>
-
+    <input type="hidden"  name="booking_id" class="form-control" min="1" placeholder="Number of Guests" required  th:value="${booking_id}">
+    <input type="hidden"  name="restaurant_id" class="form-control" min="1" placeholder="Number of Guests" required  th:value="${restaurant.restaurant_id}">
     <!-- Phone -->
     <div class="form-group mb-3">
         <label for="phone">Phone</label>
@@ -171,16 +172,24 @@
                 placeholder="Your Phone Number"
                 required
                 pattern="\d{10}"
-                title="Please enter a valid 10-digit phone number">
+                title="Please enter a valid 10-digit phone number"
+                th:value="${user.phoneNumber}"
+        >
     </div>
 
+
+
+
+    <div class="form-group mb-3">
+        <label for="email">Email</label>
+        <input th:value="${user.email}" type="text" id="email" name="email" class="form-control" min="1" placeholder="Email" required>
+    </div>
     <!-- Time -->
     <div class="form-group mb-3">
         <label for="time">Booking Time</label>
-        <input type="time" id="time" name="time" class="form-control" required>
+        <input type="datetime-local" id="time" name="time" class="form-control" required>
         <small class="time">Only delay 30 minutes</small>
     </div>
-
     <!-- Number of Guests -->
     <div class="form-group mb-3">
         <label for="number_of_guests">Number of Guests</label>
@@ -192,38 +201,42 @@
         <label for="note">Special Requests or Notes</label>
         <textarea id="note" name="note" class="form-control" rows="3" placeholder="Any special requests?"></textarea>
     </div>
-
-    <!-- Submit Button -->
-    <button type="submit" class="button" onclick="submitBookingForm()" >
+    <button type="submit" class="button">
         Book Now
     </button>
 </form>
 <script>
-    function submitBookingForm() {
-        const formData = {
-            name: document.getElementById('name').value,
-            phone: document.getElementById('phone').value,
-            time: document.getElementById('time').value,
-            number_of_guests: document.getElementById('number_of_guests').value,
-            note: document.getElementById('note').value
-        };
+    document.getElementById('myForm').addEventListener('submit', async function (event) {
+        event.preventDefault();
+        const form = event.target;
+        const formData = new FormData(form);
+        const formObject = {};
+        formData.forEach((value, key) => {
+            formObject[key] = value;
+            console.log(key, value);
+        });
 
-        fetch('/createOrder', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData)
-        })
-            .then(response => response.json())
-            .then(data => {
-                alert('Booking successful!');
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('There was an error with the booking.');
+        try {
+            const response = await fetch('/user/createOrder', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json', // Set the Content-Type to JSON
+                },
+                body: JSON.stringify(formObject), // Convert object to JSON
             });
-    }
+
+            if (response.ok) {
+                alert('Form submitted successfully!');
+                window.location.href = '/index';
+            } else {
+                console.error('Error:', response.statusText);
+                alert('Form submission failed!');
+            }
+        } catch (error) {
+            console.error('Request failed:', error);
+            alert('An error occurred!');
+        }
+    });
 </script>
 <br/>
 <footer id="footer">

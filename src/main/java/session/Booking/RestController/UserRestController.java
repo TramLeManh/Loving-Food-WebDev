@@ -49,7 +49,7 @@ public class UserRestController {
     }
 
     @PostMapping("/createBookingOrder/{user_id}")
-    public CreateBookTableDTO createUserBookingOrder(@RequestBody CreateBookTableDTO book, @PathVariable String user_id) {
+    public CreateBookTableDTO createUserBookingOrder(@RequestBody CreateBookTableDTO book, @PathVariable int user_id) {
         bookingService.createUserBooking(CreateBookTableDTO.toEntity(book,user_id));
         return book;
     }

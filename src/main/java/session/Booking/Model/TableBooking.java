@@ -34,6 +34,8 @@ public class TableBooking {
     private LocalDateTime booking;
     @Column(name = "num_of_guests")
     private Integer numOfGuests;
+    @Column(name = "email", length = 50, nullable = false)
+    private String email;
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'PENDING'")
     @Column(name = "booking_status", nullable = true)
