@@ -72,9 +72,9 @@ public class RestaurantService {
     //This function add Category for the restaurant
 
     @Transactional
-    public void createRestaurant(createRestaurantDTO dto) {
+    public void createRestaurant(createRestaurantDTO dto,int owner_id) {
         Restaurant restaurant = dto.toEntity();
-        restaurantDAO.insertRestaurant(restaurant.getOwner_id(), restaurant.getRestaurant_id(), restaurant.getName(), restaurant.getDistrict(), restaurant.getAddress(), restaurant.getDescription(), restaurant.getPicture(), restaurant.getPhone_number(), restaurant.getOpen_time(),
+        restaurantDAO.insertRestaurant(owner_id, restaurant.getRestaurant_id(), restaurant.getName(), restaurant.getDistrict(), restaurant.getAddress(), restaurant.getDescription(), restaurant.getPicture(), restaurant.getPhone_number(), restaurant.getOpen_time(),
                 restaurant.getClose_time());
         insertRestaurantCategories((restaurant.getRestaurant_id()), dto.getCategory());
     }

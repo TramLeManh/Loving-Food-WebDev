@@ -61,18 +61,5 @@ public class RestaurantRestController {
         }
 
     }
-    @PostMapping("/insertRestaurant")
-    public ResponseEntity<Map<String, Object>> insertRestaurant(HttpSession session, @RequestBody createRestaurantDTO createRestaurantDTO) {
-        String user_id = (String) session.getAttribute("user_id");
-        Map<String, Object> response = new LinkedHashMap<>();
-        try {
-            response.put("message", "Insert restaurant successfully");
-            restaurantService.createRestaurant(createRestaurantDTO);
-            return ResponseEntity.ok().body(response);
-        }catch (Exception e) {
-            response.put("message", e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-        }
 
-    }
 }

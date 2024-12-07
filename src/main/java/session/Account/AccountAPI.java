@@ -47,9 +47,8 @@ public class AccountAPI {
             redirectAttributes.addFlashAttribute("email", email);
             return "redirect:/register";
         }
-        //Login thành công se tao session store user id.
         redirectAttributes.addFlashAttribute("state", res.getStatus().toString());
-        return "redirect:/account/login";
+        return "redirect:/account/createUserInformation/"+res.getData().id();
     }
     @PutMapping("/changePassword")
     public String update(HttpSession session,@RequestHeader String input) {

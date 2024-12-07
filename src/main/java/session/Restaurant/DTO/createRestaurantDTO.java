@@ -9,8 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 public class createRestaurantDTO {
-    private int user_id;
-    private int restaurant_id;
+
     private String name;
     private String address;
     private String district;
@@ -23,7 +22,6 @@ public class createRestaurantDTO {
 
     public Restaurant toEntity() {
         Restaurant res = new Restaurant();
-        res.setOwner_id(getUser_id());
         res.setRestaurant_id((int) (Math.random() * 9000) + 1000);
         res.setName(getName());
         res.setAddress(getAddress());

@@ -1,9 +1,7 @@
 package session.userInformation;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -19,6 +17,7 @@ import java.time.Instant;
 public class UserInformation {
     @Id
     @Column(name = "user_id", nullable = false)
+    @JsonProperty("user_id")
     private Integer user_id;
 
     @Size(max = 50)
@@ -42,8 +41,7 @@ public class UserInformation {
     @Column(name = "email")
     private String email;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "updated_at")
-    private Instant updatedAt;
+    @Column(name = "updated_at", nullable = true)
+    private Instant updatedAt = Instant.now();
 
 }

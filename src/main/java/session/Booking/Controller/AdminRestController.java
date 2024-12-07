@@ -1,8 +1,11 @@
 package session.Booking.Controller;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import session.Booking.BookingService;
 import session.Booking.DTO.BookingResponse;
@@ -10,6 +13,8 @@ import session.Booking.DTO.bookTableDTO;
 import session.Booking.DTO.createDecisionDTO;
 import session.Booking.DTO.updateResponseDTO;
 import session.Booking.Model.BookingDecision;
+import session.Restaurant.DTO.createRestaurantDTO;
+import session.Restaurant.RestaurantService;
 import session.utils.Enum.BookingStatus;
 
 import java.util.LinkedHashMap;
@@ -18,38 +23,32 @@ import java.util.Map;
 import java.util.Objects;
 
 
-@RestController
+@Controller
+@RequestMapping("/admin")
 public class AdminRestController {
     private final BookingService bookingService;
+    private final RestaurantService restaurantService;
 
-    public AdminRestController(BookingService bookingService) {
+    public AdminRestController(BookingService bookingService, RestaurantService restaurantService) {
         this.bookingService = bookingService;
+        this.restaurantService = restaurantService;
     }
 
-    @GetMapping("/viewAllDecision")
-    public List<BookingResponse> getAdminDecision(@RequestParam int owner_id, @RequestParam(required = false) int type) {
-        BookingStatus[] status = BookingStatus.values();
-        return bookingService.getAdminDecision(owner_id, status[type]);
-    }
 
-    @GetMapping("/viewAdminBookingOrder")
-    public ResponseEntity<Object> getAdminBooking(@RequestParam int user_id, @RequestParam(required = false) Integer status, @RequestParam(required = false) Integer booking_id) {
-        Map<String, Object> response = new LinkedHashMap<>();
+
+    @GetMapping("/viewBookingOrder")
+    public String getAdminBooking(@RequestParam int user_id, @RequestParam(required = false) Integer status, @RequestParam(required = false) Integer booking_id, Model model) {
         BookingStatus bookingStatus=null;
         if (status != null) {
             try {
                 bookingStatus = BookingStatus.values()[status];
             } catch (ArrayIndexOutOfBoundsException e) {
-                response.put("message", "Invalid BookingStatus value provided.");
-                return ResponseEntity.badRequest().body(response);
+                return "error";
             }
         }
         //Due to native query, we need to pass the status as a string
-        response.put("message", "Retrieved bookings for user with status: " + bookingStatus);
         List<bookTableDTO> bookings = bookingService.getOwnerBooking(user_id, bookingStatus.toString());
-        response.put("data", bookings);
-        bookings.stream().filter(booking -> Objects.equals(booking.getBookingId(), booking_id)).toList();
-        return ResponseEntity.ok(response);
+        return "decision";
     }
 
     @GetMapping("/decision")
@@ -131,5 +130,19 @@ public class AdminRestController {
             response.put("message", "An error occurred: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
+    }
+    @PostMapping("/createRestaurant")
+    public ResponseEntity<Map<String, Object>> insertRestaurant(HttpSession session, @RequestBody createRestaurantDTO createRestaurantDTO) {
+        int owner_id = 8242;
+        Map<String, Object> response = new LinkedHashMap<>();
+        try {
+            response.put("message", "Insert restaurant successfully");
+            restaurantService.createRestaurant(createRestaurantDTO,owner_id);
+            return ResponseEntity.ok().body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+
     }
 }
