@@ -7,9 +7,9 @@ import session.Account.Account;
 import session.utils.PasswordEncryptor;
 
 
-public record UserDTO(int id, String username, String email, String role) implements Serializable {
+public record UserDTO(int id, String username, String email, String role,String phone,String full_name ) implements Serializable {
     public static UserDTO fromEntity(Account save) {
-        return new UserDTO(save.getUser_id(), save.getUsername(), save.getEmail(), save.getCreatedAt());
+        return new UserDTO(save.getUser_id(), save.getUsername(), save.getEmail(), save.getCreatedAt(),save.getPhone_number(),save.getFull_name());
     }
     public static Account toEntity(createUserDTO model) throws Exception {
         Account account = new Account();

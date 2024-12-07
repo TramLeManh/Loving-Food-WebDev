@@ -26,19 +26,4 @@ public class RestaurantController {
         return "category_restaurants";
     }
 
-    @GetMapping("/getUserBooking")
-    public String getUserBooking(HttpSession session, @RequestParam(required = false) Integer status, Model model) {
-        Integer user_id = (Integer) session.getAttribute("user");
-        if (user_id == null) {
-            return "error";
-        }
-        List<bookTableDTO> bookings = bookingService.getUserBooking(user_id, status);
-        model.addAttribute("bookingTable", bookings);
-        return "test";
-    }
-    @DeleteMapping("/deleteBooking/{booking_id}")
-    public ResponseEntity<Object> deleteUserBooking(@PathVariable Integer booking_id) {
-        bookingService.deleteUserBooking(booking_id);;
-        return ResponseEntity.ok("Booking deleted successfully");
-    }
 }

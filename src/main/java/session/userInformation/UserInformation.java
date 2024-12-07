@@ -38,6 +38,9 @@ public class UserInformation {
     @Size(max = 255)
     @Column(name = "profile_picture_url")
     private String profilePictureUrl;
+    @Size(max = 255)
+    @Column(name = "email")
+    private String email;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "updated_at")
