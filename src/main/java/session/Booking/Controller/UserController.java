@@ -116,11 +116,11 @@ public class UserController {
     @GetMapping("/getUserBooking")
     public String getUserBooking(HttpSession session, @RequestParam(required = false) Integer status, Model model) {
         Integer user_id = (Integer) session.getAttribute("user");
-
         if (user_id == null) {
             return "error";
         }
         List<bookTableDTO> bookings = bookingService.getUserBooking(user_id, status);
+
         model.addAttribute("bookingTable", bookings);
         return "test";
     }
@@ -143,7 +143,7 @@ public class UserController {
     public ResponseEntity<Object> createUserBookingOrder(HttpSession session, @RequestBody CreateBookTableDTO book) {
         String user_id = (String) session.getAttribute("user_id");
         bookingService.createUserBooking(CreateBookTableDTO.toEntity(book,user_id));
-        return ResponseEntity.ok("Booking deleted successfully");
+        return ResponseEntity.ok("Booking create successfully");
     }
     @DeleteMapping("/deleteBooking/{booking_id}")
     public ResponseEntity<Object> deleteUserBooking(@PathVariable Integer booking_id) {
