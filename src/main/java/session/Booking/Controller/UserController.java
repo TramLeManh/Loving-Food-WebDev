@@ -140,8 +140,8 @@ public class UserController {
 
         return ResponseEntity.ok("Success") ;
     }
-
-    @PostMapping("/createOrder")
+    @Transactional
+    @PostMapping(value ="/createOrder", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ResponseEntity<Object> createUserBookingOrder(HttpSession session, @RequestBody CreateBookTableDTO book) {
         String user_id = (String) session.getAttribute("user_id");
         System.out.println(book.getName());
