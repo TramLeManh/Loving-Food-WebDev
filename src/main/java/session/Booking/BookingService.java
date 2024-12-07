@@ -137,7 +137,7 @@ public class BookingService {
         if(bookingStatus != null){
             status = BookingStatus.values()[bookingStatus];
         }
-
+        System.out.println(status);
         List<TableBooking> bookings = bookingRepo.getListUserBooking(user_id);
         List<BookingDecision> decisions = bookingDecisionRepo.getUserBookingDecision(user_id);
 
@@ -145,7 +145,7 @@ public class BookingService {
         if (status == null) {
             return data;
         } else {
-            data = data.stream().filter(booking -> Objects.equals(booking.getStatus(), bookingStatus)).collect(Collectors.toList());
+            data = data.stream().filter(booking -> Objects.equals(booking.getStatus(), BookingStatus.values()[bookingStatus].toString())).collect(Collectors.toList());
         }
         return data;
     }

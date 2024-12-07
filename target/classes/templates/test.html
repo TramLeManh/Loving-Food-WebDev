@@ -167,7 +167,11 @@
         }
     </style>
     <script>
-
+        function filterByStatus() {
+            const selectedStatus = document.getElementById("statusSelect").value;
+            const queryParam = selectedStatus ? `?status=${selectedStatus}` : ""; // Include `status` only if selected
+            window.location.href = `/user/getUserBooking${queryParam}`;
+        }
 
         $(document).ready(function () {
             $("#updateBookingForm").on("submit", function (event) {
@@ -271,6 +275,7 @@
 <div id="editEmployeeModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
+
             <form
                     th:action="@{/user/updateBooking}"
                     method="POST"
@@ -442,14 +447,17 @@
                         <h2>Booking <b>Orders</b></h2>
                     </div>
                     <div class="col-sm-4">
-                        <div class="search-box">
-                            <i class="material-icons">&#xE8B6;</i>
-                            <input
-                                    type="text"
-                                    class="form-control"
-                                    placeholder="Search&hellip;"
-                            />
-                        </div>
+                        <label for="statusSelect">Filter by Status:</label>
+                        <select id="statusSelect" onchange="filterByStatus()">
+                            <option th:value="''" th:selected="${currentStatus == null}">All</option>
+                            <option th:value="'1'" th:selected="${currentStatus == 1}">PENDING</option>
+                            <option th:value="'2'" th:selected="${currentStatus == 2}">ACCEPTED</option>
+                            <option th:value="'3'" th:selected="${currentStatus == 3}">DENIED</option>
+                        </select>
+
+
+
+
                     </div>
                 </div>
             </div>
