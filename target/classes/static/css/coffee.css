@@ -27,6 +27,12 @@
     border-radius: 10px;
     transition: 0.5s;
     cursor: pointer;
+    overflow: hidden; /* Prevent content overflow */
+}
+.card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Align content evenly */
 }
 
 .card img {

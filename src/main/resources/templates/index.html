@@ -226,163 +226,37 @@
           <div class="heading3">Restaurants</div>
         </div>
         <div class="container" id="container2">
-          <div class="row">
-            <div class="col-md-3 py-3 py-md-0">
+          <div class="row gy-4">
+            <!-- Iterate through the restaurant list -->
+            <div class="col-md-3 py-3 py-md-0" th:each="restaurant : ${restaurantList}">
               <div class="card">
-                <img src="./images/m1.png" alt="" />
+                <img th:src="@{${restaurant.picture}}" alt="" />
                 <div class="card-body">
-                  <div class="star text-center">
-                    <i class="fa-regular fa-star"></i>
-                    <i class="fa-regular fa-star"></i>
-                    <i class="fa-regular fa-star"></i>
-                    <i class="fa-regular fa-star"></i>
-                    <i class="fa-regular fa-star"></i>
-                  </div>
-                  <h3>Coffee</h3>
+                  <div class="star text-center"></div>
+                  <h3 th:text="${restaurant.name}"></h3>
                   <p>
-                    $99 <strike>$100</strike
-                    ><span class="fa-solid fa-cart-shopping"></span>
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-3 py-3 py-md-0">
-              <div class="card">
-                <img src="./images/m2.png" alt="" />
-                <div class="card-body">
-                  <div class="star text-center">
-                    <i class="fa-regular fa-star"></i>
-                    <i class="fa-regular fa-star"></i>
-                    <i class="fa-regular fa-star"></i>
-                    <i class="fa-regular fa-star"></i>
-                    <i class="fa-regular fa-star"></i>
-                  </div>
-                  <h3>Coffee</h3>
-                  <p>
-                    $99 <strike>$110</strike
-                    ><span class="fa-solid fa-cart-shopping"></span>
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-3 py-3 py-md-0">
-              <div class="card">
-                <img src="./images/m3.png" alt="" />
-                <div class="card-body">
-                  <div class="star text-center">
-                    <i class="fa-regular fa-star"></i>
-                    <i class="fa-regular fa-star"></i>
-                    <i class="fa-regular fa-star"></i>
-                    <i class="fa-regular fa-star"></i>
-                    <i class="fa-regular fa-star"></i>
-                  </div>
-                  <h3>Coffee</h3>
-                  <p>
-                    $100 <strike>$200</strike
-                    ><span class="fa-solid fa-cart-shopping"></span>
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-3 py-3 py-md-0">
-              <div class="card">
-                <img src="./images/m4.png" alt="" />
-                <div class="card-body">
-                  <div class="star text-center">
-                    <i class="fa-regular fa-star"></i>
-                    <i class="fa-regular fa-star"></i>
-                    <i class="fa-regular fa-star"></i>
-                    <i class="fa-regular fa-star"></i>
-                    <i class="fa-regular fa-star"></i>
-                  </div>
-                  <h3>Coffee</h3>
-                  <p>
-                    $120 <strike>$150</strike
-                    ><span class="fa-solid fa-cart-shopping"></span>
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row" style="margin-top: 30px">
-            <div class="col-md-3 py-3 py-md-0">
-              <div class="card">
-                <img src="./images/m5.png" alt="" />
-                <div class="card-body">
-                  <div class="star text-center">
-                    <i class="fa-regular fa-star"></i>
-                    <i class="fa-regular fa-star"></i>
-                    <i class="fa-regular fa-star"></i>
-                    <i class="fa-regular fa-star"></i>
-                    <i class="fa-regular fa-star"></i>
-                  </div>
-                  <h3>Coffee</h3>
-                  <p>
-                    $200 <strike>$300</strike
-                    ><span class="fa-solid fa-cart-shopping"></span>
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-3 py-3 py-md-0">
-              <div class="card">
-                <img src="./images/m6.png" alt="" />
-                <div class="card-body">
-                  <div class="star text-center">
-                    <i class="fa-regular fa-star"></i>
-                    <i class="fa-regular fa-star"></i>
-                    <i class="fa-regular fa-star"></i>
-                    <i class="fa-regular fa-star"></i>
-                    <i class="fa-regular fa-star"></i>
-                  </div>
-                  <h3>Coffee</h3>
-                  <p>
-                    $30 <strike>$50</strike
-                    ><span class="fa-solid fa-cart-shopping"></span>
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-3 py-3 py-md-0">
-              <div class="card">
-                <img src="./images/m7.png" alt="" />
-                <div class="card-body">
-                  <div class="star text-center">
-                    <i class="fa-regular fa-star"></i>
-                    <i class="fa-regular fa-star"></i>
-                    <i class="fa-regular fa-star"></i>
-                    <i class="fa-regular fa-star"></i>
-                    <i class="fa-regular fa-star"></i>
-                  </div>
-                  <h3>Coffee</h3>
-                  <p>
-                    $100 <strike>$200</strike
-                    ><span class="fa-solid fa-cart-shopping"></span>
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-3 py-3 py-md-0">
-              <div class="card">
-                <img src="./images/m8.png" alt="" />
-                <div class="card-body">
-                  <div class="star text-center">
-                    <i class="fa-regular fa-star"></i>
-                    <i class="fa-regular fa-star"></i>
-                    <i class="fa-regular fa-star"></i>
-                    <i class="fa-regular fa-star"></i>
-                    <i class="fa-regular fa-star"></i>
-                  </div>
-                  <h3>Coffee</h3>
-                  <p>
-                    $130 <strike>$160</strike
-                    ><span class="fa-solid fa-cart-shopping"></span>
+                    <span class="fa-solid fa-clock"></span>
+                    <span th:text="'From ' + ${restaurant.open_time}"></span>
+                    <span th:text="'To ' + ${restaurant.close_time}"></span>
+                    <br /><br />
+                    <span class="fa-solid fa-phone"></span>
+                    <span th:text="'Phone number: ' + ${restaurant.phone_number}"></span>
+                    <br /><br />
+                    <span class="fa-solid fa-file-alt"></span>
+                    <span th:classappend="${restaurant.description != null and restaurant.description.length() < 20} ? 'short-description' : ''"
+                          th:text="${restaurant.description != null ? 'Description: ' + restaurant.description : 'No Description'}"> </span>
+                    <br /><br />
+                    <button style="background-color: #b2744c; color: white; border: none; padding: 10px 20px; border-radius: 5px; font-size: 16px; cursor: pointer;">
+                      Book
+                    </button>
                   </p>
                 </div>
               </div>
             </div>
           </div>
         </div>
+
+
       </section>
 <!--      <section id="product">-->
 <!--        <div class="container">-->

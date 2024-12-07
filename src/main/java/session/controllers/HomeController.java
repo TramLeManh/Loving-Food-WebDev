@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import session.Account.DTO.UserDTO;
+import session.Restaurant.Restaurant;
 import session.model.District;
 import session.responseHandler.Exception.ServerException;
 import session.Account.AccountService;
@@ -78,9 +79,8 @@ public class    HomeController {
 
     @RequestMapping("/index")
     public String index(HttpSession session, Model model) {
-        List<District> list_category = restaurantService.getDistrict();//server
-
-        model.addAttribute("list_district", list_category);
+        List<Restaurant> restaurantList = restaurantService.getRestaurant(null , null);
+        model.addAttribute("restaurantList", restaurantList);
         try {
             int id = (int) session.getAttribute("user");
             UserDTO res = service.findUser(id);
