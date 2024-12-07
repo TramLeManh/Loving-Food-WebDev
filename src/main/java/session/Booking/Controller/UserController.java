@@ -1,5 +1,6 @@
 package session.Booking.Controller;
 
+import aj.org.objectweb.asm.commons.TryCatchBlockSorter;
 import jakarta.servlet.http.HttpSession;
 import org.apache.catalina.User;
 import org.springframework.http.MediaType;
@@ -19,6 +20,7 @@ import session.Restaurant.RestaurantService;
 import session.userInformation.UserInformation;
 import session.userInformation.UserInformationRepo;
 
+import java.rmi.registry.RegistryHandler;
 import java.security.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -142,15 +144,20 @@ public class UserController {
     @PostMapping("/createOrder")
     public ResponseEntity<Object> createUserBookingOrder(HttpSession session, @RequestBody CreateBookTableDTO book) {
         String user_id = (String) session.getAttribute("user_id");
+        System.out.println(book.getName());
         bookingService.createUserBooking(CreateBookTableDTO.toEntity(book,user_id));
-        return ResponseEntity.ok("Booking deleted successfully");
+        return ResponseEntity.ok("Booking created successfully");
     }
     @DeleteMapping("/deleteBooking/{booking_id}")
     public ResponseEntity<Object> deleteUserBooking(@PathVariable Integer booking_id) {
-        bookingService.deleteUserBooking(booking_id);;
-        return ResponseEntity.ok("Booking deleted successfully");
-    }
+        try{
+            bookingService.deleteUserBooking(booking_id);;
+            return ResponseEntity.ok("Booking deleted successfully");
+
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body("Booking deletion failed");
+        }
+    }}
 
 
 
-}

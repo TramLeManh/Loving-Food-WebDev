@@ -153,7 +153,7 @@
 </div>
 
 <br/>
-<form action="/booking/submit" method="post" class="booking-form">
+<form   class="booking-form">
     <!-- Name -->
     <div class="form-group mb-3">
         <label for="name">Name</label>
@@ -194,10 +194,37 @@
     </div>
 
     <!-- Submit Button -->
-    <button type="submit" class="button">
+    <button type="submit" class="button" onclick="submitBookingForm()" >
         Book Now
     </button>
 </form>
+<script>
+    function submitBookingForm() {
+        const formData = {
+            name: document.getElementById('name').value,
+            phone: document.getElementById('phone').value,
+            time: document.getElementById('time').value,
+            number_of_guests: document.getElementById('number_of_guests').value,
+            note: document.getElementById('note').value
+        };
+
+        fetch('/createOrder', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        })
+            .then(response => response.json())
+            .then(data => {
+                alert('Booking successful!');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('There was an error with the booking.');
+            });
+    }
+</script>
 <br/>
 <footer id="footer">
     <div class="social-links text-center">
