@@ -36,19 +36,14 @@ public class AdminRestController {
 
 
 
-    @GetMapping("/viewBookingOrder")
-    public String getAdminBooking(@RequestParam int user_id, @RequestParam(required = false) Integer status, @RequestParam(required = false) Integer booking_id, Model model) {
-        BookingStatus bookingStatus=null;
-        if (status != null) {
-            try {
-                bookingStatus = BookingStatus.values()[status];
-            } catch (ArrayIndexOutOfBoundsException e) {
-                return "error";
-            }
-        }
+    @GetMapping("/getBookingOrder")
+    public String getAdminBooking( @RequestParam(required = false) Integer status, Model model) {
         //Due to native query, we need to pass the status as a string
-        List<bookTableDTO> bookings = bookingService.getOwnerBooking(user_id, bookingStatus.toString());
-        return "decision";
+        List<bookTableDTO> orders = bookingService.getOwnerBooking(6441, status);
+        model.addAttribute("orders", orders);
+        System.out.println(orders.get(0).getBookingId());
+        model.addAttribute("currentStatus", status);
+        return "ownerBookingOrder";
     }
 
     @GetMapping("/decision")
@@ -70,37 +65,22 @@ public class AdminRestController {
     }
 
     @Transactional
-    @PostMapping("/decision")
+    @PostMapping("/decision/{action}")
     public ResponseEntity<Object> createDecision(
-            @RequestParam String action,
+            HttpSession session,
             @RequestBody(required = false) createDecisionDTO decisionDTO,
-            @RequestParam(required = false) Integer booking_id) {
+            @PathVariable String action) {
 
-        Map<String, Object> response = new LinkedHashMap<>();
-
+//        Integer user_id = (Integer) session.getAttribute("user");
         try {
-            if (action.toLowerCase().equals("create")) {
-                if (decisionDTO == null) {
-                    response.put("message", "Decision data is missing.");
-                    return ResponseEntity.badRequest().body(decisionDTO);
-                }
-                if (bookingService.isDecisionExist(decisionDTO.getBooking_id())) {
-                    response.put("message", "BookingDecision already exists.");
-                    return ResponseEntity.badRequest().body(response);
-                }
-                bookingService.createDecision(decisionDTO.getOwner_id(), decisionDTO.getBooking_id(), decisionDTO.getNote(), decisionDTO.getStatus());
-                response.put("message", "BookingDecision created successfully.");
-                return ResponseEntity.ok(response);
+            if (action.equalsIgnoreCase("create")) {
+                bookingService.createDecision(6441, decisionDTO.getBooking_id(), decisionDTO.getNote(), decisionDTO.getStatus());
+                return ResponseEntity.ok("Decision created successfully.");
             }
-            response.put("message", "Invalid action provided. Use 'view', 'create', or 'update'.");
-            return ResponseEntity.badRequest().body(response);
-        } catch (IllegalArgumentException e) {
-            response.put("message", "Invalid BookingStatus value provided.");
-            return ResponseEntity.badRequest().body(response);
         } catch (Exception e) {
-            response.put("message", "An error occurred: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            return ResponseEntity.badRequest().body("An error occurred: " + e.getMessage());
         }
+        return ResponseEntity.badRequest().body("Invalid action provided. Use 'view', 'create', or 'update'.");
     }
 
     @Transactional

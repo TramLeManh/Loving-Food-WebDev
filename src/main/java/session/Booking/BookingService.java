@@ -37,20 +37,7 @@ public class BookingService {
         return bookingDecisions.stream().map(BookingResponse::fromEntity).collect(Collectors.toList());
     }
 
-    /**
-     * Found owner booking base on owner_id, bookingStatus
-     */
-    public List<bookTableDTO> getOwnerBooking(int owner_id, String bookingStatus) {
-        List<TableBooking> bookings = bookingRepo.getOwnerBooking(owner_id);
-        List<BookingDecision> decisions = bookingDecisionRepo.getAllBookingDecision(owner_id);
-        List<bookTableDTO> data = bookTableDTO.fromEntity(bookings, decisions);
-        if (bookingStatus == null) {
-            return data;
-        } else {
-            data = data.stream().filter(booking -> Objects.equals(booking.getStatus(), bookingStatus)).collect(Collectors.toList());
-        }
-        return data;
-    }
+
     public bookTableDTO getOwnerBookingDetail(int booking_id) {
         TableBooking booking = bookingRepo.findById(booking_id).orElse(null);
         if (booking == null) {
@@ -127,6 +114,24 @@ public class BookingService {
      */
     public void createUserBooking(TableBooking booking) {
         bookingRepo.createUserBooking(booking.getBookingId(), booking.getUser_id(), booking.getRestaurantId(), booking.getCustomer_name(), booking.getPhoneNumber(), booking.getBookingAt(), booking.getNumOfGuests(), booking.getNotes(),booking.getEmail());
+    }
+    /**
+     * Found owner booking base on owner_id, bookingStatus
+     */
+    public List<bookTableDTO> getOwnerBooking(int owner_id, Integer bookingStatus) {
+        BookingStatus  status = null;
+        if(bookingStatus != null){
+            status = BookingStatus.values()[bookingStatus];
+        }
+        List<TableBooking> bookings = bookingRepo.getOwnerBooking(owner_id);
+        List<BookingDecision> decisions = bookingDecisionRepo.getAllBookingDecision(owner_id);
+        List<bookTableDTO> data = bookTableDTO.fromEntity(bookings, decisions);
+        if (status == null) {
+            return data;
+        } else {
+            data = data.stream().filter(booking -> Objects.equals(booking.getStatus(), BookingStatus.values()[bookingStatus].toString())).collect(Collectors.toList());
+        }
+        return data;
     }
 
     /**

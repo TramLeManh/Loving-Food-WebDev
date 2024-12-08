@@ -126,7 +126,7 @@ public class UserController {
         List<bookTableDTO> bookings = bookingService.getUserBooking(user_id, status);
         model.addAttribute("currentStatus", status);
         model.addAttribute("bookingTable", bookings);
-        return "test";
+        return "userBooking";
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

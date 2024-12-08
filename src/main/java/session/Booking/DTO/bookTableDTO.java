@@ -16,6 +16,7 @@ public class bookTableDTO {
     private int bookingId;
     private int restaurant_id;
     private String restaurant_name;
+    private String email;
     private String customer_name;
     private String phone;
     private int number_of_guests;
@@ -38,6 +39,7 @@ public class bookTableDTO {
         responseDTO.setBooking_date(timeFormat.format(booking.getBooking()));
         responseDTO.setAdminDecision(decision == null ? null : BookingResponse.fromEntity(decision));
         responseDTO.setUpdated_at(timeFormat.format(booking.getUpdate()));
+        responseDTO.setEmail(booking.getEmail());
         return responseDTO;
     }
     public static List<bookTableDTO> fromEntity(List<TableBooking> bookings, List<BookingDecision> decisions) {

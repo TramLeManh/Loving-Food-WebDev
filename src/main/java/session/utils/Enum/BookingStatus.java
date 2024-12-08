@@ -1,8 +1,8 @@
 package session.utils.Enum;
 
 public enum BookingStatus {
-    POSTPONED,//0
-    PENDING,//1
+    PENDING,//0
+    POSTPONED,//1
     ACCEPTED,//2
     DENIED,//3
 }
