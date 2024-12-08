@@ -169,8 +169,33 @@
     <script>
         function filterByStatus() {
             const selectedStatus = document.getElementById("statusSelect").value;
-            const queryParam = selectedStatus ? `?status=${selectedStatus}` : ""; // Include `status` only if selected
-            window.location.href = `/user/getUserBooking${queryParam}`;
+            const currentUrl = window.location.href;
+            let newUrl;
+            if (currentUrl.includes("/admin/getBookingOrder?restaurant_id=")) {
+                const baseUrl = currentUrl.split("?")[0]; // Extract base URL
+                const currentParams = new URLSearchParams(currentUrl.split("?")[1]); // Get existing query parameters
+                if (selectedStatus) {
+                    currentParams.set("status", selectedStatus); // Add or update status parameter
+                } else {
+                    currentParams.delete("status"); // Remove status parameter if no selection
+                }
+                newUrl = `${baseUrl}?${currentParams.toString()}`; // Construct new URL
+            } else {
+                newUrl = selectedStatus
+                    ? `/admin/getBookingOrder?status=${selectedStatus}`
+                    : "/admin/getBookingOrder";
+            }
+            window.location.href = newUrl;
+        }
+
+        function filterBookings() {
+            const selectedStatus = document.getElementById("statusSelect").value; // Get the selected status
+            const selectedRestaurantId = document.getElementById("restaurantSelect").value; // Get the selected restaurant ID
+            const queryParams = [];
+            if (selectedStatus) queryParams.push(`status=${selectedStatus}`);
+            if (selectedRestaurantId) queryParams.push(`restaurant_id=${selectedRestaurantId}`);
+            const queryString = queryParams.length > 0 ? `?${queryParams.join("&")}` : "";
+            window.location.href = `/admin/getBookingOrder${queryString}`;
         }
 
         $(document).ready(function () {
@@ -217,24 +242,23 @@
             document.querySelectorAll(".create").forEach((button) => {
 
                 button.addEventListener("click", function () {
-                    document.getElementById("c-id").value =
+                    document.getElementById("c-id").innerText =
                         this.getAttribute("data-id");
-                    document.getElementById("c-name").value =
+                    document.getElementById("c-name").innerText =
                         this.getAttribute("data-name");
-                    document.getElementById("c-note").value =
+                    document.getElementById("c-note").innerText =
                         this.getAttribute("data-note");
-                    document.getElementById("c-guest").value =
+                    document.getElementById("c-guest").innerText =
                         this.getAttribute("data-guest");
-                    document.getElementById("c-note").value =
+                    document.getElementById("c-note").innerText =
                         this.getAttribute("data-note");
-                    const dataTime = this.getAttribute("data-time"); // "04-12-2024 18:00:00"
-                    const parts = dataTime.split(" "); // Split into ["04-12-2024", "18:00:00"]
-                    const dateParts = parts[0].split("-"); // Split date into ["04", "12", "2024"]
-                    const formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
-                    const formattedTime = parts[1].slice(0, 5); // Get "18:00"
                     document.getElementById(
-                        "c-time"
-                    ).value = `${formattedDate}T${formattedTime}`;
+                        "e-time"
+                    ).innerText = this.getAttribute("data-time");
+                    document.getElementById(
+                        "bookingID"
+                    ).innerText = this.getAttribute("data-bookingID");
+
                 });
             });
         })
@@ -243,26 +267,24 @@
             document.querySelectorAll(".edit").forEach((button) => {
                 button.addEventListener("click", function () {
 
-                    document.getElementById("e-id").value =
+                    document.getElementById("e-id").innerText =
                         this.getAttribute("data-id");
-                    document.getElementById("e-name").value =
+                    document.getElementById("e-name").innerText =
                         this.getAttribute("data-name");
-                    document.getElementById("e-note").value =
+                    document.getElementById("e-note").innerText =
                         this.getAttribute("data-note");
-                    document.getElementById("e-guest").value =
+                    document.getElementById("e-guest").innerText =
                         this.getAttribute("data-guest");
-                    document.getElementById("e-note1").value =
+                    document.getElementById("e-note1").innerText =
                         this.getAttribute("data-note1");
                     document.getElementById("e-status").value =
                         this.getAttribute("data-status");
-                    const dataTime = this.getAttribute("data-time"); // "04-12-2024 18:00:00"
-                    const parts = dataTime.split(" "); // Split into ["04-12-2024", "18:00:00"]
-                    const dateParts = parts[0].split("-"); // Split date into ["04", "12", "2024"]
-                    const formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
-                    const formattedTime = parts[1].slice(0, 5); // Get "18:00"
+                    document.getElementById("decisionID").innerText=
+                        this.getAttribute("data-decisionID");
+
                     document.getElementById(
                         "e-time"
-                    ).value = `${formattedDate}T${formattedTime}`;
+                    ).innerText = this.getAttribute("data-time");
                 });
             });
 
@@ -273,8 +295,8 @@
 
             // Set up the modal event handler
             $("#deleteEmployeeModal").on("show.bs.modal", function (event) {
-                var button = $(event.relatedTarget); // Button that triggered the modal
-                var bookingId = button.data("booking-id"); // Extract booking ID from data attribute
+                const button = $(event.relatedTarget); // Button that triggered the modal
+                const bookingId = button.data("booking-id"); // Extract booking ID from data attribute
                 console.log("Triggered for booking ID:", bookingId); // Debugging line
 
                 // Set the onclick function dynamically
@@ -317,7 +339,7 @@
                     id="createResponseForm"
             >
                 <div class="modal-header">
-                    <h4 class="modal-title">Create Booking Response #<a id="bookingID">1</a></h4>
+                    <h4 class="modal-title">Create Booking Response #<a id="bookingID"></a></h4>
                     <button
                             type="button"
                             class="close"
@@ -353,6 +375,7 @@
                         <label>Booking status</label>
                         <select name="status" class="form-control">
                             <option value="" selected disabled hidden>Select a status</option>
+
                             <option value="1">POSTPONED</option>
                             <option value="2">ACCEPTED</option>
                             <option value="3">DENIED</option>
@@ -383,7 +406,7 @@
                     id="updateResponseForm"
             >
                 <div class="modal-header">
-                    <h4 class="modal-title">Edit response #<a id="decisionID">1</a></h4>
+                    <h4 class="modal-title">Edit response #<a id="decisionID"></a></h4>
                     <button
                             type="button"
                             class="close"
@@ -409,7 +432,7 @@
                     </div>
                     <div class="form-group  mb-3">
                         <label>Time</label>
-                        <p class="form-control-static" id="e-time">abc</p>
+                        <p class="form-control-static" id="e-time"></p>
                     </div>
                     <div class="form-group">
                         <label>Your note response</label>
@@ -417,15 +440,16 @@
                     </div>
                     <div class="form-group ">
                         <label >Booking status</label>
-                        <select name="status" class="form-control" id="e-status">
-                            <option value="" selected disabled hidden>Select a status</option>
-                            <option value="1">POSTPONED</option>
-                            <option value="2">ACCEPTED</option>
-                            <option value="3">DENIED</option>
-                        </select>
+                        <label for="e-status"></label><select name="status" class="form-control" id="e-status">
+                        <option value="" selected disabled hidden>Select a status</option>
+                        <option value="POSTPONED">POSTPONED</option>
+                        <option value="ACCEPTED">ACCEPTED</option>
+                        <option value="DENIED">DENIED</option>
+                    </select>
 
                     </div>
                 </div>
+
                 <div class="modal-footer">
                     <input type="hidden" name="booking_id" id="e-id"/>
                     <input
@@ -448,13 +472,21 @@
             <div class="table-title">
                 <div class="row">
                     <div class="col-sm-8">
-                        <h2>Booking <b>Orders</b></h2>
+                        <h2>
+                            Booking
+                            <b>
+                                <span th:if="${restaurant_id!=null}" th:text="${restaurant.name}"></span>
+                                <span th:if="${restaurant_id==null}">All Restaurants</span>
+
+                            </b>
+                        </h2>
                     </div>
                     <div class="col-sm-4">
                         <label for="statusSelect">Filter by Status:</label>
                         <select id="statusSelect" onchange="filterByStatus()">
                             <option th:value="''" th:selected="${currentStatus == null}">All</option>
-                            <option th:value="'1'" th:selected="${currentStatus == 1}">PENDING</option>
+                            <option th:value="'0'" th:selected="${currentStatus == 0}">PENDING</option>
+                            <option th:value="'1'" th:selected="${currentStatus == 1}">POSTPONED</option>
                             <option th:value="'2'" th:selected="${currentStatus == 2}">ACCEPTED</option>
                             <option th:value="'3'" th:selected="${currentStatus == 3}">DENIED</option>
                         </select>
@@ -463,12 +495,25 @@
 
 
                     </div>
+
+                    <div class="col-sm-4">
+                        <label for="restaurantSelect">Filter by Restaurant Name:</label>
+                        <select id="restaurantSelect" onchange="filterBookings()">
+                            <option th:value="''" th:selected="${restaurant_id == null}">All Restaurants</option>
+                            <option th:each="restaurant : ${restaurants}"
+                                    th:value="${restaurant.restaurant_id}"
+                                    th:text="${restaurant.name}"
+                                    th:selected="${restaurant_id == restaurant.restaurant_id}"></option>
+                        </select>
+                    </div>
+
                 </div>
             </div>
             <table class="table table-striped table-hover table-bordered">
                 <thead>
                 <!-- Column -->
                 <tr>
+                    <th th:if="${restaurant_id==null}">Restaurant ID</th>
                     <th>Booking ID</th>
                     <th>Customer Name</th>
                     <th>Phone</th>
@@ -483,6 +528,7 @@
                 <tbody>
                 <!-- Object -->
                 <tr th:each="order : ${orders}">
+                    <th th:if="${restaurant_id==null}" th:text="${order.restaurant_id}"></th>
                     <td th:text="${order.bookingId}"></td>
                     <td th:text="${order.customer_name}"></td>
                     <td th:text="${order.phone}"></td>
@@ -505,8 +551,7 @@
                             data-name=${order.customer_name},
                             data-guest=${order.getNumber_of_guests},
                             data-note=${order.getNote},
-
-                            data-time=${order.booking_date}"
+                            data-time=${order.booking_date},data-bookingID=${order.bookingId}"
                                 >
                                     <i
                                             class="material-icons"
@@ -530,8 +575,8 @@
 
                             data-time=${order.booking_date},
                             data-status=${order.status},
-                            data-note1=${order.adminDecision.getAdminNote}
-"
+                            data-note1=${order.adminDecision.getAdminNote},
+                            data-decisionID=${order.adminDecision.getDecisionId}"
                             >
                                 <i
                                         class="material-icons"

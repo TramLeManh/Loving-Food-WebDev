@@ -14,6 +14,7 @@ import session.Booking.DTO.createDecisionDTO;
 import session.Booking.DTO.updateResponseDTO;
 import session.Booking.Model.BookingDecision;
 import session.Restaurant.DTO.createRestaurantDTO;
+import session.Restaurant.Restaurant;
 import session.Restaurant.RestaurantService;
 import session.utils.Enum.BookingStatus;
 
@@ -37,12 +38,18 @@ public class AdminRestController {
 
 
     @GetMapping("/getBookingOrder")
-    public String getAdminBooking( @RequestParam(required = false) Integer status, Model model) {
+    public String getAdminBooking(@RequestParam(required = false) Integer status, Model model, @RequestParam(required = false) Integer restaurant_id) {
         //Due to native query, we need to pass the status as a string
-        List<bookTableDTO> orders = bookingService.getOwnerBooking(6441, status);
+        List<bookTableDTO> orders = bookingService.getOwnerBooking(6441, status,restaurant_id);
+        List<Restaurant> restaurants = restaurantService.getOwnerRestaurant(6441, restaurant_id);
         model.addAttribute("orders", orders);
-        System.out.println(orders.get(0).getBookingId());
+        model.addAttribute("restaurant_id", restaurant_id);
+        model.addAttribute("restaurants", restaurants);
         model.addAttribute("currentStatus", status);
+        if(restaurant_id != null) {
+            Restaurant restaurant = restaurants.stream().filter(r -> Objects.equals(r.getRestaurant_id(), restaurant_id)).findFirst().orElse(null);
+            model.addAttribute("restaurant", restaurant);
+        }
         return "ownerBookingOrder";
     }
 

@@ -49,7 +49,7 @@ public class RestaurantService {
         return restaurant;
     }
 
-    public List<Restaurant> getOwnerRestaurant(int owner_id) {
+    public List<Restaurant> getOwnerRestaurant(int owner_id,Integer restaurant_id) {
         List<Restaurant> restaurants = restaurantDAO.getOwnerRestaurant(owner_id);
         restaurants.forEach(restaurant -> {
             // Set the category based on restaurant ID
@@ -57,6 +57,7 @@ public class RestaurantService {
         });
         return restaurants;
     }
+
 
     public List<District> getDistrict() {
         return restaurantDAO.getDistrict().orElse(null);
@@ -82,4 +83,6 @@ public class RestaurantService {
     public void removeRestaurant(int id) {
         restaurantDAO.removeRestaurant(id);
     }
+
+
 }

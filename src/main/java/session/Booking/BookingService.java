@@ -118,21 +118,24 @@ public class BookingService {
     /**
      * Found owner booking base on owner_id, bookingStatus
      */
-    public List<bookTableDTO> getOwnerBooking(int owner_id, Integer bookingStatus) {
-        BookingStatus  status = null;
-        if(bookingStatus != null){
-            status = BookingStatus.values()[bookingStatus];
-        }
+    public List<bookTableDTO> getOwnerBooking(int owner_id, Integer bookingStatus, Integer restaurant_id) {
+        BookingStatus status = (bookingStatus != null) ? BookingStatus.values()[bookingStatus] : null;
         List<TableBooking> bookings = bookingRepo.getOwnerBooking(owner_id);
         List<BookingDecision> decisions = bookingDecisionRepo.getAllBookingDecision(owner_id);
         List<bookTableDTO> data = bookTableDTO.fromEntity(bookings, decisions);
-        if (status == null) {
-            return data;
-        } else {
-            data = data.stream().filter(booking -> Objects.equals(booking.getStatus(), BookingStatus.values()[bookingStatus].toString())).collect(Collectors.toList());
+        if (restaurant_id != null) {
+            data = data.stream()
+                    .filter(booking -> Objects.equals(booking.getRestaurant_id(), restaurant_id))
+                    .collect(Collectors.toList());
+        }
+        if (status != null) {
+            data = data.stream()
+                    .filter(booking -> Objects.equals(booking.getStatus(), status.toString()))
+                    .collect(Collectors.toList());
         }
         return data;
     }
+
 
     /**
      * Lay thong tin booking cua user

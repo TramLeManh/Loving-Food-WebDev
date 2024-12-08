@@ -253,8 +253,6 @@
 
         // Delete booking function
         function deleteBooking(bookingId) {
-            console.log("Attempting to delete booking ID:", bookingId); // Debugging line
-
             fetch(`/user/deleteBooking/${bookingId}`, {method: "DELETE"})
                 .then((response) => {
                     if (response.ok) {

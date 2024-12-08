@@ -39,14 +39,14 @@ public class RestaurantRestController {
     public List<District> getD() {
         return restaurantService.getDistrict();
     }
-    @GetMapping("/getOwnerRestaurant")
-    public List<Restaurant> getOwnerRestaurant(HttpSession session, @RequestParam(value = "owner_id", required = false) String owner_id) {
-        String user_id = (String) session.getAttribute("user_id");
-        if(user_id == null) {
-            return restaurantService.getOwnerRestaurant(Integer.parseInt(owner_id));
-        }
-        return restaurantService.getOwnerRestaurant(Integer.parseInt(user_id));
-    }
+//    @GetMapping("/getOwnerRestaurant")
+//    public List<Restaurant> getOwnerRestaurant(HttpSession session, @RequestParam(value = "owner_id", required = false) String owner_id) {
+//        String user_id = (String) session.getAttribute("user_id");
+//        if(user_id == null) {
+//            return restaurantService.getOwnerRestaurant(Integer.parseInt(owner_id));
+//        }
+//        return restaurantService.getOwnerRestaurant(Integer.parseInt(user_id));
+//    }
 
     @PostMapping("/insertCategory")
     public ResponseEntity<Map<String, Object>> insertCategory(@RequestBody addCategoryDTO addCategoryDTO) {
