@@ -24,6 +24,14 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <style>
+        .row label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .row select {
+            width: 100%;
+        }
         body {
             color: #566787;
             background: #f5f5f5;
@@ -242,7 +250,7 @@
             document.querySelectorAll(".create").forEach((button) => {
 
                 button.addEventListener("click", function () {
-                    document.getElementById("c-id").innerText =
+                    document.getElementById("c-id").value =
                         this.getAttribute("data-id");
                     document.getElementById("c-name").innerText =
                         this.getAttribute("data-name");
@@ -267,7 +275,7 @@
             document.querySelectorAll(".edit").forEach((button) => {
                 button.addEventListener("click", function () {
 
-                    document.getElementById("e-id").innerText =
+                    document.getElementById("e-id").value =
                         this.getAttribute("data-id");
                     document.getElementById("e-name").innerText =
                         this.getAttribute("data-name");
@@ -275,8 +283,8 @@
                         this.getAttribute("data-note");
                     document.getElementById("e-guest").innerText =
                         this.getAttribute("data-guest");
-                    document.getElementById("e-note1").innerText =
-                        this.getAttribute("data-note1");
+                    document.getElementById("e-note1").value = this.getAttribute("data-note1");
+                    console.log(this.getAttribute("data-note1"));
                     document.getElementById("e-status").value =
                         this.getAttribute("data-status");
                     document.getElementById("decisionID").innerText=
@@ -334,7 +342,7 @@
         <div class="modal-content">
 
             <form
-                    th:action="@{/}"
+                    th:action="@{/admin/decision/create}"
                     method="POST"
                     id="createResponseForm"
             >
@@ -375,16 +383,14 @@
                         <label>Booking status</label>
                         <select name="status" class="form-control">
                             <option value="" selected disabled hidden>Select a status</option>
-
-                            <option value="1">POSTPONED</option>
-                            <option value="2">ACCEPTED</option>
-                            <option value="3">DENIED</option>
+                            <option value="POSTPONED">POSTPONED</option>
+                            <option value="ACCEPTED">ACCEPTED</option>
+                            <option value="DENIED">DENIED</option>
                         </select>
-
                     </div>
+                    <input type="hidden" name="booking_id" id="c-id"/>
                 </div>
                 <div class="modal-footer">
-                    <input type="hidden" name="booking_id" id="c-id"/>
                     <input
                             type="button"
                             class="btn btn-default"
@@ -401,7 +407,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <form
-                    th:action="@{/}"
+                    th:action="@{/admin/decision/update}"
                     method="POST"
                     id="updateResponseForm"
             >
@@ -480,32 +486,31 @@
 
                             </b>
                         </h2>
+
+                        <div class="col-sm-10">
+                            <label for="statusSelect">Filter by Status:</label>
+                            <select id="statusSelect" onchange="filterByStatus()" class="form-control">
+                                <option th:value="''" th:selected="${currentStatus == null}">All</option>
+                                <option th:value="'0'" th:selected="${currentStatus == 0}">PENDING</option>
+                                <option th:value="'1'" th:selected="${currentStatus == 1}">POSTPONED</option>
+                                <option th:value="'2'" th:selected="${currentStatus == 2}">ACCEPTED</option>
+                                <option th:value="'3'" th:selected="${currentStatus == 3}">DENIED</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-10">
+                            <label for="restaurantSelect">Filter by Restaurant Name:</label>
+                            <select id="restaurantSelect" onchange="filterBookings()" class="form-control">
+                                <option th:value="''" th:selected="${restaurant_id == null}">All Restaurants</option>
+                                <option th:each="restaurant : ${restaurants}"
+                                        th:value="${restaurant.restaurant_id}"
+                                        th:text="${restaurant.name}"
+                                        th:selected="${restaurant_id == restaurant.restaurant_id}"></option>
+                            </select>
+                        </div>
+
                     </div>
-                    <div class="col-sm-4">
-                        <label for="statusSelect">Filter by Status:</label>
-                        <select id="statusSelect" onchange="filterByStatus()">
-                            <option th:value="''" th:selected="${currentStatus == null}">All</option>
-                            <option th:value="'0'" th:selected="${currentStatus == 0}">PENDING</option>
-                            <option th:value="'1'" th:selected="${currentStatus == 1}">POSTPONED</option>
-                            <option th:value="'2'" th:selected="${currentStatus == 2}">ACCEPTED</option>
-                            <option th:value="'3'" th:selected="${currentStatus == 3}">DENIED</option>
-                        </select>
 
 
-
-
-                    </div>
-
-                    <div class="col-sm-4">
-                        <label for="restaurantSelect">Filter by Restaurant Name:</label>
-                        <select id="restaurantSelect" onchange="filterBookings()">
-                            <option th:value="''" th:selected="${restaurant_id == null}">All Restaurants</option>
-                            <option th:each="restaurant : ${restaurants}"
-                                    th:value="${restaurant.restaurant_id}"
-                                    th:text="${restaurant.name}"
-                                    th:selected="${restaurant_id == restaurant.restaurant_id}"></option>
-                        </select>
-                    </div>
 
                 </div>
             </div>

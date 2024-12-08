@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class createDecisionDTO {
-    private int booking_id;
+    private String booking_id;
 
     private String status;
     private String note;

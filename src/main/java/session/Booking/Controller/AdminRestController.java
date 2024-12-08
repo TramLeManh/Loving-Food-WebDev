@@ -2,6 +2,7 @@ package session.Booking.Controller;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,52 +73,27 @@ public class AdminRestController {
     }
 
     @Transactional
-    @PostMapping("/decision/{action}")
+    @PostMapping(value="/decision/{action}",consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ResponseEntity<Object> createDecision(
             HttpSession session,
-            @RequestBody(required = false) createDecisionDTO decisionDTO,
+            @ModelAttribute() createDecisionDTO decisionDTO,
             @PathVariable String action) {
-
-//        Integer user_id = (Integer) session.getAttribute("user");
         try {
-            if (action.equalsIgnoreCase("create")) {
-                bookingService.createDecision(6441, decisionDTO.getBooking_id(), decisionDTO.getNote(), decisionDTO.getStatus());
+            if(action.equalsIgnoreCase("create")) {
+                bookingService.createDecision(6441, Integer.parseInt(decisionDTO.getBooking_id()), decisionDTO.getNote(), decisionDTO.getStatus());
                 return ResponseEntity.ok("Decision created successfully.");
+            } else if(action.equalsIgnoreCase("update")) {
+                bookingService.updateDecision(Integer.parseInt(decisionDTO.getBooking_id()), decisionDTO.getStatus(), decisionDTO.getNote());
+                return ResponseEntity.ok("Decision updated successfully.");
             }
+            return ResponseEntity.badRequest().body("Invalid action provided. Use 'view', 'create', or 'update'.");
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.badRequest().body("An error occurred: " + e.getMessage());
         }
-        return ResponseEntity.badRequest().body("Invalid action provided. Use 'view', 'create', or 'update'.");
     }
 
-    @Transactional
-    @PutMapping("/decision")
-    public ResponseEntity<Object> updateDecision(
-            @RequestParam String action,
-            @RequestBody(required = false) updateResponseDTO updateResponseDTO,
-            @RequestParam(required = false) Integer booking_id) {
-        Map<String, Object> response = new LinkedHashMap<>();
-        System.out.println(updateResponseDTO.getNote());
-        try {
-            if (action.equalsIgnoreCase("update")) {
-                if (!bookingService.isDecisionExist(booking_id)) {
-                    response.put("message", "BookingDecision does not exist.");
-                    return ResponseEntity.badRequest().body(response);
-                }
-                bookingService.updateDecision(booking_id, updateResponseDTO.getStatus(), updateResponseDTO.getNote());
-                response.put("message", "Updated successfully.");
-                return ResponseEntity.ok(response);
-            }
-            response.put("message", "Error");
-            return ResponseEntity.badRequest().body(response);
-        } catch (IllegalArgumentException e) {
-            response.put("message", "Invalid BookingStatus value provided.");
-            return ResponseEntity.badRequest().body(response);
-        } catch (Exception e) {
-            response.put("message", "An error occurred: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
-    }
+
     @PostMapping("/createRestaurant")
     public ResponseEntity<Map<String, Object>> insertRestaurant(HttpSession session, @RequestBody createRestaurantDTO createRestaurantDTO) {
         int owner_id = 8242;
