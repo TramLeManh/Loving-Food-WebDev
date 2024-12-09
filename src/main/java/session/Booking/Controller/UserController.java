@@ -19,6 +19,7 @@ import session.Restaurant.Restaurant;
 import session.Restaurant.RestaurantService;
 import session.userInformation.UserInformation;
 import session.userInformation.UserInformationRepo;
+import session.utils.Service.EmailService.EmailService;
 
 import java.rmi.registry.RegistryHandler;
 import java.security.Timestamp;
@@ -35,13 +36,12 @@ public class UserController {
     private final BookingService bookingService;
     private final RestaurantService restaurantService;
     private final UserInformationRepo userInformationRepo;
-
-    public UserController(BookingService bookingService, RestaurantService restaurantService, RestaurantService restaurantService1, UserInformationRepo userInformationRepo) {
+    private final EmailService emailService;
+    public UserController(BookingService bookingService, RestaurantService restaurantService, RestaurantService restaurantService1, UserInformationRepo userInformationRepo, EmailService emailService) {
         this.bookingService = bookingService;
-
         this.restaurantService = restaurantService1;
-
         this.userInformationRepo = userInformationRepo;
+        this.emailService = emailService;
     }
 //    @GetMapping("/getUserBooking")
 //    public String getUserBooking(HttpSession session, @RequestParam(required = false) Integer status, Model model) {
@@ -148,9 +148,12 @@ public class UserController {
         try {
             Integer user_id = (Integer) session.getAttribute("user");
             bookingService.createUserBooking(CreateBookTableDTO.toEntity(book, user_id));
+            Restaurant restaurant = restaurantService.getById(book.getRestaurant_id());
+            emailService.sendConfirm(restaurant,book);
             return ResponseEntity.ok("Booking created successfully");
 
         }catch (Exception e){
+            System.out.println(e.getMessage());
             return ResponseEntity.badRequest().body("Booking creation failed");
         }
     }

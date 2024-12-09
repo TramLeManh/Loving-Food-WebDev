@@ -7,7 +7,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import session.Account.DTO.UserDTO;
 import session.Restaurant.Restaurant;
-import session.model.District;
 import session.responseHandler.Exception.ServerException;
 import session.Account.AccountService;
 import session.Restaurant.RestaurantService;
@@ -81,13 +80,14 @@ public class    HomeController {
     public String index(HttpSession session, Model model) {
         List<Restaurant> restaurantList = restaurantService.getRestaurant(null , null);
         model.addAttribute("restaurantList", restaurantList);
+        UserDTO res =null;
         try {
             int id = (int) session.getAttribute("user");
-            UserDTO res = service.findUser(id);
-            model.addAttribute("user_email", res.email());
-        } catch (Exception e) {
-            model.addAttribute("user", null);
+            model.addAttribute("user", res);
+            res = service.findUser(id);
+        } catch (Exception ignored) {
         }
+        model.addAttribute("user", res);
         return "index";
     }
 //
