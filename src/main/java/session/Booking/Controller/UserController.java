@@ -146,8 +146,8 @@ public class UserController {
     @PostMapping(value = "/createOrder", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> createUserBookingOrder(HttpSession session, @RequestBody CreateBookTableDTO book) {
         try {
-            Integer user_id = (Integer) session.getAttribute("user");
-            bookingService.createUserBooking(CreateBookTableDTO.toEntity(book, user_id));
+//            Integer user_id = (Integer) session.getAttribute("user");
+            bookingService.createUserBooking(CreateBookTableDTO.toEntity(book, 8242));
             Restaurant restaurant = restaurantService.getById(book.getRestaurant_id());
             emailService.sendConfirm(restaurant,book);
             emailService.sendAnnounce(book);
