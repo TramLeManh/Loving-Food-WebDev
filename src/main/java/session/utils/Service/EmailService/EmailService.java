@@ -228,11 +228,11 @@ public class EmailService {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            String subject = "Booking Confirmation #"+bookTableDTO.getBooking_id();
+            String subject = "New Booking Order arrive #"+bookTableDTO.getBooking_id();
             helper.setFrom("webproject123@gmail.com");
             helper.setFrom(new InternetAddress("lemanh1412@gmail.com", "Dev Support"));
             Restaurant restaurant= restaurantDAO.findById(bookTableDTO.getRestaurant_id()).orElse(null);
-            UserInformation user = userInformationRepo.getUserInformation(bookTableDTO.getRestaurant_id());
+            UserInformation user = userInformationRepo.getUserByRestaurant(bookTableDTO.getRestaurant_id());
             TimeConvert time= new TimeConvert(bookTableDTO.getTime());
             String body = "<!DOCTYPE html>\n" +
                     "<html lang=\"en\">\n" +
