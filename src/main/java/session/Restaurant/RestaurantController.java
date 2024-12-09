@@ -29,11 +29,7 @@ public class RestaurantController {
 //        model.addAttribute("category", category);
 //        return "category_restaurants";
 //    }
-    @RequestMapping("/get/{res}")
-    public ResponseEntity<Object> test(@PathVariable Integer res) {
-        Account account = restaurantDAO.getUserByRestaurant(res);
-        return ResponseEntity.ok(account);
-    }
+
     @RequestMapping("/test")
     public ResponseEntity<Object> test() {
         List<Restaurant> account = restaurantService.getRestaurant(null,null);

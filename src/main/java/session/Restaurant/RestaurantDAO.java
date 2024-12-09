@@ -93,15 +93,7 @@ public class RestaurantDAO {
             throw new ServerException(e.getMessage());
         }
     }
-    public Account getUserByRestaurant(int restaurant) {
-        try {
-            String query = "select * from user where user_id in (select user_id from ownrestaurant where restaurant_id = ?)";
-            return jdbcTemplate.queryForObject(query, new Account(),restaurant);
-        } catch (Exception e) {
-            throw new ServerException(e.getMessage());
-        }
 
-    }
 
 
 }

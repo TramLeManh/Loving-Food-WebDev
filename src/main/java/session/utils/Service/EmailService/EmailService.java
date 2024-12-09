@@ -10,6 +10,8 @@ import session.Account.Account;
 import session.Booking.DTO.CreateBookTableDTO;
 import session.Restaurant.Restaurant;
 import session.Restaurant.RestaurantDAO;
+import session.userInformation.UserInformation;
+import session.userInformation.UserInformationRepo;
 import session.utils.Service.TimeConvert;
 
 @Component
@@ -18,9 +20,11 @@ public class EmailService {
     //if email error return false
     private final JavaMailSender mailSender;
     private final RestaurantDAO restaurantDAO;
-    public EmailService(JavaMailSender mailSender, RestaurantDAO restaurantDAO) {
+    private final UserInformationRepo userInformationRepo;
+    public EmailService(JavaMailSender mailSender, RestaurantDAO restaurantDAO, UserInformationRepo userInformationRepo) {
         this.mailSender = mailSender;
         this.restaurantDAO = restaurantDAO;
+        this.userInformationRepo = userInformationRepo;
     }
     //Implement Mail
     @Async
@@ -224,11 +228,11 @@ public class EmailService {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            String subject = "Booking Confirmation #"+bookTableDTO.getBooking_id();
+            String subject = "New Booking Order arrive #"+bookTableDTO.getBooking_id();
             helper.setFrom("webproject123@gmail.com");
             helper.setFrom(new InternetAddress("lemanh1412@gmail.com", "Dev Support"));
             Restaurant restaurant= restaurantDAO.findById(bookTableDTO.getRestaurant_id()).orElse(null);
-            Account user= restaurantDAO.getUserByRestaurant(bookTableDTO.getRestaurant_id());
+            UserInformation user = userInformationRepo.getUserByRestaurant(bookTableDTO.getRestaurant_id());
             TimeConvert time= new TimeConvert(bookTableDTO.getTime());
             String body = "<!DOCTYPE html>\n" +
                     "<html lang=\"en\">\n" +
@@ -292,7 +296,7 @@ public class EmailService {
                     "            <h1>New Booking Table Arrive</h1>\n" +
                     "        </div>\n" +
                     "        <div class=\"content\">\n" +
-                    "            <p>Dear <strong>"+user.getFull_name()+"</strong>,</p>\n" +
+                    "            <p>Dear <strong>"+user.getFullName()+"</strong>,</p>\n" +
                     "            <p>New order arrive for restaurant "+restaurant.getName()+"</p>\n" +
                     "            <table class=\"details\">\n" +
                     "                <tr>\n" +
