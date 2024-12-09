@@ -150,8 +150,8 @@ public class UserController {
             bookingService.createUserBooking(CreateBookTableDTO.toEntity(book, user_id));
             Restaurant restaurant = restaurantService.getById(book.getRestaurant_id());
             emailService.sendConfirm(restaurant,book);
+            emailService.sendAnnounce(book);
             return ResponseEntity.ok("Booking created successfully");
-
         }catch (Exception e){
             System.out.println(e.getMessage());
             return ResponseEntity.badRequest().body("Booking creation failed");
