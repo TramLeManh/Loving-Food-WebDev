@@ -78,8 +78,8 @@ public class    HomeController {
     }
 
     @RequestMapping("/index/{district}")
-    public String index(HttpSession session, Model model, @PathVariable String district) {
-        List<Restaurant> restaurantList = restaurantService.getRestaurant(district , null);
+    public String index(HttpSession session, Model model, @PathVariable String district, @RequestParam(required = false) String category) {
+        List<Restaurant> restaurantList = restaurantService.getRestaurant(district , category);
         List<District> districtList = restaurantService.getDistrict();
         model.addAttribute("restaurantList", restaurantList);
         model.addAttribute("districtList", districtList);
