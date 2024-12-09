@@ -77,20 +77,28 @@ public class    HomeController {
     }
 
     @RequestMapping("/index")
+<<<<<<< HEAD
+    public String index(@RequestParam(value = "category", required = false) String category, HttpSession session, Model model) {
+        // Fetch restaurants based on the category
+        List<Restaurant> restaurantList = restaurantService.getRestaurant(null, category);
+=======
     public String index(HttpSession session, Model model) {
         List<Restaurant> restaurantList = restaurantService.getRestaurant(null , null);
 
+>>>>>>> bde90c5b56aec0d5a363180f685617188482f70d
         model.addAttribute("restaurantList", restaurantList);
-        UserDTO res =null;
+
+        UserDTO res = null;
         try {
             int id = (int) session.getAttribute("user");
-            model.addAttribute("user", res);
             res = service.findUser(id);
         } catch (Exception ignored) {
         }
         model.addAttribute("user", res);
+
         return "index";
     }
+
 //
 //    @RequestMapping("/restaurant/get")
 //    public String restaurant(HttpSession session, Model model, @RequestParam("category") String category) {
