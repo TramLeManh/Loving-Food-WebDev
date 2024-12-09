@@ -79,6 +79,7 @@ public class    HomeController {
     @RequestMapping("/index")
     public String index(HttpSession session, Model model) {
         List<Restaurant> restaurantList = restaurantService.getRestaurant(null , null);
+
         model.addAttribute("restaurantList", restaurantList);
         UserDTO res =null;
         try {

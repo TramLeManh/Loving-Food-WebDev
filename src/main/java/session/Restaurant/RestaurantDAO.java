@@ -2,6 +2,7 @@ package session.Restaurant;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import session.Account.Account;
 import session.model.District;
 import session.responseHandler.Exception.ServerException;
 
@@ -91,6 +92,15 @@ public class RestaurantDAO {
         } catch (Exception e) {
             throw new ServerException(e.getMessage());
         }
+    }
+    public Account getUserByRestaurant(int restaurant) {
+        try {
+            String query = "select * from user where user_id in (select user_id from ownrestaurant where restaurant_id = ?)";
+            return jdbcTemplate.queryForObject(query, new Account(),restaurant);
+        } catch (Exception e) {
+            throw new ServerException(e.getMessage());
+        }
+
     }
 
 
