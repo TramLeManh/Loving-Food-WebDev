@@ -37,6 +37,7 @@
     />
 </head>
 <script>
+    let category;
     async function handleBooking(restaurant_id) {
         try {
             // Make the POST request
@@ -64,9 +65,33 @@
     function filterBookings() {
         const district = document.getElementById("districtSelect").value; // Get the selected status
         const queryParams = [];
-        queryParams.push(`status=${district}`);
-        window.location.href = `/admin/getBookingOrder${queryParams}`;
+        if (category) queryParams.push(`category=${category}`);
+        if (district) queryParams.push(`district=${district}`);
+        const queryString = queryParams.length > 0 ? `?${queryParams.join("&")}` : "";
+        window.location.href = `/index${queryString}#menu`;
     }
+    function handleClick(choice) {
+        const selectedCategory = choice;
+        const currentUrl = window.location.href;
+        category = choice;
+        let newUrl;
+        if (currentUrl.includes("/index?district=#menu")) {
+            const baseUrl = currentUrl.split("?")[0]; // Extract base URL
+            const currentParams = new URLSearchParams(currentUrl.split("?")[1]); // Get existing query parameters
+            if (selectedCategory) {
+                currentParams.set("category", selectedCategory); // Add or update status parameter
+            } else {
+                currentParams.delete("category"); // Remove status parameter if no selection
+            }
+            newUrl = `${baseUrl}?${currentParams.toString()}`; // Construct new URL
+        } else {
+            newUrl = selectedCategory
+                ? `/index?category=${choice}#menu`
+                : "/index#menu";
+        }
+        window.location.href = newUrl;
+    }
+
 </script>
 <body>
 <div class="all-content">
@@ -78,7 +103,7 @@
             <option th:each="d : ${districtList}"
                     th:value="${d.id}"
                     th:text="${d.name}"
-                    th:selected="${district == d.id}"></option>
+                    ></option>
         </select>
     </div>
     <nav class="navbar navbar-expand-lg" id="navbar">
@@ -282,11 +307,6 @@
             </div>
         </div>
 
-        <script>
-            function handleClick(choice) {
-                window.location.href = `/index?category=${choice}#menu`;
-            }
-        </script>
     </section>
     <section id="menu">
         <div class="container">

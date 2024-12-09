@@ -77,14 +77,15 @@ public class    HomeController {
         return "blog";
     }
 
-    @RequestMapping("/index/{district}")
-    public String index(HttpSession session, Model model, @PathVariable String district, @RequestParam(required = false) String category) {
-        List<Restaurant> restaurantList = restaurantService.getRestaurant(district , category);
+    @RequestMapping("/index")
+    public String index(HttpSession session, Model model, @RequestParam(required = false) String district,@RequestParam(required = false) String category) {
+        List<Restaurant> restaurantList = restaurantService.getRestaurant(district , null);
         List<District> districtList = restaurantService.getDistrict();
+//        System.out.println("district is " + district+ " category is " + category);
         model.addAttribute("restaurantList", restaurantList);
         model.addAttribute("districtList", districtList);
         model.addAttribute("district", district);
-
+        model.addAttribute("category", category);
         UserDTO res = null;
         try {
             int id = (int) session.getAttribute("user");
