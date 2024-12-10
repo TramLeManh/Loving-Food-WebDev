@@ -3,8 +3,8 @@
   <component name="JpaBuddyIdeaProjectConfig" ddlActionDbType="mysql" migrateIndexesAndConstraints="true" reUseTableSchema="true">
     <option name="defaultUnitInitialized" value="true" />
     <option name="migrateIndexesAndConstraints" value="true" />
-    <option name="reLastEntityCreationPackage" value="src/main/java/session/Booking/Model" />
+    <option name="reLastEntityCreationPackage" value="src/main/java/session/Restaurant/Model" />
     <option name="renamerInitialized" value="true" />
-    <option name="reverseEngineeringLastDbConnectionId" value="ad8e0c42-83cf-4b1c-a639-51c61d42b6f6__restaurant" />
+    <option name="reverseEngineeringLastDbConnectionId" value="0b058184-69fb-4df4-8c06-34367ad88c3a__restaurant" />
   </component>
 </project>

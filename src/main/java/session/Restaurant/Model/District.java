@@ -1,4 +1,4 @@
-package session.model;
+package session.Restaurant.Model;
 
 import org.springframework.jdbc.core.RowMapper;
 

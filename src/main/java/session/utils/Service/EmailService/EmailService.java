@@ -1,15 +1,13 @@
 package session.utils.Service.EmailService;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
-import org.apache.catalina.User;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import session.Account.Account;
 import session.Booking.DTO.CreateBookTableDTO;
 import session.Restaurant.Restaurant;
-import session.Restaurant.RestaurantDAO;
+import session.Restaurant.DAO.RestaurantDAO;
 import session.userInformation.UserInformation;
 import session.userInformation.UserInformationRepo;
 import session.utils.Service.TimeConvert;

@@ -1,9 +1,9 @@
-package session.Restaurant;
+package session.Restaurant.DAO;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-import session.Account.Account;
-import session.model.District;
+import session.Restaurant.Model.District;
+import session.Restaurant.Restaurant;
 import session.responseHandler.Exception.ServerException;
 
 import java.util.List;

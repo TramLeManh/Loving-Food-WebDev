@@ -3,20 +3,31 @@ package session.Restaurant;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import session.Category.CategoryRepo;
+import session.Restaurant.DAO.CommentDAO;
+import session.Restaurant.DAO.RestaurantDAO;
+import session.Restaurant.DTO.CommentDTO;
 import session.Restaurant.DTO.createRestaurantDTO;
-import session.model.District;
+import session.Restaurant.Model.Comment;
+import session.Restaurant.Model.District;
+import session.userInformation.UserInformation;
+import session.userInformation.UserInformationRepo;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class RestaurantService {
 
     private final CategoryRepo categoryDAO;
     private final RestaurantDAO restaurantDAO;
+    private final CommentDAO commentDAO;
+    private final UserInformationRepo userInformationRepo;
 
-    public RestaurantService(RestaurantDAO restaurantDAO, CategoryRepo category) {
+    public RestaurantService(RestaurantDAO restaurantDAO, CategoryRepo category, CommentDAO commentDAO, UserInformationRepo userInformationRepo) {
         this.restaurantDAO = restaurantDAO;
         this.categoryDAO = category;
+        this.commentDAO = commentDAO;
+        this.userInformationRepo = userInformationRepo;
     }
 
     //Tìm list các nhà hàng theo tên và địa chỉ
@@ -33,7 +44,6 @@ public class RestaurantService {
         }
         if (restaurants != null) {
             restaurants.forEach(restaurant -> {
-                // Set the category based on restaurant ID
                 restaurant.setCategory(categoryDAO.getRestaurantCategory(restaurant.getRestaurant_id()));
             });
         }
@@ -82,6 +92,17 @@ public class RestaurantService {
 
     public void removeRestaurant(int id) {
         restaurantDAO.removeRestaurant(id);
+    }
+
+    public List<CommentDTO> getCommentByRestaurant(int restaurant_id) {
+        return commentDAO.getCommentByRestaurant(restaurant_id).stream().map(comment -> {
+            UserInformation user = userInformationRepo.findById(comment.getUser_id()).orElse(null);
+            return CommentDTO.fromEntity(comment, user);
+        }).collect(Collectors.toList());
+    }
+    @Transactional
+    public void createComment(int user_id, CommentDTO comment) {
+        commentDAO.save(CommentDTO.toEntity(comment,user_id));
     }
 
 

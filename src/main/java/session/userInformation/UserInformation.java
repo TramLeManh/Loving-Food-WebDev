@@ -1,5 +1,6 @@
 package session.userInformation;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -7,8 +8,12 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+import session.Restaurant.Model.Comment;
 
 import java.time.Instant;
+import java.util.List;
 
 @Getter
 @Setter
@@ -43,5 +48,10 @@ public class UserInformation {
 
     @Column(name = "updated_at", nullable = true)
     private Instant updatedAt = Instant.now();
+    @OneToMany(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "id")
+    @JsonIgnore
+    private List<Comment> comments;
 
 }

@@ -1,13 +1,13 @@
 package session.Restaurant;
 
-import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import session.Restaurant.DTO.CommentDTO;
 import session.Restaurant.DTO.RestaurantResponseDto;
 import session.Restaurant.DTO.addCategoryDTO;
-import session.Restaurant.DTO.createRestaurantDTO;
-import session.model.District;
+import session.Restaurant.Model.Comment;
+import session.Restaurant.Model.District;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/v1/restaurant")
+@RequestMapping("/restaurant")
 public class RestaurantRestController {
     private final RestaurantService restaurantService;
 
@@ -60,6 +60,15 @@ public class RestaurantRestController {
             return ResponseEntity.badRequest().body(response);
         }
 
+    }
+    @GetMapping("/getComment")
+    public ResponseEntity<List<CommentDTO>> getComment(@RequestParam(value = "restaurant_id") String restaurant_id) {
+        return ResponseEntity.ok().body(restaurantService.getCommentByRestaurant(Integer.parseInt(restaurant_id)));
+    }
+    @PostMapping("/createComment/{user_id}")
+    public ResponseEntity<Object> createComment(@RequestBody CommentDTO comment, @PathVariable String user_id) {
+        restaurantService.createComment(Integer.parseInt(user_id),comment);
+        return ResponseEntity.ok().body(comment);
     }
 
 }

@@ -37,7 +37,6 @@
     />
 </head>
 <script>
-    let category;
     async function handleBooking(restaurant_id) {
         try {
             // Make the POST request
@@ -62,20 +61,25 @@
             window.location.href = "/error";
         }
     }
+    // category status
     function filterBookings() {
         const district = document.getElementById("districtSelect").value; // Get the selected status
         const queryParams = [];
+        const urlParams = new URLSearchParams(window.location.search);
+        const category = urlParams.get("category");
         if (category) queryParams.push(`category=${category}`);
-        if (district) queryParams.push(`district=${district}`);
+        if (district) queryParams.push(`district=${district}`)
+        console.log(category)
         const queryString = queryParams.length > 0 ? `?${queryParams.join("&")}` : "";
-        window.location.href = `/index${queryString}#menu`;
+        window.location.href = `${queryString}#menu`;
     }
     function handleClick(choice) {
         const selectedCategory = choice;
         const currentUrl = window.location.href;
-        category = choice;
         let newUrl;
-        if (currentUrl.includes("/index?district=#menu")) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const district = urlParams.get("district");
+        if (district) {
             const baseUrl = currentUrl.split("?")[0]; // Extract base URL
             const currentParams = new URLSearchParams(currentUrl.split("?")[1]); // Get existing query parameters
             if (selectedCategory) {
@@ -86,8 +90,8 @@
             newUrl = `${baseUrl}?${currentParams.toString()}`; // Construct new URL
         } else {
             newUrl = selectedCategory
-                ? `/index?category=${choice}#menu`
-                : "/index#menu";
+                ? `?category=${choice}#menu`
+                : "#menu";
         }
         window.location.href = newUrl;
     }
@@ -103,7 +107,7 @@
             <option th:each="d : ${districtList}"
                     th:value="${d.id}"
                     th:text="${d.name}"
-                    ></option>
+                    th:selected="${district == d.id}"></option>
         </select>
     </div>
     <nav class="navbar navbar-expand-lg" id="navbar">
