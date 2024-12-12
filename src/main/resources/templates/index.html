@@ -3,11 +3,17 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Loving Food</title>
+    <title>Home</title>
     <link rel="stylesheet" href="/css/coffee.css"/>
     <style>
         h2 {
             font-family: 'Satoshi', sans-serif;
+        }
+        districtSelectStyle {
+            display: inline-block;
+            width: auto;
+            min-width: 150px;
+            padding: 0.5em;
         }
     </style>
     <link
@@ -93,7 +99,7 @@
                 ? `?category=${choice}#menu`
                 : "#menu";
         }
-        window.location.href = newUrl;
+        window.location.href = newUrl+'#menu';
     }
 
 </script>
@@ -124,10 +130,10 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                        <a class="nav-link active" aria-current="page"  th:href="@{/index}">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a href="#about" class="nav-link">About</a>
+                        <a   href="/index#about" class="nav-link">About</a>
                     </li>
                     <li class="nav-item">
                         <a href="#menu" class="nav-link">Restaurants</a>
@@ -147,7 +153,7 @@
                     <li th:if="${user != null}" class="nav-item">
                         <a class="nav-link" href="#" th:text="${user.username}"></a>
                     </li>
-                    <li th:if="${user == null}" class="nav-item">
+                    <li th:if="${user == null}" class="nav-item dropdown">
                         <a
                                 class="nav-link dropdown-toggle"
                                 href="#"
@@ -159,7 +165,7 @@
                             Account
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="#">Login as user</a></li>
+                            <li><a class="dropdown-item" th:href="@{/account/login}">Login as user</a></li>
                             <li><hr class="dropdown-divider"/></li>
                             <li><a class="dropdown-item" href="#">Register user</a></li>
                             <li><a class="dropdown-item" href="#">Register restaurant</a></li>
@@ -238,16 +244,6 @@
                         th:selected="${district == d.id}"></option>
             </select>
         </div>
-
-        <style>
-            #districtSelect {
-                display: inline-block;
-                width: auto;
-                min-width: 150px;
-                padding: 0.5em;
-            }
-        </style>
-
         <div class="container">
             <div class="row mb-4">
                 <div class="col-md-4 py-3 py-md-0">
@@ -397,8 +393,7 @@
                 <div class="col-md-7">
                     <div class="heading6">Contact <span>Us</span></div>
                     <p>
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                        Dolorem, nam! <br/>Lorem ipsum dolor sit amet consectetur.
+                        Leave information for us to contact with you
                     </p>
                     <input
                             type="text"
@@ -422,15 +417,13 @@
                 </div>
                 <div class="col-md-5" style="margin-top: 191px" id="col">
                     <h1>Info</h1>
-                    <p><i class="fa-regular fa-envelope"></i>example@gmail.com</p>
-                    <p><i class="fa-solid fa-phone"></i>+9200000000000</p>
+                    <p><i class="fa-regular fa-envelope"></i> IU@gmail.com</p>
+                    <p><i class="fa-solid fa-phone"></i> +84 909 909 909</p>
                     <p>
-                        <i class="fa-solid fa-building-columns"></i>Karachi Sindhu
-                        Pakistan
+                        <i class="fa-solid fa-building-columns"></i> International University
                     </p>
                     <p>
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat
-                        beatae doloremque, commodi sunt excepturi incidunt.
+                        Web application project
                     </p>
                 </div>
             </div>
@@ -492,7 +485,7 @@
     </section>
     <footer id="footer">
         <div class="footer-logo text-center">
-            <img src="./images/logo.png" alt=""/>
+            <img src="https://upload.wikimedia.org/wikipedia/vi/thumb/2/29/Logo-HCMIU.svg/1200px-Logo-HCMIU.svg.png" alt=""/>
         </div>
         <div class="social-links text-center">
             <i class="fa-brands fa-twitter"></i>

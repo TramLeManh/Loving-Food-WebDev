@@ -10,7 +10,7 @@
             background-image: url('https://t4.ftcdn.net/jpg/09/28/14/51/360_F_928145187_1ztkJxvyComd8MhioRwGJ9iUnG1rE3Ab.jpg');
             background-size: cover; /* Ensures the background image covers the entire page */
             background-position: center; /* Centers the background image */
-            background-attachment: fixed; /* Keeps the background fixed while scrolling */
+            background-attachment: fixed; /* Keeps the bacFkground fixed while scrolling */
             color: white; /* Makes the text white for better contrast */
         }
 
@@ -111,16 +111,10 @@
                         <a th:href="@{/index}" class="nav-link">Category</a>
                     </li>
                     <li class="nav-item">
-                        <a href="#contact" class="nav-link">Contact</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#blogs" class="nav-link">Blogs</a>
-                    </li>
-                    <li class="nav-item">
                         <a th:text="${user.fullName}" class="nav-link"></a>
                     </li>
                     <li class="nav-item ms-auto">
-                        <a th:text="${user.email}" class="nav-link"></a>
+                        <a class="nav-link"  th:href="@{/logout}" >Log out</a>
                     </li>
                 </ul>
             </div>

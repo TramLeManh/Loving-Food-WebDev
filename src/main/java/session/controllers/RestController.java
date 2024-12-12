@@ -58,7 +58,7 @@ public class RestController {
             UserDTO userDto = service.findUser(user);
             String annouce = "Log out " + userDto.username();
             session.invalidate();
-            return annouce;  // Redirect to login page
+            return "index";  // Redirect to login page
         } catch (Exception e) {
             return "Please login to continue";
         }
