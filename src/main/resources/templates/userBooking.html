@@ -172,7 +172,6 @@
             const queryParam = selectedStatus ? `?status=${selectedStatus}` : ""; // Include `status` only if selected
             window.location.href = `/user/getUserBooking${queryParam}`;
         }
-
         $(document).ready(function () {
             $("#updateBookingForm").on("submit", function (event) {
                 event.preventDefault(); // Prevent default form submission
@@ -194,7 +193,6 @@
                 });
             });
         });
-
         document.addEventListener("DOMContentLoaded", function () {
             document.querySelectorAll(".view").forEach((button) => {
 
@@ -206,7 +204,6 @@
                 });
             });
         })
-
         document.addEventListener("DOMContentLoaded", function () {
             document.querySelectorAll(".edit").forEach((button) => {
                 button.addEventListener("click", function () {
@@ -250,7 +247,6 @@
                     });
             });
         });
-
         // Delete booking function
         function deleteBooking(bookingId) {
             fetch(`/user/deleteBooking/${bookingId}`, {method: "DELETE"})
@@ -267,6 +263,37 @@
                     alert("An error occurred while deleting booking.");
                 });
         }
+
+        document.getElementById('myForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            const formObject = {};
+            formData.forEach((value, key) => {
+                formObject[key] = value;
+                console.log(key, value);
+            });
+            try {
+                const response = await fetch('/account/saveUserInformation', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json', // Set the Content-Type to JSON
+                    },
+                    body: JSON.stringify(formObject), // Convert object to JSON
+                });
+
+                if (response.ok) {
+                    alert('Form submitted successfully!');
+                    window.location.href = '/account/login';
+                } else {
+                    console.error('Error:', response.statusText);
+                    alert('Form submission failed!');
+                }
+            } catch (error) {
+                console.error('Request failed:', error);
+                alert('An error occurred!');
+            }
+        })
     </script>
 </head>
 <body>
@@ -395,7 +422,6 @@
         </div>
     </div>
 </div>
-
 <div id="deleteEmployeeModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -437,6 +463,7 @@
     </div>
 </div>
 <div class="container">
+    <h2 th:text="${user.fullName}"></h2>
     <div class="table-responsive">
         <div class="table-wrapper">
             <div class="table-title">

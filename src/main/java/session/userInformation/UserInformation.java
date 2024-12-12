@@ -23,8 +23,8 @@ public class UserInformation {
     @Id
     @Column(name = "user_id", nullable = false)
     @JsonProperty("user_id")
-    private Integer user_id;
 
+    private Integer user_id;
     @Size(max = 50)
     @NotNull
     @Column(name = "full_name", nullable = false, length = 50)
@@ -38,7 +38,6 @@ public class UserInformation {
     @Size(max = 255)
     @Column(name = "address")
     private String address;
-
     @Size(max = 255)
     @Column(name = "profile_picture_url")
     private String profilePictureUrl;

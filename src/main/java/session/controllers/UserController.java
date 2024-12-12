@@ -1,17 +1,12 @@
-package session.Booking.Controller;
+package session.controllers;
 
-import aj.org.objectweb.asm.commons.TryCatchBlockSorter;
 import jakarta.servlet.http.HttpSession;
-import org.apache.catalina.User;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import session.Account.Account;
-import session.Account.AccountService;
-import session.Account.DTO.UserDTO;
 import session.Booking.BookingService;
 import session.Booking.DTO.CreateBookTableDTO;
 import session.Booking.DTO.bookTableDTO;
@@ -21,14 +16,11 @@ import session.userInformation.UserInformation;
 import session.userInformation.UserInformationRepo;
 import session.utils.Service.EmailService.EmailService;
 
-import java.rmi.registry.RegistryHandler;
-import java.security.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @Controller
 @RequestMapping("/user")
@@ -78,24 +70,6 @@ public class UserController {
 //    }
 
 
-    @PostMapping("/booking/{restaurant_id}")
-    public ResponseEntity<Object> checkBeforeOrder(HttpSession session,@PathVariable String restaurant_id, Model model) {
-        Integer user_id = (Integer) session.getAttribute("user");
-        if (user_id == null) {
-            return ResponseEntity.badRequest().body("User not found");
-        }
-        Integer booking_id = (int) (Math.random() * 9000) + 1000;
-        session.setAttribute("booking_id", booking_id);
-        Map<String, Object> response = new LinkedHashMap<>();
-
-        response.put("booking_id", booking_id);
-        return ResponseEntity.ok(response);
-    }
-    @GetMapping("/test")
-    public String test(){
-        return "bookingButton";
-    }
-
     @GetMapping("/booking/{restaurant_id}")
     public String createOrder(HttpSession session,@PathVariable String restaurant_id, Model model, @RequestParam(required = true) Integer booking_id) {
         try {
@@ -119,16 +93,31 @@ public class UserController {
 
     @GetMapping("/getUserBooking")
     public String getUserBooking(HttpSession session, @RequestParam(required = false) Integer status, Model model) {
-        Integer user_id = (Integer) session.getAttribute("user");
-        if (user_id == null) {
-            return "error";
-        }
-        List<bookTableDTO> bookings = bookingService.getUserBooking(user_id, status);
+//        Integer user_id = (Integer) session.getAttribute("user");
+//        if (user_id == null) {
+//            return "error";
+//        }
+        UserInformation user = userInformationRepo.getUserInformation(8242);
+        List<bookTableDTO> bookings = bookingService.getUserBooking(8242, status);
         model.addAttribute("currentStatus", status);
         model.addAttribute("bookingTable", bookings);
+        model.addAttribute("user", user);
         return "userBooking";
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @PostMapping("/booking/{restaurant_id}")
+    public ResponseEntity<Object> getBookingId(HttpSession session, @PathVariable String restaurant_id, Model model) {
+        Integer user_id = (Integer) session.getAttribute("user");
+        if (user_id == null) {
+            return ResponseEntity.badRequest().body("User not found");
+        }
+        Integer booking_id = (int) (Math.random() * 9000) + 1000;
+        session.setAttribute("booking_id", booking_id);
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("booking_id", booking_id);
+        return ResponseEntity.ok(response);
+    }
 
     @Transactional
     @PostMapping(value = "/updateBooking", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)

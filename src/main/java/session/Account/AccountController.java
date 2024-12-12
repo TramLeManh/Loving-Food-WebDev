@@ -1,6 +1,7 @@
 package session.Account;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.apache.catalina.User;
 import org.springframework.boot.jackson.JsonMixinModuleEntries;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -14,12 +15,12 @@ import session.userInformation.UserInformationRepo;
 public class AccountController {
     private final AccountService service;
     private final UserInformationRepo userInformationRepo;
-    private final JsonMixinModuleEntries jsonMixinModuleEntries;
+
 
     public AccountController(AccountService service, UserInformationRepo userInformationRepo, JsonMixinModuleEntries jsonMixinModuleEntries) {
         this.service = service;
         this.userInformationRepo = userInformationRepo;
-        this.jsonMixinModuleEntries = jsonMixinModuleEntries;
+
     }
     @GetMapping("/login")
     public String login(HttpSession session, Model model, HttpServletResponse response) {
@@ -51,6 +52,15 @@ public class AccountController {
     }
     @PostMapping("/saveUserInformation")
     public ResponseEntity<Object> saveUserInformation(@RequestBody UserInformation userInformation) {
+        return ResponseEntity.ok(userInformation);
+    }
+    @PutMapping("/updateUserInformation")
+    public ResponseEntity<Object> updateUserInformation(@RequestBody UserInformation userInformation) {
+        UserInformation user = userInformationRepo.getUserInformation(userInformation.getUser_id());
+        if (user == null) {
+            return ResponseEntity.badRequest().body("User not found");
+        }
+        userInformationRepo.save(userInformation);
         return ResponseEntity.ok(userInformation);
     }
     @GetMapping("/createUserInformation/{id}")
