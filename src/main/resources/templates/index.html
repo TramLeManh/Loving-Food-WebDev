@@ -100,16 +100,6 @@
 <body>
 <div class="all-content">
 <!--    District-->
-    <div class="col-sm-10">
-        <label for="districtSelect">Filter by Restaurant Name:</label>
-        <select id="districtSelect" onchange="filterBookings()" class="form-control">
-            <option th:value="''" th:selected="${district == null}">All District</option>
-            <option th:each="d : ${districtList}"
-                    th:value="${d.id}"
-                    th:text="${d.name}"
-                    th:selected="${district == d.id}"></option>
-        </select>
-    </div>
     <nav class="navbar navbar-expand-lg" id="navbar">
         <div class="container-fluid">
             <!--          <a class="navbar-brand" href="#" id="logo"-->
@@ -154,11 +144,10 @@
                     <li class="nav-item">
                         <a href="#blogs" class="nav-link">Blogs</a>
                     </li>
-
                     <li th:if="${user != null}" class="nav-item">
                         <a class="nav-link" href="#" th:text="${user.username}"></a>
                     </li>
-                    <li th:else class="nav-item dropdown">
+                    <li th:if="${user == null}" class="nav-item">
                         <a
                                 class="nav-link dropdown-toggle"
                                 href="#"
@@ -176,21 +165,11 @@
                             <li><a class="dropdown-item" href="#">Register restaurant</a></li>
                         </ul>
                     </li>
+
                     <!-- <li class="nav-item">
                       <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
                     </li> -->
                 </ul>
-                <form class="d-flex">
-                    <input
-                            class="form-control me-2"
-                            type="search"
-                            placeholder="Search"
-                            aria-label="Search"
-                    />
-                    <button class="btn btn-outline-success" type="submit">
-                        Search
-                    </button>
-                </form>
             </div>
         </div>
     </nav>
@@ -243,8 +222,32 @@
             </div>
         </div>
     </section>
+
+
+
     <section id="top-cards">
         <div class="heading2">Top <span>Categories</span></div>
+
+        <div style="padding: 20px; text-align: right;">
+            <label for="districtSelect" style="margin-right: 10px;">Filter by Restaurant Name:</label>
+            <select id="districtSelect" onchange="filterBookings()" class="form-control">
+                <option th:value="''" th:selected="${district == null}">All District</option>
+                <option th:each="d : ${districtList}"
+                        th:value="${d.id}"
+                        th:text="${d.name}"
+                        th:selected="${district == d.id}"></option>
+            </select>
+        </div>
+
+        <style>
+            #districtSelect {
+                display: inline-block;
+                width: auto;
+                min-width: 150px;
+                padding: 0.5em;
+            }
+        </style>
+
         <div class="container">
             <div class="row mb-4">
                 <div class="col-md-4 py-3 py-md-0">
