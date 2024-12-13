@@ -14,7 +14,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import session.OTP.OTPService;
 import session.Account.DTO.UserDTO;
 import session.Account.DTO.createUserDTO;
-import session.responseHandler.Exception.ServerException;
 import session.utils.State;
 import session.utils.Enum.Status;
 
@@ -62,7 +61,7 @@ public class AccountAPI {
                     return "Account not found";
             }
         } catch (Exception e) {
-            throw new ServerException(e.getMessage());
+            return "error";
         }
         return "error";
     }

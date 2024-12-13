@@ -12,6 +12,7 @@ import java.util.List;
 
 //@Description: This interface is used to interact with the database to perform CRUD operations on the BookingDecision table.
 //@Param: View the BookingDecision table for admin of the restaurant
+
 public interface BookingDecisionRepo extends JpaRepository<BookingDecision, Integer> {
     @Query("SELECT b FROM BookingDecision b WHERE b.adminUserId = :id and b.status = :status")
     List<BookingDecision> getBookingOrder(int id, BookingStatus status);

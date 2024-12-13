@@ -68,5 +68,9 @@ public class AccountController {
         model.addAttribute("account_id",id);
         return "information";
     }
-
+    @GetMapping("/logout")
+    public String logout(HttpSession session){
+        session.removeAttribute("user");
+        return "redirect:/index";
+    }
 }

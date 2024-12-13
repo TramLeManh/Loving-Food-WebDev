@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import session.Account.DTO.UserDTO;
 import session.Restaurant.Restaurant;
 import session.Restaurant.Model.District;
-import session.responseHandler.Exception.ServerException;
+
 import session.Account.AccountService;
 import session.Restaurant.RestaurantService;
 
@@ -34,7 +34,7 @@ public class    HomeController {
             model.addAttribute("user", res);
             return "person";  // user.html will be returned
         } catch (Exception e) {
-            throw new ServerException(e.getMessage());
+            return "error";
         }
     }
 
