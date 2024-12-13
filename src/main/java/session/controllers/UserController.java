@@ -83,8 +83,6 @@ public class UserController {
             model.addAttribute("booking_id", booking_id);//param hide
             model.addAttribute("user", user);
             model.addAttribute("restaurant", restaurant);
-
-
             return "booking";
         } catch (Exception e) {
             return "error";
