@@ -1,8 +1,12 @@
 package session.Booking.Controller;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import session.Booking.BookingService;
 import session.Booking.DTO.BookingResponse;
@@ -10,6 +14,9 @@ import session.Booking.DTO.bookTableDTO;
 import session.Booking.DTO.createDecisionDTO;
 import session.Booking.DTO.updateResponseDTO;
 import session.Booking.Model.BookingDecision;
+import session.Restaurant.DTO.createRestaurantDTO;
+import session.Restaurant.Restaurant;
+import session.Restaurant.RestaurantService;
 import session.utils.Enum.BookingStatus;
 
 import java.util.LinkedHashMap;
@@ -18,38 +25,33 @@ import java.util.Map;
 import java.util.Objects;
 
 
-@RestController
+@Controller
+@RequestMapping("/admin")
 public class AdminRestController {
     private final BookingService bookingService;
+    private final RestaurantService restaurantService;
 
-    public AdminRestController(BookingService bookingService) {
+    public AdminRestController(BookingService bookingService, RestaurantService restaurantService) {
         this.bookingService = bookingService;
+        this.restaurantService = restaurantService;
     }
 
-    @GetMapping("/viewAllDecision")
-    public List<BookingResponse> getAdminDecision(@RequestParam int owner_id, @RequestParam(required = false) int type) {
-        BookingStatus[] status = BookingStatus.values();
-        return bookingService.getAdminDecision(owner_id, status[type]);
-    }
 
-    @GetMapping("/viewAdminBookingOrder")
-    public ResponseEntity<Object> getAdminBooking(@RequestParam int user_id, @RequestParam(required = false) Integer status, @RequestParam(required = false) Integer booking_id) {
-        Map<String, Object> response = new LinkedHashMap<>();
-        BookingStatus bookingStatus=null;
-        if (status != null) {
-            try {
-                bookingStatus = BookingStatus.values()[status];
-            } catch (ArrayIndexOutOfBoundsException e) {
-                response.put("message", "Invalid BookingStatus value provided.");
-                return ResponseEntity.badRequest().body(response);
-            }
-        }
+
+    @GetMapping("/getBookingOrder")
+    public String getAdminBooking(@RequestParam(required = false) Integer status, Model model, @RequestParam(required = false) Integer restaurant_id) {
         //Due to native query, we need to pass the status as a string
-        response.put("message", "Retrieved bookings for user with status: " + bookingStatus);
-        List<bookTableDTO> bookings = bookingService.getOwnerBooking(user_id, bookingStatus.toString());
-        response.put("data", bookings);
-        bookings.stream().filter(booking -> Objects.equals(booking.getBookingId(), booking_id)).toList();
-        return ResponseEntity.ok(response);
+        List<bookTableDTO> orders = bookingService.getOwnerBooking(6441, status,restaurant_id);
+        List<Restaurant> restaurants = restaurantService.getOwnerRestaurant(6441, restaurant_id);
+        model.addAttribute("orders", orders);
+        model.addAttribute("restaurant_id", restaurant_id);
+        model.addAttribute("restaurants", restaurants);
+        model.addAttribute("currentStatus", status);
+        if(restaurant_id != null) {
+            Restaurant restaurant = restaurants.stream().filter(r -> Objects.equals(r.getRestaurant_id(), restaurant_id)).findFirst().orElse(null);
+            model.addAttribute("restaurant", restaurant);
+        }
+        return "ownerBookingOrder";
     }
 
     @GetMapping("/decision")
@@ -71,65 +73,39 @@ public class AdminRestController {
     }
 
     @Transactional
-    @PostMapping("/decision")
+    @PostMapping(value="/decision/{action}",consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ResponseEntity<Object> createDecision(
-            @RequestParam String action,
-            @RequestBody(required = false) createDecisionDTO decisionDTO,
-            @RequestParam(required = false) Integer booking_id) {
-
-        Map<String, Object> response = new LinkedHashMap<>();
-
+            HttpSession session,
+            @ModelAttribute() createDecisionDTO decisionDTO,
+            @PathVariable String action) {
         try {
-            if (action.toLowerCase().equals("create")) {
-                if (decisionDTO == null) {
-                    response.put("message", "Decision data is missing.");
-                    return ResponseEntity.badRequest().body(decisionDTO);
-                }
-                if (bookingService.isDecisionExist(decisionDTO.getBooking_id())) {
-                    response.put("message", "BookingDecision already exists.");
-                    return ResponseEntity.badRequest().body(response);
-                }
-                bookingService.createDecision(decisionDTO.getOwner_id(), decisionDTO.getBooking_id(), decisionDTO.getNote(), decisionDTO.getStatus());
-                response.put("message", "BookingDecision created successfully.");
-                return ResponseEntity.ok(response);
+            if(action.equalsIgnoreCase("create")) {
+                bookingService.createDecision(6441, Integer.parseInt(decisionDTO.getBooking_id()), decisionDTO.getNote(), decisionDTO.getStatus());
+                return ResponseEntity.ok("Decision created successfully.");
+            } else if(action.equalsIgnoreCase("update")) {
+                bookingService.updateDecision(Integer.parseInt(decisionDTO.getBooking_id()), decisionDTO.getStatus(), decisionDTO.getNote());
+                return ResponseEntity.ok("Decision updated successfully.");
             }
-            response.put("message", "Invalid action provided. Use 'view', 'create', or 'update'.");
-            return ResponseEntity.badRequest().body(response);
-        } catch (IllegalArgumentException e) {
-            response.put("message", "Invalid BookingStatus value provided.");
-            return ResponseEntity.badRequest().body(response);
+            return ResponseEntity.badRequest().body("Invalid action provided. Use 'view', 'create', or 'update'.");
         } catch (Exception e) {
-            response.put("message", "An error occurred: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            System.out.println(e.getMessage());
+            return ResponseEntity.badRequest().body("An error occurred: " + e.getMessage());
         }
     }
 
-    @Transactional
-    @PutMapping("/decision")
-    public ResponseEntity<Object> updateDecision(
-            @RequestParam String action,
-            @RequestBody(required = false) updateResponseDTO updateResponseDTO,
-            @RequestParam(required = false) Integer booking_id) {
+
+    @PostMapping("/createRestaurant")
+    public ResponseEntity<Map<String, Object>> insertRestaurant(HttpSession session, @RequestBody createRestaurantDTO createRestaurantDTO) {
+        int owner_id = 8242;
         Map<String, Object> response = new LinkedHashMap<>();
-        System.out.println(updateResponseDTO.getNote());
         try {
-            if (action.equalsIgnoreCase("update")) {
-                if (!bookingService.isDecisionExist(booking_id)) {
-                    response.put("message", "BookingDecision does not exist.");
-                    return ResponseEntity.badRequest().body(response);
-                }
-                bookingService.updateDecision(booking_id, updateResponseDTO.getStatus(), updateResponseDTO.getNote());
-                response.put("message", "Updated successfully.");
-                return ResponseEntity.ok(response);
-            }
-            response.put("message", "Error");
+            response.put("message", "Insert restaurant successfully");
+            restaurantService.createRestaurant(createRestaurantDTO,owner_id);
+            return ResponseEntity.ok().body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
             return ResponseEntity.badRequest().body(response);
-        } catch (IllegalArgumentException e) {
-            response.put("message", "Invalid BookingStatus value provided.");
-            return ResponseEntity.badRequest().body(response);
-        } catch (Exception e) {
-            response.put("message", "An error occurred: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
+
     }
 }

@@ -16,7 +16,7 @@ public interface BookingDecisionRepo extends JpaRepository<BookingDecision, Inte
     @Query("SELECT b FROM BookingDecision b WHERE b.adminUserId = :id and b.status = :status")
     List<BookingDecision> getBookingOrder(int id, BookingStatus status);
 
-    @Query("SELECT b FROM BookingDecision b WHERE b.adminUserId = :user_id")
+    @Query("SELECT b FROM BookingDecision b WHERE b.adminUserId = :user_id ORDER BY b.status")
     List<BookingDecision> getAllBookingDecision(int user_id);
 
     @Query("SELECT b FROM BookingDecision b WHERE b.bookingInformation.bookingId = :booking_id")

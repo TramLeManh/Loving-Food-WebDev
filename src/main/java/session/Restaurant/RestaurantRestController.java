@@ -1,13 +1,13 @@
 package session.Restaurant;
 
-import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import session.Restaurant.DTO.CommentDTO;
 import session.Restaurant.DTO.RestaurantResponseDto;
 import session.Restaurant.DTO.addCategoryDTO;
-import session.Restaurant.DTO.createRestaurantDTO;
-import session.model.District;
+import session.Restaurant.Model.Comment;
+import session.Restaurant.Model.District;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/v1/restaurant")
+@RequestMapping("/restaurant")
 public class RestaurantRestController {
     private final RestaurantService restaurantService;
 
@@ -39,14 +39,14 @@ public class RestaurantRestController {
     public List<District> getD() {
         return restaurantService.getDistrict();
     }
-    @GetMapping("/getOwnerRestaurant")
-    public List<Restaurant> getOwnerRestaurant(HttpSession session, @RequestParam(value = "owner_id", required = false) String owner_id) {
-        String user_id = (String) session.getAttribute("user_id");
-        if(user_id == null) {
-            return restaurantService.getOwnerRestaurant(Integer.parseInt(owner_id));
-        }
-        return restaurantService.getOwnerRestaurant(Integer.parseInt(user_id));
-    }
+//    @GetMapping("/getOwnerRestaurant")
+//    public List<Restaurant> getOwnerRestaurant(HttpSession session, @RequestParam(value = "owner_id", required = false) String owner_id) {
+//        String user_id = (String) session.getAttribute("user_id");
+//        if(user_id == null) {
+//            return restaurantService.getOwnerRestaurant(Integer.parseInt(owner_id));
+//        }
+//        return restaurantService.getOwnerRestaurant(Integer.parseInt(user_id));
+//    }
 
     @PostMapping("/insertCategory")
     public ResponseEntity<Map<String, Object>> insertCategory(@RequestBody addCategoryDTO addCategoryDTO) {
@@ -61,18 +61,14 @@ public class RestaurantRestController {
         }
 
     }
-    @PostMapping("/insertRestaurant")
-    public ResponseEntity<Map<String, Object>> insertRestaurant(HttpSession session, @RequestBody createRestaurantDTO createRestaurantDTO) {
-        String user_id = (String) session.getAttribute("user_id");
-        Map<String, Object> response = new LinkedHashMap<>();
-        try {
-            response.put("message", "Insert restaurant successfully");
-            restaurantService.createRestaurant(createRestaurantDTO);
-            return ResponseEntity.ok().body(response);
-        }catch (Exception e) {
-            response.put("message", e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-        }
-
+    @GetMapping("/getComment")
+    public ResponseEntity<List<CommentDTO>> getComment(@RequestParam(value = "restaurant_id") String restaurant_id) {
+        return ResponseEntity.ok().body(restaurantService.getCommentByRestaurant(Integer.parseInt(restaurant_id)));
     }
+    @PostMapping("/createComment/{user_id}")
+    public ResponseEntity<Object> createComment(@RequestBody CommentDTO comment, @PathVariable String user_id) {
+        restaurantService.createComment(Integer.parseInt(user_id),comment);
+        return ResponseEntity.ok().body(comment);
+    }
+
 }

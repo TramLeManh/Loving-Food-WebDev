@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
+
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -46,9 +47,8 @@ public class AccountAPI {
             redirectAttributes.addFlashAttribute("email", email);
             return "redirect:/register";
         }
-        //Login thành công se tao session store user id.
         redirectAttributes.addFlashAttribute("state", res.getStatus().toString());
-        return "redirect:/account/login";
+        return "redirect:/account/createUserInformation/"+res.getData().id();
     }
     @PutMapping("/changePassword")
     public String update(HttpSession session,@RequestHeader String input) {
@@ -64,7 +64,7 @@ public class AccountAPI {
         } catch (Exception e) {
             throw new ServerException(e.getMessage());
         }
-        return "Error";
+        return "error";
     }
 
 }

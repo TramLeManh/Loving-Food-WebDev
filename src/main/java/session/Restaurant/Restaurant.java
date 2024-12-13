@@ -2,6 +2,8 @@ package session.Restaurant;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.jdbc.core.RowMapper;
+import session.Restaurant.Model.Comment;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -19,6 +21,7 @@ public class Restaurant implements RowMapper<Restaurant> {
     private String phone_number;
     private String description;
     private List<String> category;
+    private List<Comment> comments;
     @Override
     public Restaurant mapRow(ResultSet rs, int rowNum) throws SQLException {
         Restaurant res = new Restaurant();

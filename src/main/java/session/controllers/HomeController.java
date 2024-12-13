@@ -7,7 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import session.Account.DTO.UserDTO;
 import session.Restaurant.Restaurant;
-import session.model.District;
+import session.Restaurant.Model.District;
 import session.responseHandler.Exception.ServerException;
 import session.Account.AccountService;
 import session.Restaurant.RestaurantService;
@@ -30,6 +30,7 @@ public class    HomeController {
         try {
             //View All account base on UserDTO format
             UserDTO res = service.findUser(id);
+            System.out.println("id is" + res.id());
             model.addAttribute("user", res);
             return "person";  // user.html will be returned
         } catch (Exception e) {
@@ -77,35 +78,48 @@ public class    HomeController {
     }
 
     @RequestMapping("/index")
-    public String index(HttpSession session, Model model) {
-        List<District> list_category = restaurantService.getDistrict();//server
-
-        model.addAttribute("list_district", list_category);
+    public String index(HttpSession session, Model model, @RequestParam(required = false) String district,@RequestParam(required = false) String category) {
+        List<Restaurant> restaurantList = restaurantService.getRestaurant(district , null);
+        List<District> districtList = restaurantService.getDistrict();
+        model.addAttribute("restaurantList", restaurantList);
+        model.addAttribute("districtList", districtList);
+        model.addAttribute("district", district);
+        model.addAttribute("category", category);
+        System.out.printf("district is %s", districtList.get(0));
+        UserDTO res = null;
         try {
             int id = (int) session.getAttribute("user");
-            UserDTO res = service.findUser(id);
-            model.addAttribute("user_email", res.email());
-        } catch (Exception e) {
-            model.addAttribute("user", null);
+            res = service.findUser(id);
+        } catch (Exception ignored) {
         }
+        model.addAttribute("user", res);
+
         return "index";
     }
 
-
-    @RequestMapping("/contact")
-    public String contact() {
-        return "contact";
-    }
-
-    @RequestMapping("/service")
-    public String service() {
-        return "service";
-    }
-
-    @RequestMapping("/shop")
-    public String shop() {
-        return "shop";
-    }
+//
+//    @RequestMapping("/restaurant/get")
+//    public String restaurant(HttpSession session, Model model, @RequestParam("category") String category) {
+//        List<Restaurant> list_restaurant = restaurantService.getRestaurant(null,category);
+//        model.addAttribute("list_restaurant",list_restaurant);
+//        model.addAttribute("category", category);
+//        return "category_restaurants";
+//    }
+//
+//    @RequestMapping("/contact")
+//    public String contact() {
+//        return "contact";
+//    }
+//
+//    @RequestMapping("/service")
+//    public String service() {
+//        return "service";
+//    }
+//
+//    @RequestMapping("/shop")
+//    public String shop() {
+//        return "shop";
+//    }
 
 
 }
