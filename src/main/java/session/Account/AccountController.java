@@ -52,6 +52,7 @@ public class AccountController {
     }
     @PostMapping("/saveUserInformation")
     public ResponseEntity<Object> saveUserInformation(@RequestBody UserInformation userInformation) {
+        userInformationRepo.save(userInformation);
         return ResponseEntity.ok(userInformation);
     }
     @PutMapping("/updateUserInformation")
