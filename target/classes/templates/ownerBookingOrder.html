@@ -210,7 +210,6 @@
                 event.preventDefault(); // Prevent default form submission
                 const form = $(this);
                 const actionUrl = form.attr("action");
-
                 $.ajax({
                     type: "POST",
                     url: actionUrl,
