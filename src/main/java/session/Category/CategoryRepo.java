@@ -13,4 +13,7 @@ public interface CategoryRepo extends JpaRepository<Category, String> {
     void insertCategory(int restaurant_id, String category_id);
     @Query(value="SELECT  category.category_name FROM category\n" + "where category_id IN (SELECT category_id FROM restaurant_category where restaurant_id = ? )", nativeQuery = true)
     List<String> getRestaurantCategory(int restaurant_id);
+    @Modifying
+    @Query(value="delete from restaurant_category where restaurant_id = ?;", nativeQuery = true)
+    void deleteCategory(int restaurant_id);
 }

@@ -67,7 +67,7 @@ public class RestaurantDAO {
         }
     }
 
-    public void insertRestaurant(int owe_id, int res_id, String name, String district, String address, String description,String image, String phoneNumber, String openTime, String closeTime) {
+    public void insertRestaurant(int owe_id, String res_id, String name, String district, String address, String description,String image, String phoneNumber, String openTime, String closeTime) {
         try {
             String query = "call create_restaurant(? , ? , ? , ? , ? , ? , ? , ? , ?,?)";
             jdbcTemplate.update(query, owe_id, res_id, name, district, address,description, image, phoneNumber, openTime, closeTime);
@@ -96,5 +96,23 @@ public class RestaurantDAO {
     }
 
 
-
+    public void updateRestaurant(String restaurantId, String name, String district, String address, String description, String picture, String phoneNumber, String openTime, String closeTime) {
+        try {
+            String query = "UPDATE restaurant\n" +
+                    "SET\n" +
+                    "    restaurant_name = ?,\n" +
+                    "    restaurant_district = ?,\n" +
+                    "    restaurant_address = ?,\n" +
+                    "    restaurant_image = ?,\n" +
+                    "    phone_number = ?,\n" +
+                    "    open_time = ?,\n" +
+                    "    close_time = ?,\n" +
+                    "    restaurant_description = ?\n" +
+                    "WHERE\n" +
+                    "    restaurant_id = ?;";
+             jdbcTemplate.update(query, name, district, address, picture, phoneNumber, openTime, closeTime, description, restaurantId);
+        } catch (Exception e) {
+            return ;
+        }
+    }
 }

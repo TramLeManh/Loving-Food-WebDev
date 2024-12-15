@@ -205,6 +205,26 @@
             const queryString = queryParams.length > 0 ? `?${queryParams.join("&")}` : "";
             window.location.href = `/admin/getBookingOrder${queryString}`;
         }
+        $(document).ready(function () {
+            $("#updateResponseForm").on("submit", function (event) {
+                event.preventDefault(); // Prevent default form submission
+                const form = $(this);
+                const actionUrl = form.attr("action");
+
+                $.ajax({
+                    type: "POST",
+                    url: actionUrl,
+                    data: form.serialize(), // Serialize form data
+                    success: function (response) {
+                        alert("Update restaurant successfully!");
+                        location.reload(); // Reload the page
+                    },
+                    error: function (message) {
+                        alert("Failed to update order.");
+                    },
+                });
+            });
+        })
 
         $(document).ready(function () {
             $("#createResponseForm").on("submit", function (event) {
@@ -227,21 +247,20 @@
             });
         });
         $(document).ready(function () {
-            $("#updateResponseForm").on("submit", function (event) {
+            $("#updateRestaurantForm").on("submit", function (event) {
                 event.preventDefault(); // Prevent default form submission
                 const form = $(this);
                 const actionUrl = form.attr("action");
-
                 $.ajax({
                     type: "POST",
                     url: actionUrl,
                     data: form.serialize(), // Serialize form data
                     success: function (response) {
-                        alert("Booking updated successfully!");
+                        alert("Restaurant updated successfully!");
                         location.reload(); // Reload the page
                     },
                     error: function (message) {
-                        alert("Failed to update order.");
+                        alert("Failed to update order.12");
                     },
                 });
             });
@@ -303,9 +322,8 @@
 
             // Set up the modal event handler
             $("#deleteEmployeeModal").on("show.bs.modal", function (event) {
-                const button = $(event.relatedTarget); // Button that triggered the modal
+                const button = $(event.relatedTarget);
                 const bookingId = button.data("booking-id"); // Extract booking ID from data attribute
-                console.log("Triggered for booking ID:", bookingId); // Debugging line
 
                 // Set the onclick function dynamically
                 $("#confirmDeleteButton")
@@ -318,8 +336,6 @@
 
         // Delete booking function
         function deleteBooking(bookingId) {
-            console.log("Attempting to delete booking ID:", bookingId); // Debugging line
-
             fetch(`/user/deleteBooking/${bookingId}`, {method: "DELETE"})
                 .then((response) => {
                     if (response.ok) {
@@ -403,6 +419,101 @@
         </div>
     </div>
 </div>
+<div id="updateRestaurantModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form
+                    th:action="@{/admin/restaurant/update}"
+                    method="POST"
+                    th:if="${restaurant != null&&districts!=null}"
+                    id="updateRestaurantForm"
+            >
+                <input type="hidden" name="restaurant_id" th:value="${restaurant.restaurant_id}"/>
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit restaurant #<a th:text="${restaurant.restaurant_id}"></a></h4>
+                    <button
+                            type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-hidden="true"
+                    >
+                        &times;
+                    </button>
+                </div>
+                <div class="modal-body" style="max-height: 500px; border: 1px solid #ccc;overflow-y: auto">
+                    <div class="form-group">
+                        <label>restaurant name</label>
+                        <input type="text" id="r-name" name="name" class="form-control" placeholder="Restaurant name" required th:value="${restaurant.name}" >
+                    </div>
+
+                    <div class="form-group">
+                        <label>Address</label>
+                        <input type="text" id="r-address" name="address" class="form-control" placeholder="address" required th:value="${restaurant.address}" >
+                    </div>
+                    <label>District</label>
+                    <div class="form-group">
+                        <label>
+                            <select   class="form-control">
+                                <option th:each="d : ${districts}"
+                                        th:value="${d.id}"
+                                        th:text="${d.name}"
+                                        th:selected="${restaurant.getDistrict}"></option>
+                            </select>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>Picture</label>
+                        <input type="text" id="" name="Picture" class="form-control" placeholder="Picture link" required th:value="${restaurant.picture}">
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <label >Open time</label>
+                            <input type="time"  name="open_time" class="form-control" placeholder="Open time" required th:value="${restaurant.open_time}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="r-time">Close time</label>
+                            <input type="time" id="r-time" name="close_time" class="form-control" placeholder="Close time" required th:value="${restaurant.close_time}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone number</label>
+                        <input type="text" id="r-phone" name="phone_number" class="form-control" placeholder="Phone number" required th:value="${restaurant.phone_number}">
+                    </div>
+                    <div class="form-group">
+                        <label>description</label>
+                        <input type="text" id="r-description" name="description" class="form-control" placeholder="description" required th:value="${restaurant.description}">
+                    </div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <ul>
+                            <li th:each="c : ${categories}">
+                                <label>
+                                    <input name="category"
+                                            type="checkbox"
+                                            th:value="${c.category_id}"
+                                            th:checked="${#lists.contains(restaurant.category, c.category_name)}" />
+                                    <span th:text="${c.category_name}"></span>
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <input
+                            type="button"
+                            class="btn btn-default"
+                            data-dismiss="modal"
+                            value="Cancel"
+                    />
+                    <input type="submit" class="btn btn-info" value="Update"/>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <div id="updateResponseModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -476,17 +587,21 @@
     <div class="table-responsive">
         <div class="table-wrapper">
             <div class="table-title">
+
                 <div class="row">
                     <div class="col-sm-8">
-                        <h2>
+                        <div class="col-sm-6"><h2>
                             Booking
                             <b>
                                 <span th:if="${restaurant_id!=null}" th:text="${restaurant.name}"></span>
                                 <span th:if="${restaurant_id==null}">All Restaurants</span>
-
                             </b>
-                        </h2>
+                        </h2></div>
+                        <div class="col-sm-6">
 
+                            <a href="#updateRestaurantModal" class="btn btn-success" data-toggle="modal" th:if="${restaurant != null}"><i class="material-icons">&#xE254;</i> <span>Edit Restaurant</span></a>
+
+                        </div>
                         <div class="col-sm-10">
                             <label for="statusSelect">Filter by Status:</label>
                             <select id="statusSelect" onchange="filterByStatus()" class="form-control">

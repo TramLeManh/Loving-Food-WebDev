@@ -5,6 +5,7 @@ import session.Booking.DAO.BookingDecisionRepo;
 import session.Booking.DAO.BookingRepo;
 import session.Booking.DTO.BookingResponse;
 import session.Booking.DTO.bookTableDTO;
+import session.Booking.DTO.createDecisionDTO;
 import session.Booking.Model.BookingDecision;
 import session.Booking.Model.TableBooking;
 import session.utils.Enum.BookingStatus;
@@ -85,13 +86,9 @@ public class BookingService {
     /**
      * Admin dua ra decison cho booking
      */
-    public void createDecision(int admin_user_id, int booking_id, String note, String status) {
-        if (bookingDecisionRepo.isDecisionExist(booking_id)) {
-            return;
-        }
-        int decision_id = (int) (Math.random() * 9000) + 1000;
-        bookingDecisionRepo.createDecision(decision_id, admin_user_id, booking_id, note, status);
-        bookingDecisionRepo.updateStatus(booking_id, status);
+    public void createDecision(int admin_user_id, createDecisionDTO decision) {
+        bookingDecisionRepo.createDecision(decision.getDecision_id(), admin_user_id, Integer.parseInt(decision.getBooking_id()), decision.getNote(), decision.getStatus());
+        bookingDecisionRepo.updateStatus(Integer.parseInt(decision.getBooking_id()), decision.getStatus());
     }
 
     /**
