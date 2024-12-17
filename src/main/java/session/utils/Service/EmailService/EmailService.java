@@ -1,4 +1,5 @@
 package session.utils.Service.EmailService;
+import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -6,11 +7,16 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import session.Booking.DTO.CreateBookTableDTO;
+import session.Booking.DTO.bookTableDTO;
+import session.Booking.DTO.createDecisionDTO;
 import session.Restaurant.Restaurant;
 import session.Restaurant.DAO.RestaurantDAO;
 import session.userInformation.UserInformation;
 import session.userInformation.UserInformationRepo;
 import session.utils.Service.TimeConvert;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Component
 public class EmailService {
@@ -35,7 +41,7 @@ public class EmailService {
             helper.setFrom("webproject123@gmail.com");
             helper.setFrom(new InternetAddress("lemanh1412@gmail.com", "Dev Support"));
             String body = "<!DOCTYPE html>" + "<html lan" +
-                    "g=\"en\">" + "<head>" + "<meta charset=\"UTF-8\">" + "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">" + "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">" + "<title>OTP Email</title>" + "<style>" + "body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f6f6f6; }" + ".container { max-width: 600px; margin: 20px auto; background-color: #ffffff; padding: 20px; border: 1px solid #dddddd; }" + ".header { background-color: #4CAF50; color: white; text-align: center; padding: 10px 0; }" + ".content { padding: 20px; }"
+                    "g=\"en\">" + "<head>" + "<meta charset=\"UTF-8\">" + "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">" + "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">" + "<title>OTP Email</title>" + "<style>" + "body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f6f6f6; }" + ".container { max-width: 600px; margin: 20px auto; background-color: #ffffff; padding: 20px; border: 1px solid #dddddd; }" + ".header { background-color: #b2744c; color: white; text-align: center; padding: 10px 0; }" + ".content { padding: 20px; }"
                     + ".footer { text-align: center; color: #888888; font-size: 12px; padding: 20px; margin-top: 20px; border-top: 1px solid #dddddd; }"
                     + "p { line-height: 1.6; }" + "</style>" + "</head>" + "<body>" + "<div class=\"container\">"
                     + "  <div class=\"header\">" + "    <h1>Dev</h1>" + "  </div>" + "  <div class=\"content\">"
@@ -64,7 +70,7 @@ public class EmailService {
             helper.setFrom("webproject123@gmail.com");
             helper.setFrom(new InternetAddress("lemanh1412@gmail.com", "Dev Support"));
             String body = "<!DOCTYPE html>" + "<html lan" +
-                    "g=\"en\">" + "<head>" + "<meta charset=\"UTF-8\">" + "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">" + "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">" + "<title>OTP Email</title>" + "<style>" + "body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f6f6f6; }" + ".container { max-width: 600px; margin: 20px auto; background-color: #ffffff; padding: 20px; border: 1px solid #dddddd; }" + ".header { background-color: #4CAF50; color: white; text-align: center; padding: 10px 0; }" + ".content { padding: 20px; }"
+                    "g=\"en\">" + "<head>" + "<meta charset=\"UTF-8\">" + "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">" + "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">" + "<title>OTP Email</title>" + "<style>" + "body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f6f6f6; }" + ".container { max-width: 600px; margin: 20px auto; background-color: #ffffff; padding: 20px; border: 1px solid #dddddd; }" + ".header { background-color: #b2744c; color: white; text-align: center; padding: 10px 0; }" + ".content { padding: 20px; }"
                     + ".footer { text-align: center; color: #888888; font-size: 12px; padding: 20px; margin-top: 20px; border-top: 1px solid #dddddd; }"
                     + "p { line-height: 1.6; }" + "</style>" + "</head>" + "<body>" + "<div class=\"container\">"
                     + "  <div class=\"header\">" + "    <h1>Dev</h1>" + "  </div>" + "  <div class=\"content\">"
@@ -115,7 +121,7 @@ public class EmailService {
                     "            border: 1px solid #dddddd;\n" +
                     "        }\n" +
                     "        .header {\n" +
-                    "            background-color: #4CAF50;\n" +
+                    "            background-color: #b2744c;\n" +
                     "            color: white;\n" +
                     "            text-align: center;\n" +
                     "            padding: 10px 0;\n" +
@@ -254,7 +260,7 @@ public class EmailService {
                     "            border: 1px solid #dddddd;\n" +
                     "        }\n" +
                     "        .header {\n" +
-                    "            background-color: #4CAF50;\n" +
+                    "            background-color: #b2744c;\n" +
                     "            color: white;\n" +
                     "            text-align: center;\n" +
                     "            padding: 10px 0;\n" +
@@ -355,5 +361,154 @@ public class EmailService {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+    @Async
+    public void sendResponseEmail(bookTableDTO book, createDecisionDTO decisionDTO)   {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            UserInformation user = userInformationRepo.getUserByRestaurant(book.getRestaurant_id());
+            Restaurant restaurant = restaurantDAO.findById(book.getRestaurant_id()).orElse(null);
+            ;
+            LocalDateTime now = LocalDateTime.now();
+
+            // Define the formatter
+            DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm dd/MM/yy ");
+
+            // Format the current date and time
+            String time = now.format(timeFormat);
+
+            helper.setFrom(new InternetAddress(user.getEmail(), restaurant.getName()));
+            String color = switch (decisionDTO.getStatus().toUpperCase()) {
+                case "ACCEPTED" -> {
+                    helper.setSubject("Your booking id #" + book.getBookingId() + "has been approved");
+                    yield "green";
+                }
+                case "DENIED" -> {
+                    helper.setSubject("Your booking id #" + book.getBookingId() + "has been Rejected");
+                    yield "red";
+                }
+                case "PENDING" -> {
+                    helper.setSubject("Your booking id #" + book.getBookingId() + "has been Pending");
+                    yield "orange";
+                }
+                default -> " ";
+            };
+            String body = "<!DOCTYPE html>\n" +
+                    "<html lang=\"en\">\n" +
+                    "<head>\n" +
+                    "    <meta charset=\"UTF-8\">\n" +
+                    "    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n" +
+                    "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+                    "    <title>New Booking Table Arrive</title>\n" +
+                    "    <style>\n" +
+                    "        body {\n" +
+                    "            font-family: Arial, sans-serif;\n" +
+                    "            margin: 0;\n" +
+                    "            padding: 0;\n" +
+                    "            background-color: #f6f6f6;\n" +
+                    "        }\n" +
+                    "        .container {\n" +
+                    "            max-width: 600px;\n" +
+                    "            margin: 20px auto;\n" +
+                    "            background-color: #ffffff;\n" +
+                    "            padding: 20px;\n" +
+                    "            border: 1px solid #dddddd;\n" +
+                    "        }\n" +
+                    "        .header {\n" +
+                    "            background-color: #b2744c;\n" +
+                    "            color: white;\n" +
+                    "            text-align: center;\n" +
+                    "            padding: 10px 0;\n" +
+                    "        }\n" +
+                    "        .content {\n" +
+                    "            padding: 20px;\n" +
+                    "        }\n" +
+                    "        .footer {\n" +
+                    "            text-align: center;\n" +
+                    "            color: #888888;\n" +
+                    "            font-size: 12px;\n" +
+                    "            padding: 20px;\n" +
+                    "            margin-top: 20px;\n" +
+                    "            border-top: 1px solid #dddddd;\n" +
+                    "        }\n" +
+                    "        p {\n" +
+                    "            line-height: 1.6;\n" +
+                    "        }\n" +
+                    "        .details {\n" +
+                    "            margin: 20px 0;\n" +
+                    "            border-collapse: collapse;\n" +
+                    "            width: 100%;\n" +
+                    "        }\n" +
+                    "        .details th, .details td {\n" +
+                    "            border: 1px solid #dddddd;\n" +
+                    "            padding: 8px;\n" +
+                    "            text-align: left;\n" +
+                    "        }\n" +
+                    "        .details th {\n" +
+                    "            background-color: #f2f2f2;\n" +
+                    "        }\n" +
+                    "    </style>\n" +
+                    "</head>\n" +
+                    "<body>\n" +
+                    "    <div class=\"container\">\n" +
+                    "        <div class=\"header\">\n" +
+                    "            <h1>Table booking response</h1>\n" +
+                    "        </div>\n" +
+                    "        <div class=\"content\">\n" +
+                    "            <p>Dear <strong>"+book.getCustomer_name()+"</strong>,</p>\n" +
+                    "            <p>Your booking #"+book.getBookingId()+" has been responsed</p>\n" +
+                    "            <table class=\"details\">\n" +
+                    "                <tr>\n" +
+                    "                    <th>Decision ID</th>\n" +
+                    "                    <td style=\"color: red;font-weight: bold;\">"+decisionDTO.getDecision_id()+"</td>\n" +
+                    "                </tr>\n" +
+                    "        \n" +
+                    "                <tr>\n" +
+                    "                    <th>Booking status</th>\n" +
+                    "                    <td style=\"color: "+color+";font-weight: bold;\">"+decisionDTO.getStatus().toUpperCase()+"</td>\n" +
+                    "                </tr>\n" +
+                    "                <tr>\n" +
+                    "                    <th>Response note</th>\n" +
+                    "                    <td>"+decisionDTO.getNote()+"</td>\n" +
+                    "                </tr>\n" +
+                    "                <tr>\n" +
+                    "                    <th>Restaurant Name</th>\n" +
+                    "                    <td>"+restaurant.getName()+"</td>\n" +
+                    "                </tr>\n" +
+                    "                <tr>\n" +
+                    "                    <th>Address</th>\n" +
+                    "                    <td>"+restaurant.getAddress()+"</td>\n" +
+                    "                </tr>\n" +
+                    "                \n" +
+                    "                <tr>\n" +
+                    "                    <th>Date</th>\n" +
+                    "                    <td>"+book.getBooking_date()+"</td>\n" +
+                    "                </tr>\n" +
+                    "               \n" +
+                    "                \n" +
+                    "                <tr>\n" +
+                    "                    <th>Response at</th>\n" +
+                    "                    <td>"+time+"</td>\n" +
+                    "                </tr>\n" +
+                    "            </table>\n" +
+                    "            <p>Your booking response is saved in User Booking Section.</p>\n" +
+                    "            <p>We look forward to serving you!</p>\n" +
+                    "            <p>Best regards,</p>\n" +
+                    "            <p>The Dev Team</p>\n" +
+                    "        </div>\n" +
+                    "        <div class=\"footer\">\n" +
+                    "            <p>&copy; 2024 Dev Team. All rights reserved.</p>\n" +
+                    "        </div>\n" +
+                    "    </div>\n" +
+                    "</body>\n" +
+                    "</html>\n";
+            helper.setTo(user.getEmail());
+            helper.setText(body, true);
+            mailSender.send(message);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
     }
 }

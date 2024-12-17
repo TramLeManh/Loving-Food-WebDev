@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class createDecisionDTO {
     private String booking_id;
-
+    private int decision_id = (int) (Math.random() * 9000) + 1000;
     private String status;
     private String note;
 }

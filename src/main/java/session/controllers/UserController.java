@@ -83,20 +83,15 @@ public class UserController {
             model.addAttribute("booking_id", booking_id);//param hide
             model.addAttribute("user", user);
             model.addAttribute("restaurant", restaurant);
-
-
             return "booking";
         } catch (Exception e) {
             return "error";
         }
     }
 
+
     @GetMapping("/getUserBooking")
     public String getUserBooking(HttpSession session, @RequestParam(required = false) Integer status, Model model) {
-//        Integer user_id = (Integer) session.getAttribute("user");
-//        if (user_id == null) {
-//            return "error";
-//        }
         UserInformation user = userInformationRepo.getUserInformation(8242);
         List<bookTableDTO> bookings = bookingService.getUserBooking(8242, status);
         model.addAttribute("currentStatus", status);

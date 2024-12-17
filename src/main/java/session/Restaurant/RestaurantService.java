@@ -2,12 +2,12 @@ package session.Restaurant;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import session.Category.Category;
 import session.Category.CategoryRepo;
 import session.Restaurant.DAO.CommentDAO;
 import session.Restaurant.DAO.RestaurantDAO;
 import session.Restaurant.DTO.CommentDTO;
-import session.Restaurant.DTO.createRestaurantDTO;
-import session.Restaurant.Model.Comment;
+import session.Restaurant.DTO.RestaurantDTO;
 import session.Restaurant.Model.District;
 import session.userInformation.UserInformation;
 import session.userInformation.UserInformationRepo;
@@ -22,6 +22,7 @@ public class RestaurantService {
     private final RestaurantDAO restaurantDAO;
     private final CommentDAO commentDAO;
     private final UserInformationRepo userInformationRepo;
+
 
     public RestaurantService(RestaurantDAO restaurantDAO, CategoryRepo category, CommentDAO commentDAO, UserInformationRepo userInformationRepo) {
         this.restaurantDAO = restaurantDAO;
@@ -62,7 +63,7 @@ public class RestaurantService {
     public List<Restaurant> getOwnerRestaurant(int owner_id,Integer restaurant_id) {
         List<Restaurant> restaurants = restaurantDAO.getOwnerRestaurant(owner_id);
         restaurants.forEach(restaurant -> {
-            // Set the category based on restaurant ID
+
             restaurant.setCategory(categoryDAO.getRestaurantCategory(restaurant.getRestaurant_id()));
         });
         return restaurants;
@@ -80,15 +81,20 @@ public class RestaurantService {
             categoryDAO.insertCategory(restaurantId, categoryId);
         }
     }
-    //This function add Category for the restaurant
-
     @Transactional
-    public void createRestaurant(createRestaurantDTO dto,int owner_id) {
-        Restaurant restaurant = dto.toEntity();
+    public void createRestaurant(RestaurantDTO restaurant, int owner_id) {
         restaurantDAO.insertRestaurant(owner_id, restaurant.getRestaurant_id(), restaurant.getName(), restaurant.getDistrict(), restaurant.getAddress(), restaurant.getDescription(), restaurant.getPicture(), restaurant.getPhone_number(), restaurant.getOpen_time(),
                 restaurant.getClose_time());
-        insertRestaurantCategories((restaurant.getRestaurant_id()), dto.getCategory());
+        insertRestaurantCategories(Integer.parseInt((restaurant.getRestaurant_id())), restaurant.getCategory());
     }
+    @Transactional
+    public void updateRestaurant(RestaurantDTO restaurant, int owner_id) {
+        restaurantDAO.updateRestaurant(restaurant.getRestaurant_id(), restaurant.getName(), restaurant.getDistrict(), restaurant.getAddress(), restaurant.getDescription(), restaurant.getPicture(), restaurant.getPhone_number(), restaurant.getOpen_time(),
+                restaurant.getClose_time());
+        categoryDAO.deleteCategory(Integer.parseInt(restaurant.getRestaurant_id()));
+        insertRestaurantCategories(Integer.parseInt(restaurant.getRestaurant_id()), restaurant.getCategory());
+    }
+
 
     public void removeRestaurant(int id) {
         restaurantDAO.removeRestaurant(id);
@@ -106,4 +112,7 @@ public class RestaurantService {
     }
 
 
+    public List<Category> getCategory() {
+        return categoryDAO.findAll();
+    }
 }

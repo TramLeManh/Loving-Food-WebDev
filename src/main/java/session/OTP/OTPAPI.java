@@ -9,7 +9,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import session.Account.DTO.UserDTO;
 
 import session.Account.AccountService;
-import session.responseHandler.Exception.ServerException;
+
 import session.utils.State;
 import session.utils.Enum.Status;
 import session.utils.generateSessionToken;
@@ -45,7 +45,7 @@ public class OTPAPI {
             redirectAttributes.addFlashAttribute("isRegister", true);
             return "redirect:/verifyOTP/register/" + token;
         } catch (Exception e) {
-            throw new ServerException(e.getMessage());
+            return  (e.getMessage());
         }
     }
     @PostMapping("/recover")//redirect itself
@@ -66,7 +66,7 @@ public class OTPAPI {
             session.setAttribute("user_name", res.getData().username());
             return "redirect:/verifyOTP/recover/" + token;
         } catch (Exception e) {
-            throw new ServerException(e.getMessage());
+            return  (e.getMessage());
         }
     }
         @PostMapping("/verifyOTP/{actionType}/{sessionToken}")
