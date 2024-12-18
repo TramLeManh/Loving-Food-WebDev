@@ -1,5 +1,6 @@
 package session.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -37,7 +38,14 @@ public class OwnerController {
         this.emailService = emailService;
     }
 
-
+    @GetMapping("/createRestaurant")
+    public String createRestaurant(Model model){
+        List<District> d = restaurantService.getDistrict();
+        List<Category> c= restaurantService.getCategory();
+        model.addAttribute("districts",d);
+        model.addAttribute("categories",c);
+        return "createRestaurant";
+    }
 
     @GetMapping("/getBookingOrder")
     public String getAdminBooking(HttpSession session,@RequestParam(required = false) Integer status, Model model, @RequestParam(required = false) Integer restaurant_id) {
@@ -100,17 +108,47 @@ public class OwnerController {
             return ResponseEntity.badRequest().body("Error");
     }
     @Transactional
-    @PostMapping(value="/restaurant/{action}",consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ResponseEntity<Object> insertRestaurant(HttpSession session, @ModelAttribute() RestaurantDTO RestaurantDTO, @PathVariable String action) {
+    @PostMapping(value = "/restaurant/{action}")
+    public ResponseEntity<Object> handleRestaurantRequest(
+            HttpSession session,
+            @PathVariable String action,
+            HttpServletRequest request, // To access Content-Type
+            @ModelAttribute RestaurantDTO formRequest, // For FORM data
+            @RequestBody(required = false) RestaurantDTO jsonRequest // For JSON
+    ) {
         Integer owner_id = (Integer) session.getAttribute("user");
         Map<String, Object> response = new LinkedHashMap<>();
+        RestaurantDTO restaurantDTO;
+
+        String contentType = request.getContentType();
+        if (MediaType.APPLICATION_JSON_VALUE.equals(contentType)) {
+            restaurantDTO = jsonRequest; // JSON payload
+        } else if (MediaType.APPLICATION_FORM_URLENCODED_VALUE.equals(contentType)) {
+            restaurantDTO = formRequest; // Form data
+        } else {
+            return ResponseEntity.badRequest().body("Unsupported content type: " + contentType);
+        }
         if (action.equalsIgnoreCase("create")) {
-            restaurantService.createRestaurant(RestaurantDTO, owner_id);
-            return ResponseEntity.ok().body("Create success");
+            restaurantService.createRestaurant(restaurantDTO, owner_id);
+            return ResponseEntity.ok("Create success");
         } else if (action.equalsIgnoreCase("update")) {
-            restaurantService.updateRestaurant(RestaurantDTO, owner_id);
+            restaurantService.updateRestaurant(restaurantDTO, owner_id);
             return ResponseEntity.ok("Decision updated successfully.");
         }
-        return ResponseEntity.badRequest().body("Error");
+
+        return ResponseEntity.badRequest().body("Invalid action");
     }
+    @Transactional
+    @PostMapping(value = "/restaurant/create")
+    public ResponseEntity<Object> createRestaurantRequest(
+            HttpSession session,
+            HttpServletRequest request,
+            @RequestBody(required = false) RestaurantDTO restaurantDTO
+    ) {
+        Integer owner_id = (Integer) session.getAttribute("user");
+
+        restaurantService.createRestaurant(restaurantDTO, owner_id);
+        return ResponseEntity.ok("Create success");
+    }
+
 }
