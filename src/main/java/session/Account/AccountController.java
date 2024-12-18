@@ -89,8 +89,8 @@ public class AccountController {
         return "redirect:/account/login";
     }
     @PostMapping("/register")
-    public String register(HttpSession session, @RequestParam("username") String username, @RequestParam("password") String password, @RequestParam("email") String email, @RequestParam("role") String role, RedirectAttributes redirectAttributes) throws Exception {
-        createUserDTO accountDto = new createUserDTO(username, password, email, role);
+    public String register(HttpSession session, @RequestParam("username") String username, @RequestParam("password") String password, @RequestParam("email") String email, RedirectAttributes redirectAttributes) throws Exception {
+        createUserDTO accountDto = new createUserDTO(username, password, email, "USER");
         State<UserDTO> res = accountService.createAccount(accountDto);
         //Server check
         if (res.getStatus() == Status.EXIST_USERNAME) {
