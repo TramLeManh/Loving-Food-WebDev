@@ -24,7 +24,7 @@ public class AccountController {
         this.userInformationRepo = userInformationRepo;
     }
     @GetMapping("/getUserInformation")
-    public String getUserInformation(HttpSession session,@RequestParam int id,Model model) {
+    public String getUserInformation(HttpSession session,Model model) {
         Integer user = (Integer) session.getAttribute("user");
         UserInformation userInformation = userInformationRepo.getUserInformation(user);
         model.addAttribute("userInformation",userInformation);
