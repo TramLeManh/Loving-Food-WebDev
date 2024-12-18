@@ -100,6 +100,7 @@ public class AccountController {
             return "redirect:/account/register";
         }
         redirectAttributes.addFlashAttribute("state", res.getStatus().toString());
+        redirectAttributes.addFlashAttribute("email", email);
         return "redirect:/account/createUserInformation/"+res.getData().id();
     }
     @PutMapping("/changePassword")
