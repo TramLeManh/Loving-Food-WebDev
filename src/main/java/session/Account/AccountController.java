@@ -25,10 +25,11 @@ public class AccountController {
     }
     @GetMapping("/getUserInformation")
     public String getUserInformation(HttpSession session,Model model) {
-        Integer user = (Integer) session.getAttribute("user");
-        UserInformation userInformation = userInformationRepo.getUserInformation(user);
+        Integer user_id = (Integer) session.getAttribute("user");
+        UserInformation userInformation = userInformationRepo.getUserInformation(user_id);
         model.addAttribute("userInformation",userInformation);
         return "updateInformation" ;
+
     }
     @GetMapping("/login")
     public String login(HttpSession session, Model model, HttpServletResponse response) {
@@ -72,6 +73,7 @@ public class AccountController {
     public String createUserInformation(HttpSession session, @PathVariable String id,Model model){
         model.addAttribute("account_id",id);
         return "createInformation";
+
     }
     @GetMapping("/logout")
     public String logout(HttpSession session){

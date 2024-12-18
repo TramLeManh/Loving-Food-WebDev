@@ -86,6 +86,7 @@
 <!-- Centered card with the form -->
 <div class="card">
     <form id="myForm">
+        <input type="hidden" name="user_id" th:value="${userInformation.user_id}">
         <label for="email">Email:</label>
         <input type="tel" id="email" name="email" required th:value="${userInformation.email}"><br><br>
         <label for="fullName">Full Name:</label>
@@ -96,7 +97,7 @@
         <input type="text" id="address" name="address" th:value="${userInformation.address}"  required><br><br>
         <label for="profilePictureUrl">Profile Picture URL:</label>
         <input type="url" id="profilePictureUrl" name="profilePictureUrl" th:value="${userInformation.profilePictureUrl}" required><br><br>
-        <button type="submit">Create</button>
+        <button type="submit">Update</button>
     </form>
 </div>
 
