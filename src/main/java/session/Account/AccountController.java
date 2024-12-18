@@ -43,7 +43,7 @@ public class AccountController {
         return "form";
     }
     @GetMapping("/verifyEmail")
-    public String recover() {
+    public String verifyEmail() {
         return "verify";
     }
     @GetMapping("/register")
@@ -123,5 +123,9 @@ public class AccountController {
             return "error";
         }
         return "error";
+    }
+    @GetMapping("/recover")
+    public String recover() {
+        return "recover";
     }
 }

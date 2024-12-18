@@ -15,10 +15,7 @@ public class OTPController {
   public OTPController(OTPService otpService) {
     this.otpService = otpService;
   }
-  @GetMapping("/recover")
-  public String recover() {
-    return "recover";
-  }
+
   @GetMapping("/verifyOTP/{actionType}/{sessionToken}")
   public String verifyOTP(
     HttpSession session,
