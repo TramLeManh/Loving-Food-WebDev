@@ -88,10 +88,9 @@ public class UserController {
             return "error";
         }
     }
-
-
     @GetMapping("/getUserBooking")
     public String getUserBooking(HttpSession session, @RequestParam(required = false) Integer status, Model model) {
+        Integer user_id = (Integer) session.getAttribute("user");
         UserInformation user = userInformationRepo.getUserInformation(8242);
         List<bookTableDTO> bookings = bookingService.getUserBooking(8242, status);
         model.addAttribute("currentStatus", status);

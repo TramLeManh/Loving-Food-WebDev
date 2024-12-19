@@ -24,11 +24,12 @@ public class AccountController {
         this.userInformationRepo = userInformationRepo;
     }
     @GetMapping("/getUserInformation")
-    public String getUserInformation(HttpSession session,@RequestParam int id,Model model) {
-        Integer user = (Integer) session.getAttribute("user");
-        UserInformation userInformation = userInformationRepo.getUserInformation(user);
+    public String getUserInformation(HttpSession session,Model model) {
+        Integer user_id = (Integer) session.getAttribute("user");
+        UserInformation userInformation = userInformationRepo.getUserInformation(user_id);
         model.addAttribute("userInformation",userInformation);
         return "updateInformation" ;
+
     }
     @GetMapping("/login")
     public String login(HttpSession session, Model model, HttpServletResponse response) {
@@ -48,7 +49,7 @@ public class AccountController {
     }
 
     @GetMapping("/verifyEmail")
-    public String recover() {
+    public String verifyEmail() {
         return "verify";
     }
     @GetMapping("/register")
@@ -78,6 +79,7 @@ public class AccountController {
     public String createUserInformation(HttpSession session, @PathVariable String id,Model model){
         model.addAttribute("account_id",id);
         return "createInformation";
+
     }
     @GetMapping("/logout")
     public String logout(HttpSession session) {
@@ -129,5 +131,9 @@ public class AccountController {
             return "error";
         }
         return "error";
+    }
+    @GetMapping("/recover")
+    public String recover() {
+        return "recover";
     }
 }
