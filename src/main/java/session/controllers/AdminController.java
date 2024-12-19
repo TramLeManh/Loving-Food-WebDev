@@ -28,11 +28,11 @@ import java.util.Objects;
 
 @Controller
 @RequestMapping("/admin")
-public class OwnerController {
+public class AdminController {
     private final BookingService bookingService;
     private final RestaurantService restaurantService;
     private final EmailService emailService;
-    public OwnerController(BookingService bookingService, RestaurantService restaurantService, EmailService emailService) {
+    public AdminController(BookingService bookingService, RestaurantService restaurantService, EmailService emailService) {
         this.bookingService = bookingService;
         this.restaurantService = restaurantService;
         this.emailService = emailService;

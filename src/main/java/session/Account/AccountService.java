@@ -58,6 +58,7 @@ public class AccountService {
     public boolean isEmailExist(String email) {
         return acc.getByEmail(email).isPresent();
     }
+
     public Status updatePassword(String user_name, String input) {
         return acc.getByUsername(user_name).map(account -> {
             String encrypt;
