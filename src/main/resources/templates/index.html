@@ -178,6 +178,9 @@
                     <li th:if="${user != null}" class="nav-item">
                         <a class="nav-link" href="#" th:text="${user.username}"></a>
                     </li>
+                    <li th:if="${user != null}" class="nav-item">
+                        <a class="nav-link"  th:href="@{/account/logout}" > Log out</a>
+                    </li>
                     <li th:if="${user == null}" class="nav-item dropdown">
                         <a
                                 class="nav-link dropdown-toggle"
@@ -192,8 +195,8 @@
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <li><a class="dropdown-item" th:href="@{/account/login}">Login as user</a></li>
                             <li><hr class="dropdown-divider"/></li>
-                            <li><a class="dropdown-item" href="#">Register user</a></li>
-                            <li><a class="dropdown-item" href="#">Register restaurant</a></li>
+                            <li><a class="dropdown-item" th:href="@{/account/verifyEmail}">Register user</a></li>
+                            <li><a class="dropdown-item" th:href="@{/account/login}">Register restaurant</a></li>
                         </ul>
                     </li>
 
