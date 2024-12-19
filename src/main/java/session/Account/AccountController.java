@@ -32,15 +32,21 @@ public class AccountController {
     }
     @GetMapping("/login")
     public String login(HttpSession session, Model model, HttpServletResponse response) {
-
         response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
         response.setHeader("Pragma", "no-cache");
         response.setHeader("Expires", "0");
-        if (session.getAttribute("user") != null&&!model.containsAttribute("state")) {
-            return "redirect:/index";
+
+        Integer userId = (Integer) session.getAttribute("user");
+        String username = (String) session.getAttribute("username");
+
+        if (userId != null && username != null) {
+            model.addAttribute("username", username); // Add username to model
+            return "redirect:/"; // Redirect to home page if already logged in
         }
-        return "form";
+
+        return "login"; // Return login page if not logged in
     }
+
     @GetMapping("/verifyEmail")
     public String recover() {
         return "verify";
@@ -74,11 +80,11 @@ public class AccountController {
         return "createInformation";
     }
     @GetMapping("/logout")
-    public String logout(HttpSession session){
-        session.removeAttribute("user");
-        return "redirect:/index";
+    public String logout(HttpSession session) {
+        session.invalidate(); // Clear the session
+        return "redirect:/index"; // Redirect to the homepage or login page
     }
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     @PostMapping("/login")
     public String loginTest(HttpSession session, @RequestParam("username") String username, @RequestParam("password") String password, RedirectAttributes redirectAttributes) {
         State<UserDTO> res = accountService.login(username, password);//Server check
@@ -86,11 +92,13 @@ public class AccountController {
             redirectAttributes.addFlashAttribute("state", res.getStatus().toString());//Set state
             return "redirect:/account/login";
         }
-        //Login thành công se tao session store user id.
+
         session.setAttribute("user", res.getData().id());
+        //session.setAttribute("username", username);
         redirectAttributes.addFlashAttribute("state", res.getStatus().toString());
         return "redirect:/account/login";
     }
+
     @PostMapping("/register")
     public String register(HttpSession session, @RequestParam("username") String username, @RequestParam("password") String password, @RequestParam("email") String email, RedirectAttributes redirectAttributes) throws Exception {
         createUserDTO accountDto = new createUserDTO(username, password, email, "USER");

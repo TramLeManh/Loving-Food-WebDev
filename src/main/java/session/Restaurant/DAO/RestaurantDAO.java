@@ -18,7 +18,7 @@ public class RestaurantDAO {
     }
 
     public Optional<List<Restaurant>> findAll() {
-        String query = "select * FROM view_restaurant";
+        String query = "select * FROM restaurant";
         return Optional.ofNullable(jdbcTemplate.query(query, new Restaurant()));
     }
 
@@ -31,14 +31,23 @@ public class RestaurantDAO {
         }
     }
 
-    public Optional<List<Restaurant>> getByCategory(String category) {
+    public Optional<List<Restaurant>> getByCategory(String categoryId) {
         try {
-            String query = "select  view_restaurant.* from view_restaurant\n" + "where view_restaurant.restaurant_id\n" + "in (SELECT restaurant_id FROM restaurant_category where category_id = ?)";
-            return Optional.ofNullable(jdbcTemplate.query(query, new Restaurant(), category));
+            // Query to fetch all restaurants that match the given category_id
+            String query = "SELECT r.* FROM restaurant r " +
+                    "JOIN restaurant_category rc ON r.restaurant_id = rc.restaurant_id " +
+                    "WHERE rc.category_id = ?";
+
+            // Execute the query and map the result to Restaurant objects
+            List<Restaurant> restaurants = jdbcTemplate.query(query, new Object[]{categoryId}, new Restaurant());
+
+            return Optional.ofNullable(restaurants);
         } catch (Exception e) {
+            e.printStackTrace();
             return Optional.empty();
         }
     }
+
 
     public Optional<List<Restaurant>> getByCategoryDistrict(String category, String district) {
         try {
@@ -85,7 +94,6 @@ public class RestaurantDAO {
         }
     }
 
-
     public List<Restaurant> getOwnerRestaurant(int ownerId)  {
         try {
             String query = "select  * from view_restaurant where restaurant_id in(select restaurant_id from ownrestaurant where user_id = ?);";
@@ -94,7 +102,6 @@ public class RestaurantDAO {
             return null;
         }
     }
-
 
     public void updateRestaurant(String restaurantId, String name, String district, String address, String description, String picture, String phoneNumber, String openTime, String closeTime) {
         try {
@@ -110,9 +117,22 @@ public class RestaurantDAO {
                     "    restaurant_description = ?\n" +
                     "WHERE\n" +
                     "    restaurant_id = ?;";
-             jdbcTemplate.update(query, name, district, address, picture, phoneNumber, openTime, closeTime, description, restaurantId);
+            jdbcTemplate.update(query, name, district, address, picture, phoneNumber, openTime, closeTime, description, restaurantId);
         } catch (Exception e) {
             return ;
         }
     }
+
+    public Optional<List<Restaurant>> findTop3ByRating() {
+        try {
+            String query = "SELECT * FROM restaurant ORDER BY rating DESC LIMIT 3";
+            List<Restaurant> top3Restaurants = jdbcTemplate.query(query, new Restaurant());
+            return Optional.ofNullable(top3Restaurants);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+
 }
