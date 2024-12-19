@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import session.Booking.BookingService;
+import session.Booking.DTO.CreateBookTableDTO;
 import session.Booking.DTO.bookTableDTO;
 import session.Booking.DTO.createDecisionDTO;
 import session.Booking.Model.BookingDecision;
@@ -20,6 +21,8 @@ import session.Restaurant.Restaurant;
 import session.Restaurant.RestaurantService;
 import session.utils.Service.EmailService.EmailService;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +53,7 @@ public class AdminController {
     @GetMapping("/getBookingOrder")
     public String getAdminBooking(HttpSession session,@RequestParam(required = false) Integer status, Model model, @RequestParam(required = false) Integer restaurant_id) {
         Integer user =(Integer) session.getAttribute("user");
+        System.out.println(user);
         List<bookTableDTO> orders = bookingService.getOwnerBooking(user, status,restaurant_id);
         List<Restaurant> restaurants = restaurantService.getOwnerRestaurant(user, restaurant_id);
         List<Category> categories = restaurantService.getCategory();
@@ -108,36 +112,16 @@ public class AdminController {
             return ResponseEntity.badRequest().body("Error");
     }
     @Transactional
-    @PostMapping(value = "/restaurant/{action}")
-    public ResponseEntity<Object> handleRestaurantRequest(
+    @PostMapping(value = "/restaurant/update", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ResponseEntity<Object> updateRestaurant(
             HttpSession session,
-            @PathVariable String action,
-            HttpServletRequest request, // To access Content-Type
-            @ModelAttribute RestaurantDTO formRequest, // For FORM data
-            @RequestBody(required = false) RestaurantDTO jsonRequest // For JSON
+            @ModelAttribute RestaurantDTO restaurantDTO // For FORM data
     ) {
         Integer owner_id = (Integer) session.getAttribute("user");
-        Map<String, Object> response = new LinkedHashMap<>();
-        RestaurantDTO restaurantDTO;
-
-        String contentType = request.getContentType();
-        if (MediaType.APPLICATION_JSON_VALUE.equals(contentType)) {
-            restaurantDTO = jsonRequest; // JSON payload
-        } else if (MediaType.APPLICATION_FORM_URLENCODED_VALUE.equals(contentType)) {
-            restaurantDTO = formRequest; // Form data
-        } else {
-            return ResponseEntity.badRequest().body("Unsupported content type: " + contentType);
-        }
-        if (action.equalsIgnoreCase("create")) {
-            restaurantService.createRestaurant(restaurantDTO, owner_id);
-            return ResponseEntity.ok("Create success");
-        } else if (action.equalsIgnoreCase("update")) {
-            restaurantService.updateRestaurant(restaurantDTO, owner_id);
-            return ResponseEntity.ok("Decision updated successfully.");
-        }
-
-        return ResponseEntity.badRequest().body("Invalid action");
+        restaurantService.updateRestaurant(restaurantDTO, owner_id);
+        return ResponseEntity.ok("Decision updated successfully.");
     }
+
     @Transactional
     @PostMapping(value = "/restaurant/create")
     public ResponseEntity<Object> createRestaurantRequest(

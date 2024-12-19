@@ -21,7 +21,7 @@ public interface  BookingRepo extends JpaRepository<TableBooking, Integer> {
     @Query(value = "select * from table_booking where booking_id in (select booking_id from book where user_id = :userId )and booking_status = :status", nativeQuery = true)
     List<TableBooking> getUserBookingByStatus(int userId, String status);
 
-    @Query(value="select * from table_booking where restaurant_id in (select restaurant_id from ownrestaurant where user_id = 6441);", nativeQuery = true)
+    @Query(value="select * from table_booking where restaurant_id in (select restaurant_id from ownrestaurant where user_id = :owner_id);", nativeQuery = true)
     List<TableBooking> getOwnerBooking(int owner_id);
     @Modifying
     @Query(value = "UPDATE table_booking SET name =:name, phone_number =:phone, booking_date =:date, num_of_guests =:guests, booking_note =:note\n" +
