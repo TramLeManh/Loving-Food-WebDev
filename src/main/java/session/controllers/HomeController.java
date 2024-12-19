@@ -85,7 +85,6 @@ public class    HomeController {
         model.addAttribute("districtList", districtList);
         model.addAttribute("district", district);
         model.addAttribute("category", category);
-        System.out.printf("district is %s", districtList.get(0));
         UserDTO res = null;
         try {
             int id = (int) session.getAttribute("user");
