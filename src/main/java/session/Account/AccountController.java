@@ -40,7 +40,7 @@ public class AccountController {
         if (session.getAttribute("user") != null&&!model.containsAttribute("state")) {
             return "redirect:/index";
         }
-        return "form";
+        return "login";
     }
     @GetMapping("/verifyEmail")
     public String verifyEmail() {
