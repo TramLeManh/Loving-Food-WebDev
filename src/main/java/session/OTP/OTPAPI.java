@@ -56,7 +56,7 @@ public class OTPAPI {
             State<UserDTO> res = otpService.sendOTPRecovery(token, email);
             if (Objects.requireNonNull(res.getStatus()) != Status.SUCCESS) {
                 redirectAttributes.addFlashAttribute("state", res.getStatus().toString());//Set state
-                return "redirect:/recover";
+                return "redirect:/account/recover";
             }
             //set token for that session
             session.setAttribute("sessionToken", token);//set token for verify

@@ -61,9 +61,10 @@ public class AccountController {
         return ResponseEntity.ok(userInformation);
     }
     @PutMapping("/updateUserInformation")
-    public ResponseEntity<Object> updateUserInformation(@RequestBody UserInformation userInformation) {
-        UserInformation user = userInformationRepo.getUserInformation(userInformation.getUser_id());
-        if (user == null) {
+    public ResponseEntity<Object> updateUserInformation(HttpSession session,@RequestBody UserInformation userInformation) {
+        Integer user_id = (Integer) session.getAttribute("user");
+        userInformation.setUser_id(user_id);
+        if (user_id == null) {
             return ResponseEntity.badRequest().body("User not found");
         }
         userInformationRepo.save(userInformation);
