@@ -63,9 +63,10 @@
                         cardElement.innerHTML = `
                             <div class="card shadow-sm">
                                 <img
-                                    src="${restaurant.picture||'/assets/blank.png'}"
-                                    alt="${restaurant.name}"
-                                    class="square-image border-end">
+    src="${restaurant.picture && restaurant.picture !== '' ? restaurant.picture : '/assets/blank.png'}"
+    alt="${restaurant.name}"
+    class="square-image border-end">
+
                                 <div class="card-body">
                                     <h5 class="card-title fw-bold mb-1">${restaurant.name}</h5>
                                     <p class="text-muted small mb-0">${restaurant.district}</p>

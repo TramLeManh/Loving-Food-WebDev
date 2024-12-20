@@ -91,11 +91,10 @@ public class AccountController {
         State<UserDTO> res = accountService.login(username, password);//Server check
         if (res.getStatus() != Status.SUCCESS) {
             redirectAttributes.addFlashAttribute("state", res.getStatus().toString());//Set state
-            return "redirect:/account/login";
+            return "redirect:/";
         }
         session.setAttribute("user", res.getData().id());
 
-        //Login thành công se tao session store user id.
         if (res.getData().role().equals("ADMIN")) {
             session.setAttribute("role", 0);
             return "redirect:/admin/getBookingOrder";

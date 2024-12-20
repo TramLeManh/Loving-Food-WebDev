@@ -77,7 +77,7 @@ public class    HomeController {
         return "blog";
     }
 
-    @RequestMapping("")
+    @RequestMapping("/index")
     public String index(HttpSession session, Model model, @RequestParam(required = false) String district,@RequestParam(required = false) String category) {
         List<Restaurant> restaurantList = restaurantService.getRestaurant(district , null);
         List<District> districtList = restaurantService.getDistrict();
