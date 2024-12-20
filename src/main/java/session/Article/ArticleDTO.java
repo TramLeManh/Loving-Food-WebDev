@@ -31,5 +31,14 @@ public class ArticleDTO {
         article.setUpdatedAt(Instant.now());
         return article;
     }
+    public static ArticleDTO toDTO(Article article){
+        ArticleDTO articleDTO = new ArticleDTO();
+        articleDTO.setArticleId(article.getArticleId());
+        articleDTO.setTitle(article.getTitle());
+        articleDTO.setContent(article.getContent());
+        articleDTO.setImage(article.getImage());
+        articleDTO.setUpdatedAt(article.getUpdatedAt().toString());
+        return articleDTO;
+    }
 
 }

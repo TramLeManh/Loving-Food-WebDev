@@ -91,8 +91,8 @@ public class UserController {
     @GetMapping("/getUserBooking")
     public String getUserBooking(HttpSession session, @RequestParam(required = false) Integer status, Model model) {
         Integer user_id = (Integer) session.getAttribute("user");
-        UserInformation user = userInformationRepo.getUserInformation(8242);
-        List<bookTableDTO> bookings = bookingService.getUserBooking(8242, status);
+        UserInformation user = userInformationRepo.getUserInformation(user_id);
+        List<bookTableDTO> bookings = bookingService.getUserBooking(user_id, status);
         model.addAttribute("currentStatus", status);
         model.addAttribute("bookingTable", bookings);
         model.addAttribute("user", user);

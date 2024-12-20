@@ -495,7 +495,7 @@
                     <td th:text="${article.articleId}"></td>
                     <td th:text="${article.title}"></td>
                     <td th:text="${article.content.length() > 15 ? #strings.substring(article.content, 0, 15) + '...' : article.content}"></td>
-                    <td th:text="${article.updatedAt}"></td>
+                    <td><span th:text="${#temporals.format(article.updatedAt, 'dd/MM/yy HH:mm:ss')}"></span></td>
                     <td>
                         <div>
                             <div>
