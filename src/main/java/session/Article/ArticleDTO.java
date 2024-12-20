@@ -4,6 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.sql.Timestamp;
+import java.time.Instant;
+
 @Getter
 @Setter
 public class ArticleDTO {
@@ -11,6 +14,7 @@ public class ArticleDTO {
     private String title;
     private String content;
     private String image;
+    private String updatedAt;
     public static Article toEntity(ArticleDTO articleDTO){
         Article article = new Article();
         article.setTitle(articleDTO.getTitle());
@@ -24,6 +28,8 @@ public class ArticleDTO {
         article.setTitle(articleDTO.getTitle());
         article.setContent(articleDTO.getContent());
         article.setImage(articleDTO.getImage());
+        article.setUpdatedAt(Instant.now());
         return article;
     }
+
 }

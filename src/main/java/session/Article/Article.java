@@ -22,7 +22,6 @@ public class Article {
     private String content;
     private String image;
 
-
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "Updated_at")
     private Instant updatedAt;
