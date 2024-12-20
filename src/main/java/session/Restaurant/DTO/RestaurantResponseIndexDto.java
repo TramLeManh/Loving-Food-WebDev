@@ -26,7 +26,6 @@ public class RestaurantResponseIndexDto {
         this.picture = restaurant.getPicture();
         this.openTime = restaurant.getOpen_time();  // Convert to camelCase
         this.closeTime = restaurant.getClose_time(); // Convert to camelCase
-        Random random = new Random();
-        this.rating =  random.nextInt(5) + 1;
+        this.rating =  restaurant.getRate();
     }
 }
