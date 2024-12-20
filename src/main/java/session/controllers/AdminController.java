@@ -9,6 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import session.Article.Article;
+import session.Article.ArticleRepository;
 import session.Booking.BookingService;
 import session.Booking.DTO.CreateBookTableDTO;
 import session.Booking.DTO.bookTableDTO;
@@ -35,10 +37,12 @@ public class AdminController {
     private final BookingService bookingService;
     private final RestaurantService restaurantService;
     private final EmailService emailService;
-    public AdminController(BookingService bookingService, RestaurantService restaurantService, EmailService emailService) {
+    private final ArticleRepository articleRepository;
+    public AdminController(BookingService bookingService, RestaurantService restaurantService, EmailService emailService, ArticleRepository articleRepository) {
         this.bookingService = bookingService;
         this.restaurantService = restaurantService;
         this.emailService = emailService;
+        this.articleRepository = articleRepository;
     }
 
     @GetMapping("/createRestaurant")
@@ -50,8 +54,12 @@ public class AdminController {
         return "createRestaurant";
     }
 
-    @GetMapping("")
+    @GetMapping("/getBookingOrder")
     public String getAdminBooking(HttpSession session,@RequestParam(required = false) Integer status, Model model, @RequestParam(required = false) Integer restaurant_id) {
+        Integer role = (Integer) session.getAttribute("role");
+        if(role != 0) {
+            return "error";
+        }
         Integer user =(Integer) session.getAttribute("user");
 
         List<bookTableDTO> orders = bookingService.getOwnerBooking(user, status,restaurant_id);
@@ -76,7 +84,8 @@ public class AdminController {
     }
 
     @GetMapping("/decision")
-    public ResponseEntity<Object> getDecision(@RequestParam int decision_id, @RequestParam String action) {
+    public ResponseEntity<Object> getDecision(HttpSession session,@RequestParam int decision_id, @RequestParam String action) {
+
         Map<String, Object> response = new LinkedHashMap<>();
 
         try {
@@ -120,6 +129,16 @@ public class AdminController {
         Integer owner_id = (Integer) session.getAttribute("user");
         restaurantService.updateRestaurant(restaurantDTO, owner_id);
         return ResponseEntity.ok("Decision updated successfully.");
+    }
+    @GetMapping("/editArticle")
+    public String showEditArticlePage(HttpSession session,Model model) {
+        Integer role = (Integer) session.getAttribute("role");
+        if(role != 0) {
+            return "error";
+        }
+        List<Article> articles = articleRepository.findAll();
+        model.addAttribute("articles", articles);
+        return "editArticle";
     }
 
     @Transactional

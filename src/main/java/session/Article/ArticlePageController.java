@@ -25,10 +25,4 @@ public class ArticlePageController {
     public String showArticlePage() {
         return "article";
     }
-    @GetMapping("/editArticle")
-    public String showEditArticlePage(Model model) {
-        List<Article> articles = articleRepository.findAll();
-        model.addAttribute("articles", articles);
-        return "editArticle";
-    }
 }
