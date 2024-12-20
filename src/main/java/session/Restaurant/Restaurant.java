@@ -20,6 +20,7 @@ public class Restaurant implements RowMapper<Restaurant> {
     private String close_time;
     private String phone_number;
     private String description;
+    private int rate;
     private List<String> category;
     private List<Comment> comments;
     @Override
@@ -35,6 +36,7 @@ public class Restaurant implements RowMapper<Restaurant> {
         res.setPhone_number(rs.getString("phone_number"));
         res.setOwner_id(rs.getInt("owner_id"));
         res.setDescription(rs.getString("restaurant_description"));
+        res.setRate(rs.getInt("rate"));
         return res;
     }
 
