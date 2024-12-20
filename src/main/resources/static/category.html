@@ -91,12 +91,13 @@
             categories.forEach((category) => {
                 const col = document.createElement('div');
                 col.className = 'col-12 col-sm-6 col-md-4 mb-4';
+                col.className = 'col-12 col-sm-6 col-md-4 mb-4';
 
                 const categoryDiv = document.createElement('div');
                 categoryDiv.className = 'category text-center';
 
                 categoryDiv.innerHTML = `
-                    <img src="${category.category_image}" alt="${category.category_name}" class="img-fluid mb-2" style="max-height: 150px; object-fit: cover;">
+                    <img src="${category.category_image||'/assets/b1.png'} alt="${category.category_name}" class="img-fluid mb-2" style="max-height: 150px; object-fit: cover;">
                     <p>${category.category_name}</p>
                     <span>... result</span>
                 `;
