@@ -79,6 +79,14 @@ public class    HomeController {
 
     @RequestMapping("/index")
     public String index(HttpSession session, Model model, @RequestParam(required = false) String district,@RequestParam(required = false) String category) {
+        return getString(session, model, district, category);
+    }
+    @RequestMapping("")
+    public String index1(HttpSession session, Model model, @RequestParam(required = false) String district,@RequestParam(required = false) String category) {
+        return getString(session, model, district, category);
+    }
+
+    private String getString(HttpSession session, Model model, @RequestParam(required = false) String district, @RequestParam(required = false) String category) {
         List<Restaurant> restaurantList = restaurantService.getRestaurant(district , null);
         List<District> districtList = restaurantService.getDistrict();
         model.addAttribute("restaurantList", restaurantList);
@@ -95,6 +103,7 @@ public class    HomeController {
 
         return "index";
     }
+
 
 //
 //    @RequestMapping("/restaurant/get")
