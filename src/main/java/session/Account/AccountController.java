@@ -42,7 +42,7 @@ public class AccountController {
         response.setHeader("Pragma", "no-cache");
         response.setHeader("Expires", "0");
         if (session.getAttribute("user") != null&&!model.containsAttribute("state")) {
-            return "redirect:/index";
+            return "redirect:/";
         }
         return "login";
     }
@@ -83,7 +83,7 @@ public class AccountController {
     @GetMapping("/logout")
     public String logout(HttpSession session){
         session.removeAttribute("user");
-        return "redirect:/index";
+        return "redirect:/";
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     @PostMapping("/login")

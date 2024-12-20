@@ -64,8 +64,7 @@ public class RestaurantRestController {
     @GetMapping("/top3")
     public List<RestaurantResponseIndexDto> findTop3ByRating() {
         List<Restaurant> allRestaurants = restaurantService.getRestaurant(null, null);
-        List<Restaurant> top3Restaurants = allRestaurants.stream().limit(3).toList();;
-
+        List<Restaurant> top3Restaurants = allRestaurants.stream().limit(4).toList();;
         // Map each Restaurant to RestaurantResponseIndexDto
         return top3Restaurants.stream()
                 .map(RestaurantResponseIndexDto::new) // Create DTO for each restaurant
