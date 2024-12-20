@@ -1,4 +1,5 @@
 package session.Account;
+import com.fasterxml.jackson.core.json.async.NonBlockingJsonParser;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.boot.jackson.JsonMixinModuleEntries;
@@ -14,6 +15,9 @@ import session.userInformation.UserInformationRepo;
 import session.utils.Enum.Status;
 import session.utils.State;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 @Controller
 @RequestMapping("/account")
 public class AccountController {
@@ -25,8 +29,8 @@ public class AccountController {
     }
     @GetMapping("/getUserInformation")
     public String getUserInformation(HttpSession session,Model model) {
-        Integer user_id = (Integer) session.getAttribute("user");
-        UserInformation userInformation = userInformationRepo.getUserInformation(user_id);
+//        Integer user_id = (Integer) session.getAttribute("user");
+        UserInformation userInformation = userInformationRepo.getUserInformation(4350);
         model.addAttribute("userInformation",userInformation);
         return "updateInformation" ;
 
@@ -129,4 +133,19 @@ public class AccountController {
     public String recover() {
         return "recover";
     }
+    @PostMapping("/v1/login")
+    public ResponseEntity<Object> loginAccount(HttpSession session, @RequestParam("username") String username, @RequestParam("password") String password) {
+        Map<String, Object> response = new LinkedHashMap<>();
+        State<UserDTO> res = accountService.login(username, password);//Server check
+        if (res.getStatus() != Status.SUCCESS) {
+            response.put("message", res.getStatus().toString());
+            return ResponseEntity.badRequest().body(response);
+        }
+        //Login thành công se tao session store user id.
+        session.setAttribute("user", res.getData().id());
+        response.put("message", "/index");
+        return ResponseEntity.ok().body(response);
+
+    }
+
 }

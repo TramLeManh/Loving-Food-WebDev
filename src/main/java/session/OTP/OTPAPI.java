@@ -1,6 +1,7 @@
 package session.OTP;
 
 import jakarta.servlet.http.HttpSession;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,8 @@ import session.utils.State;
 import session.utils.Enum.Status;
 import session.utils.generateSessionToken;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Objects;
 
 @Controller
@@ -48,6 +51,32 @@ public class OTPAPI {
             return  (e.getMessage());
         }
     }
+    @PostMapping(value = "/v1/verifyEmail/{email}")
+    public ResponseEntity<Object> verifyEmailAPI(HttpSession session, RedirectAttributes redirectAttributes, @PathVariable String email) {
+        try {
+            Map<String, Object> response = new LinkedHashMap<>();
+            if (accountService.isEmailExist(email)) {
+                redirectAttributes.addFlashAttribute("state", "error");//Set state
+                response.put("message", "Email is already exist");
+                return ResponseEntity.badRequest().body(response);
+            }
+            //generate session token
+            String token = generateSessionToken.get();
+            //set token for that session;
+            otpService.sendOTPVerify(token, email);
+            session.setAttribute("sessionToken", token);//set token for verify
+            session.setMaxInactiveInterval(1800);//Set session time out  minutes
+            redirectAttributes.addFlashAttribute("email", email);
+            session.setAttribute("email", email);
+            redirectAttributes.addFlashAttribute("isRegister", true);
+            String path = "/verifyOTP/register/" + token;
+            response.put("path", path);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return  ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PostMapping("/recover")//redirect itself
     public String recoveryPassword(HttpSession session, @RequestParam String email, RedirectAttributes redirectAttributes) {
         try {

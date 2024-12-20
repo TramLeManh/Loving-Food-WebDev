@@ -52,8 +52,9 @@ public class AdminController {
 
     @GetMapping("/getBookingOrder")
     public String getAdminBooking(HttpSession session,@RequestParam(required = false) Integer status, Model model, @RequestParam(required = false) Integer restaurant_id) {
-        Integer user =(Integer) session.getAttribute("user");
-        System.out.println(user);
+//        Integer user =(Integer) session.getAttribute("user");
+        int user = 6441;
+
         List<bookTableDTO> orders = bookingService.getOwnerBooking(user, status,restaurant_id);
         List<Restaurant> restaurants = restaurantService.getOwnerRestaurant(user, restaurant_id);
         List<Category> categories = restaurantService.getCategory();
@@ -126,7 +127,6 @@ public class AdminController {
     @PostMapping(value = "/restaurant/create")
     public ResponseEntity<Object> createRestaurantRequest(
             HttpSession session,
-            HttpServletRequest request,
             @RequestBody(required = false) RestaurantDTO restaurantDTO
     ) {
         Integer owner_id = (Integer) session.getAttribute("user");
