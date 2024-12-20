@@ -86,7 +86,7 @@
             // Render the article details in the HTML
             document.getElementById('article-content').innerHTML = `
                 <h1>${data.title}</h1>
-                <img src="/assets/${data.image}" alt="${data.title}" />
+                <img src="${data.image || '/assets/blank.png'}" />
                 <p>${data.content}</p>
                 <div class="back-container">
                     <a href="/all-articles" class="back-button">Back to All Articles</a>

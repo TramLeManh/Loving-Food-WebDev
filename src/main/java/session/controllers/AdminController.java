@@ -50,10 +50,9 @@ public class AdminController {
         return "createRestaurant";
     }
 
-    @GetMapping("/getBookingOrder")
+    @GetMapping("")
     public String getAdminBooking(HttpSession session,@RequestParam(required = false) Integer status, Model model, @RequestParam(required = false) Integer restaurant_id) {
-//        Integer user =(Integer) session.getAttribute("user");
-        int user = 6441;
+        Integer user =(Integer) session.getAttribute("user");
 
         List<bookTableDTO> orders = bookingService.getOwnerBooking(user, status,restaurant_id);
         List<Restaurant> restaurants = restaurantService.getOwnerRestaurant(user, restaurant_id);

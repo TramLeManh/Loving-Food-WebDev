@@ -94,6 +94,11 @@ public class AccountController {
             return "redirect:/account/login";
         }
         //Login thành công se tao session store user id.
+        if (res.getData().role().equals("ADMIN")) {
+            session.setAttribute("role", 0);
+            return "redirect:/admin";
+        }
+        session.setAttribute("role", 1);
         session.setAttribute("user", res.getData().id());
         redirectAttributes.addFlashAttribute("state", res.getStatus().toString());
         return "redirect:/account/login";
