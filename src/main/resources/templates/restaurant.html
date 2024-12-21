@@ -59,13 +59,14 @@
 
                     data.forEach(restaurant => {
                         const cardElement = document.createElement('div');
+
                         cardElement.classList.add('col');
                         cardElement.innerHTML = `
                             <div class="card shadow-sm">
                                 <img
-    src="${restaurant.picture && restaurant.picture !== '' ? restaurant.picture : '/assets/blank.png'}"
-    alt="${restaurant.name}"
-    class="square-image border-end">
+                                        src="${restaurant.name}"
+                            alt="${restaurant.image}"
+                                        class="square-image border-end">
 
                                 <div class="card-body">
                                     <h5 class="card-title fw-bold mb-1">${restaurant.name}</h5>

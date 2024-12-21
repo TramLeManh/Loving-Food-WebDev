@@ -126,6 +126,7 @@ public class AdminController {
             HttpSession session,
             @ModelAttribute RestaurantDTO restaurantDTO // For FORM data
     ) {
+        System.out.println(restaurantDTO.getDistrict());
         Integer owner_id = (Integer) session.getAttribute("user");
         restaurantService.updateRestaurant(restaurantDTO, owner_id);
         return ResponseEntity.ok("Decision updated successfully.");

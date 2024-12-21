@@ -38,8 +38,8 @@ public class Restaurant implements RowMapper<Restaurant> {
         res.setPhone_number(rs.getString("phone_number"));
         res.setOwner_id(rs.getInt("owner_id"));
         res.setDescription(rs.getString("restaurant_description"));
-        Random random = new Random();
-        res.setRate(random.nextInt(5) + 1);
+        res.setRate(rs.getInt("restaurant_rate"));
+
         return res;
     }
 
