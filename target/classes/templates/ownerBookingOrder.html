@@ -179,7 +179,7 @@
             const selectedStatus = document.getElementById("statusSelect").value;
             const currentUrl = window.location.href;
             let newUrl;
-            if (currentUrl.includes("/admin/getBookingOrder?restaurant_id=")) {
+            if (currentUrl.includes("/admin?restaurant_id=")) {
                 const baseUrl = currentUrl.split("?")[0]; // Extract base URL
                 const currentParams = new URLSearchParams(currentUrl.split("?")[1]); // Get existing query parameters
                 if (selectedStatus) {
@@ -190,8 +190,8 @@
                 newUrl = `${baseUrl}?${currentParams.toString()}`; // Construct new URL
             } else {
                 newUrl = selectedStatus
-                    ? `/admin/getBookingOrder?status=${selectedStatus}`
-                    : "/admin/getBookingOrder";
+                    ? `/admin?status=${selectedStatus}`
+                    : "/admin";
             }
             window.location.href = newUrl;
         }
@@ -203,7 +203,7 @@
             if (selectedStatus) queryParams.push(`status=${selectedStatus}`);
             if (selectedRestaurantId) queryParams.push(`restaurant_id=${selectedRestaurantId}`);
             const queryString = queryParams.length > 0 ? `?${queryParams.join("&")}` : "";
-            window.location.href = `/admin/getBookingOrder${queryString}`;
+            window.location.href = `/admin${queryString}`;
         }
         $(document).ready(function () {
             $("#updateResponseForm").on("submit", function (event) {

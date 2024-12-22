@@ -1,4 +1,5 @@
 package session.Restaurant;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.jdbc.core.RowMapper;
@@ -7,7 +8,6 @@ import session.Restaurant.Model.Comment;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Random;
 
 @Getter
 @Setter
@@ -22,9 +22,10 @@ public class Restaurant implements RowMapper<Restaurant> {
     private String close_time;
     private String phone_number;
     private String description;
-    private int rate;
     private List<String> category;
     private List<Comment> comments;
+    private double rating;
+
     @Override
     public Restaurant mapRow(ResultSet rs, int rowNum) throws SQLException {
         Restaurant res = new Restaurant();
@@ -36,12 +37,9 @@ public class Restaurant implements RowMapper<Restaurant> {
         res.setOpen_time(rs.getString("open_time"));
         res.setClose_time(rs.getString("close_time"));
         res.setPhone_number(rs.getString("phone_number"));
-        res.setOwner_id(rs.getInt("owner_id"));
+        //res.setOwner_id(rs.getInt("owner_id"));
         res.setDescription(rs.getString("restaurant_description"));
-        Random random = new Random();
-        res.setRate(random.nextInt(5) + 1);
+        res.setRating(rs.getDouble("rating"));
         return res;
     }
-
-
 }

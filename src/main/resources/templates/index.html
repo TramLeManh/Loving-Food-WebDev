@@ -52,6 +52,7 @@
             justify-content: space-between;
             background: #b2744c;
             padding: 10px 20px;
+            overflow: visible;
         }
 
         .navbar .logo {
@@ -90,7 +91,7 @@
         }
 
         .button {
-            background: transparent;
+            background: #000000;
             border: 2px solid #e0a24c;
             color: white;
             padding: 5px 15px;
@@ -106,6 +107,50 @@
             background-color: #e0a24c;
             color: black;
         }
+
+        .user-dropdown {
+            position: relative; /* Parent element for relative positioning */
+            display: inline-block; /* Keep it inline with other buttons */
+        }
+
+        .dropdown-content {
+            display: none; /* Hidden by default */
+            position: absolute; /* Positioned relative to .user-dropdown */
+            top: 120%; /* Adjust as needed to clear the parent button */
+            left: 0; /* Align to the left edge */
+            background-color: #ffffff; /* Dropdown background */
+            border: 1px solid #ccc; /* Optional border */
+            border-radius: 5px; /* Rounded edges */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+            padding: 8px 12px; /* Padding inside the dropdown */
+            z-index: 9999; /* Ensure it appears above other elements */
+            min-width: 100px; /* Minimum width */
+        }
+
+        .dropdown-content button {
+            font-size: 14px;
+            font-weight: 500;
+            padding: 5px 15px;
+            width: 100%; /* Make buttons full width */
+            background-color: #000000; /* Button background */
+            color: #000000; /* Text color */
+            border: none;
+            padding: 8px 10px;
+            text-align: left; /* Align text to the left */
+            cursor: pointer;
+            border-radius: 3px;
+            margin-bottom: 5px; /* Space between buttons */
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .dropdown-content button:hover {
+            background-color: #b2744c; /* Hover effect */
+        }
+
+        .user-dropdown:hover .dropdown-content {
+            display: block; /* Show dropdown on hover */
+        }
+
     </style>
     </style>
 </head>
@@ -113,7 +158,6 @@
 <script>
     async function handleBooking(restaurant_id) {
         try {
-            // Make the POST request
             const postResponse = await fetch(`/user/booking/${restaurant_id}`, {
                 method: "POST",
                 headers: {
@@ -195,9 +239,21 @@
         <!-- Login/Register -->
         <div class="buttons">
             <!-- If user is logged in -->
-            <div th:if="${user != null}">
-                <a href="#" class="button" th:text="${user.username}"></a>
+            <div th:if="${user != null}" class="user-dropdown">
+                <a href="#" class="button" id="username-btn" th:text="${user.username()}"></a>
                 <a href="/account/logout" class="button">Logout</a>
+                <script th:inline="javascript">
+                    var userId = /*[[${user.id}]]*/ 'defaultUserId';  // Thymeleaf injects user.id here
+                    var userRole = /*[[${user.role}]]*/ 'defaultRole';
+                </script>
+
+                <div class="dropdown-content">
+                    <button onclick="redirectToUserInfo()">Update Information</button>
+                    <button onclick="redirectToChangePass()">Change Password</button>
+                    <button onclick="redirectToViewBooking()">View booking status</button>
+                    <button onclick="redirectToViewInfo()">View info</button>
+                </div>
+
             </div>
 
             <!-- If user is not logged in -->
@@ -206,7 +262,54 @@
                 <a href="/account/verifyEmail" class="button">Register</a>
             </div>
         </div>
+
+
+        <script>
+            window.onload = function () {
+                // Check if userId and userRole variables are available
+                if (typeof userRole !== 'undefined') {
+                    if (userRole === 'ADMIN') {
+                        // Redirect to the admin page for admin users
+                        window.location.href = `/admin.html`;
+                    }
+                } else {
+                    console.error("User role is not defined.");
+                }
+            };
+            function redirectToUserInfo() {
+                // Check if the userId variable is available
+                if (typeof userId !== 'undefined') {
+                    // Redirect the user to the URL with the user ID in the query parameter
+                    window.location.href = `/account/getUserInformation?id=${userId}`;
+                } else {
+                    console.error("User ID is not defined.");
+                }
+            }
+            function redirectToChangePass() {
+                // Check if the userId variable is available
+                if (typeof userId !== 'undefined') {
+                    // Redirect the user to the URL with the user ID in the query parameter
+                    window.location.href = `/account/changePassword`;
+                }
+            }
+            function redirectToViewBooking() {
+                // Check if the userId variable is available
+                if (typeof userId !== 'undefined') {
+                    // Redirect the user to the URL with the user ID in the query parameter
+                    window.location.href = `/user/getUserBooking`;
+                }
+            }
+            function redirectToViewInfo() {
+                // Check if the userId variable is available
+                if (typeof userId !== 'undefined') {
+                    // Redirect the user to the URL with the user ID in the query parameter
+                    window.location.href = `account/info`;
+                }
+            }
+        </script>
+
     </nav>
+
 
     <section id="home">
         <div class="content m-0">
@@ -217,7 +320,8 @@
             <p>
                 Our service is the best option. For you and for everyone.
             </p>
-            <button id="shop-now-btn">Booking Now</button>
+
+            <button id="shop-now-btn" onclick="location.href='/restaurant/show/filter'">Booking Now</button>
         </div>
     </section>
 
@@ -248,7 +352,7 @@
     </section>
 
     <section id="contact">
-        <iframe src="/contact.html" style="width: 100%; height: 500px; border: none;"></iframe>
+        <iframe src="/contact.html" style="width: 100%; height: 800px; border: none;"></iframe>
     </section>
 
 
@@ -276,7 +380,7 @@
                         card.className = 'col-md-4 py-3 py-md-0';
                         card.innerHTML = `
                         <div class="card">
-                            <img src="${article.image || '/assets/blank.png'}" alt="${article.title}" class="card-img-top"/>
+                            <img src="/assets/${article.image}" alt="${article.title}" class="card-img-top"/>
                             <div class="card-body">
                                 <h3>${article.title}</h3>
                                 <p>${article.content.substring(0, 150)}...</p>

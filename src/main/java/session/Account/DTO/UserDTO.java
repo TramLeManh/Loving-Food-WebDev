@@ -2,6 +2,7 @@ package session.Account.DTO;
 
 
 import java.io.Serializable;
+
 import session.Account.Account;
 import session.utils.PasswordEncryptor;
 

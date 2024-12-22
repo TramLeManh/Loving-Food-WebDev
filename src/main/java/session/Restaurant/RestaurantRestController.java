@@ -1,11 +1,14 @@
 package session.Restaurant;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.ui.Model;
 import session.Restaurant.DTO.CommentDTO;
 import session.Restaurant.DTO.RestaurantResponseDto;
 import session.Restaurant.DTO.RestaurantResponseIndexDto;
 import session.Restaurant.DTO.addCategoryDTO;
+import session.Restaurant.Model.Comment;
 import session.Restaurant.Model.District;
 
 import java.util.*;
@@ -63,33 +66,24 @@ public class RestaurantRestController {
 
     @GetMapping("/top3")
     public List<RestaurantResponseIndexDto> findTop3ByRating() {
-        List<Restaurant> allRestaurants = restaurantService.getRestaurant(null, null);
-        List<Restaurant> top3Restaurants = allRestaurants.stream().limit(4).toList();;
-        // Map each Restaurant to RestaurantResponseIndexDto
+        List<Restaurant> top3Restaurants = restaurantService.getTop3RestaurantsByRating();
         return top3Restaurants.stream()
-                .map(RestaurantResponseIndexDto::new) // Create DTO for each restaurant
+                .map(restaurant -> new RestaurantResponseIndexDto(restaurant)) // Create DTO for each restaurant
                 .collect(Collectors.toList()); // Collect the result as a List
     }
 
     @GetMapping("/all")
     public List<RestaurantResponseIndexDto> findAllRestaurant() {
-        List<Restaurant> allRestaurant = restaurantService.getRestaurant(null,null);
+        List<Restaurant> allRestaurant = restaurantService.getAllRestaurants();
+
         return allRestaurant.stream()
-                .map(RestaurantResponseIndexDto::new) // Create DTO for each restaurant
+                .map(restaurant -> new RestaurantResponseIndexDto(restaurant)) // Create DTO for each restaurant
                 .collect(Collectors.toList()); // Collect the result as a List
     }
+
     @GetMapping("/get/category/{categoryId}")
     public ResponseEntity<List<RestaurantResponseIndexDto>> getRestaurantsByCategory(@PathVariable String categoryId) {
-        Optional<List<Restaurant>> restaurants = Optional.ofNullable(restaurantService.getRestaurant(null,categoryId));
-        return getListResponseEntity(restaurants);
-    }
-    @GetMapping("/get/category/{categoryId}/{district}")
-    public ResponseEntity<List<RestaurantResponseIndexDto>> getRestaurantsByCategoryDistrict(@PathVariable String categoryId, @PathVariable String district) {
-        Optional<List<Restaurant>> restaurants = Optional.ofNullable(restaurantService.getRestaurant(district,categoryId));
-        return getListResponseEntity(restaurants);
-    }
-
-    private ResponseEntity<List<RestaurantResponseIndexDto>> getListResponseEntity(Optional<List<Restaurant>> restaurants) {
+        Optional<List<Restaurant>> restaurants = restaurantService.getByCategory(categoryId);
         if (restaurants.isPresent() && !restaurants.get().isEmpty()) {
             List<RestaurantResponseIndexDto> restaurantDtos = restaurants.get().stream()
                     .map(RestaurantResponseIndexDto::new)  // Assuming your RestaurantResponseIndexDto constructor maps the restaurant
@@ -100,5 +94,39 @@ public class RestaurantRestController {
         }
     }
 
+    @GetMapping("/get/district/{districtId}")
+    public ResponseEntity<List<RestaurantResponseIndexDto>> getRestaurantsByDistrict(@PathVariable String districtId) {
+        Optional<List<Restaurant>> restaurants = restaurantService.getByDistrict(districtId);
+        if (restaurants.isPresent() && !restaurants.get().isEmpty()) {
+            List<RestaurantResponseIndexDto> restaurantDtos = restaurants.get().stream()
+                    .map(RestaurantResponseIndexDto::new)  // Assuming your RestaurantResponseIndexDto constructor maps the restaurant
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok().body(restaurantDtos);
+        } else {
+            return ResponseEntity.noContent().build();
+        }
+    }
 
+    // Filter restaurants by both district and category
+    @GetMapping("/get/filter")
+    public ResponseEntity<List<RestaurantResponseIndexDto>> getRestaurantsByCategoryAndDistrict(
+            @RequestParam(value = "district", required = false) String district,
+            @RequestParam(value = "category", required = false) String category) {
+
+        // Fetch filtered restaurants using the service
+        Optional<List<Restaurant>> filteredRestaurants = restaurantService.getByCategoryAndDistrict(category, district);
+
+        // If no restaurants found, return 204 No Content
+        if (filteredRestaurants.isEmpty() || filteredRestaurants.get().isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        // Convert list of restaurants to DTOs
+        List<RestaurantResponseIndexDto> restaurantDtos = filteredRestaurants.get().stream()
+                .map(RestaurantResponseIndexDto::new)  // Assuming your RestaurantResponseIndexDto constructor maps the restaurant
+                .collect(Collectors.toList());
+
+        // Return the list of restaurant DTOs
+        return ResponseEntity.ok().body(restaurantDtos);
+    }
 }

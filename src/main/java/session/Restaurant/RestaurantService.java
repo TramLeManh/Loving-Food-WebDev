@@ -12,7 +12,9 @@ import session.Restaurant.Model.District;
 import session.userInformation.UserInformation;
 import session.userInformation.UserInformationRepo;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -83,8 +85,9 @@ public class RestaurantService {
     }
     @Transactional
     public void createRestaurant(RestaurantDTO restaurant, int owner_id) {
-        restaurantDAO.insertRestaurant(owner_id, restaurant.getRestaurant_id(), restaurant.getName(), restaurant.getDistrict(), restaurant.getAddress(), restaurant.getDescription(), restaurant.getPicture(), restaurant.getPhone_number(), restaurant.getOpen_time(),
+        restaurantDAO.insertRestaurant(restaurant.getRestaurant_id(), restaurant.getName(), restaurant.getDistrict(), restaurant.getAddress(), restaurant.getDescription(), restaurant.getPicture(), restaurant.getPhone_number(), restaurant.getOpen_time(),
                 restaurant.getClose_time());
+        restaurantDAO.insertOwnRestaurant(owner_id, Integer.parseInt(restaurant.getRestaurant_id()));
         insertRestaurantCategories(Integer.parseInt((restaurant.getRestaurant_id())), restaurant.getCategory());
     }
     @Transactional
@@ -111,8 +114,29 @@ public class RestaurantService {
         commentDAO.save(CommentDTO.toEntity(comment,user_id));
     }
 
-
     public List<Category> getCategory() {
         return categoryDAO.findAll();
+    }
+
+    public List<Restaurant> getTop3RestaurantsByRating() {
+        Optional<List<Restaurant>> top3Restaurants = restaurantDAO.findTop3ByRating();
+        return top3Restaurants.orElse(Collections.emptyList());
+    }
+
+    public List<Restaurant> getAllRestaurants() {
+        Optional<List<Restaurant>> allRestaurants = restaurantDAO.findAll();
+        return allRestaurants.orElse(Collections.emptyList());
+    }
+
+    public Optional<List<Restaurant>> getByCategory(String category) {
+        return restaurantDAO.getByCategory(category);
+    }
+
+    public Optional<List<Restaurant>> getByDistrict(String district) {
+        return restaurantDAO.getByDistrict(district);
+    }
+
+    public Optional<List<Restaurant>> getByCategoryAndDistrict(String category, String district) {
+        return restaurantDAO.getByCategoryDistrict(category, district);
     }
 }

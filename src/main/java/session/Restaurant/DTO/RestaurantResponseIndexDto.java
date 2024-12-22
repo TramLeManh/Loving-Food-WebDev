@@ -2,9 +2,10 @@ package session.Restaurant.DTO;
 
 import lombok.Getter;
 import lombok.Setter;
+import session.Restaurant.Model.Comment;
 import session.Restaurant.Restaurant;
 
-import java.util.Random;
+import java.util.List;
 
 @Getter
 @Setter
@@ -13,9 +14,10 @@ public class RestaurantResponseIndexDto {
     private String name;
     private String address;
     private String district;
-    private String image;
-    private String openTime;  // Using camelCase
-    private String closeTime; // Using camelCase
+    private String description;
+    private String picture;
+    private String openTime;
+    private String closeTime;
     private double rating;
 
     public RestaurantResponseIndexDto(Restaurant restaurant) {
@@ -23,9 +25,10 @@ public class RestaurantResponseIndexDto {
         this.name = restaurant.getName();
         this.address = restaurant.getAddress();
         this.district = restaurant.getDistrict();
-        this.image = restaurant.getPicture();
-        this.openTime = restaurant.getOpen_time();  // Convert to camelCase
-        this.closeTime = restaurant.getClose_time(); // Convert to camelCase
-        this.rating =  restaurant.getRate();
+        this.description = restaurant.getDescription();
+        this.picture = restaurant.getPicture();
+        this.openTime = restaurant.getOpen_time();
+        this.closeTime = restaurant.getClose_time();
+        this.rating = restaurant.getRating();
     }
 }

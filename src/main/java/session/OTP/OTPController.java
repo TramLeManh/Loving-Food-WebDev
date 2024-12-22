@@ -18,11 +18,11 @@ public class OTPController {
 
   @GetMapping("/verifyOTP/{actionType}/{sessionToken}")
   public String verifyOTP(
-    HttpSession session,
-    @PathVariable String sessionToken,
-    RedirectAttributes redirectAttributes,
-    Model model,
-    @PathVariable String actionType
+          HttpSession session,
+          @PathVariable String sessionToken,
+          RedirectAttributes redirectAttributes,
+          Model model,
+          @PathVariable String actionType
   ) {
     String token = (String) session.getAttribute("sessionToken");
     model.addAttribute("actionType", actionType);
@@ -38,9 +38,9 @@ public class OTPController {
 
   @GetMapping("/resetPassword/{sessionToken}")
   public String resetPassword(
-    HttpSession session,
-    @PathVariable String sessionToken,
-    Model model
+          HttpSession session,
+          @PathVariable String sessionToken,
+          Model model
   ) {
     try {
       String token = (String) session.getAttribute("sessionToken");

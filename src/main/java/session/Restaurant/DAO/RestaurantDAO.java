@@ -18,31 +18,36 @@ public class RestaurantDAO {
     }
 
     public Optional<List<Restaurant>> findAll() {
-        String query = "select * FROM view_restaurant";
+        String query = "select * FROM restaurant";
         return Optional.ofNullable(jdbcTemplate.query(query, new Restaurant()));
     }
 
     public Optional<List<Restaurant>> getByDistrict(String district)  {
         try {
-            String query = "select * FROM view_restaurant WHERE restaurant_district = ?";
+            String query = "select * FROM restaurant WHERE restaurant_district = ?";
             return Optional.ofNullable(jdbcTemplate.query(query, new Restaurant(), district));
         } catch (Exception e) {
             return Optional.empty();
         }
     }
 
-    public Optional<List<Restaurant>> getByCategory(String category) {
+    public Optional<List<Restaurant>> getByCategory(String categoryId) {
         try {
-            String query = "select  view_restaurant.* from view_restaurant\n" + "where view_restaurant.restaurant_id\n" + "in (SELECT restaurant_id FROM restaurant_category where category_id = ?)";
-            return Optional.ofNullable(jdbcTemplate.query(query, new Restaurant(), category));
+            String query = "SELECT r.* FROM restaurant r " +
+                    "JOIN restaurant_category rc ON r.restaurant_id = rc.restaurant_id " +
+                    "WHERE rc.category_id = ?";
+            List<Restaurant> restaurants = jdbcTemplate.query(query, new Object[]{categoryId}, new Restaurant());
+            return Optional.ofNullable(restaurants);
         } catch (Exception e) {
+            e.printStackTrace();
             return Optional.empty();
         }
     }
 
+
     public Optional<List<Restaurant>> getByCategoryDistrict(String category, String district) {
         try {
-            String query = "select  * from view_restaurant where restaurant_id\n" + "in (SELECT restaurant_id FROM restaurant_category where category_id = ? AND view_restaurant.restaurant_district = ?)";
+            String query = "select  * from restaurant where restaurant_id\n" + "in (SELECT restaurant_id FROM restaurant_category where category_id = ? AND restaurant.restaurant_district = ?)";
             return Optional.ofNullable(jdbcTemplate.query(query, new Restaurant(), category, district));
         } catch (Exception e) {
             return Optional.empty();
@@ -60,22 +65,31 @@ public class RestaurantDAO {
 
     public Optional<Restaurant> findById(int id)  {
         try {
-            String query = "select view_restaurant.* from view_restaurant\n" + "where view_restaurant.restaurant_id = ?";
+            String query = "select restaurant.* from restaurant\n" + "where restaurant.restaurant_id = ?";
             return Optional.ofNullable(jdbcTemplate.queryForObject(query, new Restaurant(), id));
         } catch (Exception e) {
             return Optional.empty();
         }
     }
 
-    public void insertRestaurant(int owe_id, String res_id, String name, String district, String address, String description,String image, String phoneNumber, String openTime, String closeTime) {
+    public void insertRestaurant(String res_id, String name, String district, String address, String description,String image, String phoneNumber, String openTime, String closeTime) {
         try {
-            String query = "call create_restaurant(? , ? , ? , ? , ? , ? , ? , ? , ?,?)";
-            jdbcTemplate.update(query, owe_id, res_id, name, district, address,description, image, phoneNumber, openTime, closeTime);
+            String query = "insert into restaurant (restaurant_id, restaurant_name, restaurant_district, restaurant_address, restaurant_image, phone_number, open_time, close_time, restaurant_description) VALUES (?,?,?,?,?,?,?,?,?)";
+            jdbcTemplate.update(query, res_id, name, district,address, image, phoneNumber, openTime, closeTime, description);
         } catch (Exception e) {
             return;
         }
-
     }
+
+    public void insertOwnRestaurant(int owerID, int resID) {
+        try {
+           String query = "insert into ownrestaurant (user_id, restaurant_id) VALUES (?, ?)";
+           jdbcTemplate.update(query, owerID, resID);
+        } catch(Exception e) {
+            return;
+        }
+    }
+
     public void removeRestaurant(int res_id)  {
         try {
             String query = "delete from restaurant where restaurant_id = ?";
@@ -85,16 +99,14 @@ public class RestaurantDAO {
         }
     }
 
-
     public List<Restaurant> getOwnerRestaurant(int ownerId)  {
         try {
-            String query = "select  * from view_restaurant where restaurant_id in(select restaurant_id from ownrestaurant where user_id = ?);";
+            String query = "select  * from restaurant where restaurant_id in(select restaurant_id from ownrestaurant where user_id = ?);";
             return jdbcTemplate.query(query, new Restaurant(), ownerId);
         } catch (Exception e) {
             return null;
         }
     }
-
 
     public void updateRestaurant(String restaurantId, String name, String district, String address, String description, String picture, String phoneNumber, String openTime, String closeTime) {
         try {
@@ -110,9 +122,22 @@ public class RestaurantDAO {
                     "    restaurant_description = ?\n" +
                     "WHERE\n" +
                     "    restaurant_id = ?;";
-             jdbcTemplate.update(query, name, district, address, picture, phoneNumber, openTime, closeTime, description, restaurantId);
+            jdbcTemplate.update(query, name, district, address, picture, phoneNumber, openTime, closeTime, description, restaurantId);
         } catch (Exception e) {
             return ;
         }
     }
+
+    public Optional<List<Restaurant>> findTop3ByRating() {
+        try {
+            String query = "SELECT * FROM restaurant ORDER BY rating DESC LIMIT 3";
+            List<Restaurant> top3Restaurants = jdbcTemplate.query(query, new Restaurant());
+            return Optional.ofNullable(top3Restaurants);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+
 }

@@ -52,7 +52,7 @@
             display: inline-block;
             text-decoration: none;
             color: #fff;
-            background-color: #007BFF;
+            background-color: #b2744c;
             padding: 10px 15px;
             border-radius: 5px;
             transition: background-color 0.3s ease;
@@ -81,14 +81,12 @@
 
     // Fetch article data from the backend API
     fetch(`/api/article/${articleId}`)
-
         .then(response => response.json())
         .then(data => {
-
             // Render the article details in the HTML
             document.getElementById('article-content').innerHTML = `
                 <h1>${data.title}</h1>
-                <img src="${data.image}" alt="null"/>
+                <img src="/assets/${data.image}" alt="${data.title}" />
                 <p>${data.content}</p>
                 <div class="back-container">
                     <a href="/all-articles" class="back-button">Back to All Articles</a>

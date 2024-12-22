@@ -57,7 +57,4 @@ public class ArticleController {
         articleRepository.save(ArticleDTO.toEntity(articleDTO,articleDTO.getArticleId()));
         return ResponseEntity.ok("Decision updated successfully.");
     }
-
-
-
 }

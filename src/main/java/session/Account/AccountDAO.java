@@ -27,6 +27,7 @@ public class AccountDAO implements DAO<Account, Integer> {
             return Optional.empty();
         }
     }
+
     @Override
     public Optional<Account> findById(Integer id) {
         return Optional.empty();
@@ -66,6 +67,14 @@ public class AccountDAO implements DAO<Account, Integer> {
         } catch (Exception e) {
 
             return Optional.empty();
+        }
+    }
+    public Optional<String> getUsernameByUserId(int userId) {
+        String query = "SELECT username FROM User WHERE user_id = ?";
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(query, String.class, userId));
+        } catch (Exception e) {
+            return Optional.empty(); // Handle cases where the user_id is not found
         }
     }
     public void updatePassword(int user_id, String password) {

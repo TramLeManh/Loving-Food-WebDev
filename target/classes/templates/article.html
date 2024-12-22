@@ -81,12 +81,14 @@
 
     // Fetch article data from the backend API
     fetch(`/api/article/${articleId}`)
+
         .then(response => response.json())
         .then(data => {
+
             // Render the article details in the HTML
             document.getElementById('article-content').innerHTML = `
                 <h1>${data.title}</h1>
-                <img src="/assets/${data.image}" alt="${data.title}" />
+                <img src="${data.image}" alt="null"/>
                 <p>${data.content}</p>
                 <div class="back-container">
                     <a href="/all-articles" class="back-button">Back to All Articles</a>
