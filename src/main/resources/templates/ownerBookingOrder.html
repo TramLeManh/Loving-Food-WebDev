@@ -595,65 +595,74 @@
     <div class="modal-dialog">
         <div class="modal-content">
 
-            <form
-                    th:action="@{/admin/decision/create}"
-                    method="POST"
-                    id="createResponseForm"
-            >
+            <form th:action="@{/admin/restaurant/update}"
+                  method="POST"
+                  th:if="${restaurant != null && districts != null}"
+                  id="updateRestaurantForm">
+                <input type="hidden" name="restaurant_id" th:value="${restaurant.restaurant_id}" />
                 <div class="modal-header">
-                    <h4 class="modal-title">Create Booking Response #<a id="bookingID"></a></h4>
-                    <button
-                            type="button"
-                            class="close"
-                            data-dismiss="modal"
-                            aria-hidden="true"
-                    >
-                        &times;
-                    </button>
+                    <h4 class="modal-title">Edit restaurant #<span th:text="${restaurant.restaurant_id}"></span></h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" style="max-height: 500px; border: 1px solid #ccc; overflow-y: auto">
                     <div class="form-group">
-                        <label>Name</label>
-                        <p class="form-control-static" id="c-name"></p>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Number of guest</label>
-                        <p class="form-control-static" id="c-guest"></p>
+                        <label>Restaurant Name</label>
+                        <input type="text" name="name" class="form-control" placeholder="Restaurant name" required th:value="${restaurant.name}" />
                     </div>
                     <div class="form-group">
-                        <label>Customer Note</label>
-                        <p class="form-control-static" id="c-note"></p>
-                    </div>
-                    <div class="form-group  mb-3">
-                        <label>Time</label>
-                        <p class="form-control-static" id="c-time">abc</p>
+                        <label>Address</label>
+                        <input type="text" name="address" class="form-control" placeholder="Address" required th:value="${restaurant.address}" />
                     </div>
                     <div class="form-group">
-                        <label >Your note response</label>
-                        <input type="text" name="note" class="form-control" placeholder="Your response">
+                        <label for="district">District</label>
+                        <select id="district" class="form-control" name="district">
+                            <option th:each="d : ${districts}"
+                                    th:value="${d.id}"
+                                    th:text="${d.name}"
+                                    th:selected="${d.id == restaurant.districtId}">
+                            </option>
+                        </select>
                     </div>
-                    <div class="form-group ">
-                        <label >Booking status</label>
-                        <label for="c-status"></label><select name="status" class="form-control" id="c-status">
-                        <option value="" selected disabled hidden>Select a status</option>
-                        <option value="POSTPONED">POSTPONED</option>
-                        <option value="ACCEPTED">ACCEPTED</option>
-                        <option value="DENIED">DENIED</option>
-                    </select>
+                    <div class="form-group">
+                        <label>Picture</label>
+                        <input type="text" name="picture" class="form-control" placeholder="Picture link" required th:value="${restaurant.picture ?: '/assets/default.png'}" />
                     </div>
-                    <input type="hidden" name="booking_id" id="c-id"/>
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <label>Open Time</label>
+                            <input type="time" name="open_time" class="form-control" required th:value="${restaurant.open_time}" />
+                        </div>
+                        <div class="col-md-6">
+                            <label>Close Time</label>
+                            <input type="time" name="close_time" class="form-control" required th:value="${restaurant.close_time}" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="text" name="phone_number" class="form-control" placeholder="Phone number" required th:value="${restaurant.phone_number}" />
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <input type="text" name="description" class="form-control" placeholder="Description" required th:value="${restaurant.description}" />
+                    </div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <ul>
+                            <li th:each="c : ${categories}">
+                                <label>
+                                    <input name="category" type="checkbox" th:value="${c.category_id}" th:checked="${#lists.contains(restaurant.categories, c.category_id)}" />
+                                    <span th:text="${c.category_name}"></span>
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <input
-                            type="button"
-                            class="btn btn-default"
-                            data-dismiss="modal"
-                            value="Cancel"
-                    />
-                    <input type="submit" class="btn btn-info" value="Create"/>
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel" />
+                    <input type="submit" class="btn btn-info" value="Update" />
                 </div>
             </form>
+
         </div>
     </div>
 </div>
@@ -690,12 +699,14 @@
                     </div>
                     <label>District</label>
                     <div class="form-group">
+                        <label for="district">District</label>
                         <label>
-                            <select   class="form-control">
+                            <select  class="form-control" name="district">
                                 <option th:each="d : ${districts}"
-                                        th:value="${d.id}"
+                                        th:value="${d.id.toString}"
                                         th:text="${d.name}"
-                                        th:selected="${restaurant.getDistrict}"></option>
+                                        th:selected="${d.id == restaurant.district}">
+                                </option>
                             </select>
                         </label>
                     </div>

@@ -93,13 +93,17 @@ public class AccountController {
         State<UserDTO> res = accountService.login(username, password);//Server check
         if (res.getStatus() != Status.SUCCESS) {
             redirectAttributes.addFlashAttribute("state", res.getStatus().toString());//Set state
-            return "redirect:/account/login";
+            return "redirect:/";
         }
 
+<<<<<<< HEAD
         session.setAttribute("user", res.getData().id());
         redirectAttributes.addFlashAttribute("state", res.getStatus().toString());
         Integer userID = (Integer) session.getAttribute("user");
         if (accountService.isAdmin(userID)) {
+=======
+        if (res.getData().role().equals("ADMIN")) {
+>>>>>>> 42f1a31c6d688a1d4763fc57c27c9b1b27456afc
             session.setAttribute("role", 0);
             return "redirect:/admin";
         }
