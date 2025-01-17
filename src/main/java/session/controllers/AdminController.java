@@ -133,10 +133,7 @@ public class AdminController {
     }
     @GetMapping("/editArticle")
     public String showEditArticlePage(HttpSession session,Model model) {
-        Integer role = (Integer) session.getAttribute("role");
-        if(role != 0) {
-            return "error";
-        }
+
         List<Article> articles = articleRepository.findAll();
         model.addAttribute("articles", articles);
         return "editArticle";
